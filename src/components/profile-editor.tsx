@@ -14,7 +14,7 @@ import { useFirestore, useUser, setDocumentNonBlocking } from '@/firebase';
 import type { UserProfile } from '@/lib/types';
 import { defaultProfile } from '@/lib/types';
 import { profileSchema } from '@/lib/validators';
-import FieldArrayForm from './field-array-form';
+import SkillsFieldArrayForm from './skills-field-array-form';
 import ExperienceFieldArrayForm from './experience-field-array-form';
 import { Loader2 } from 'lucide-react';
 import EducationFieldArrayForm from './education-field-array-form';
@@ -132,7 +132,7 @@ export default function ProfileEditor() {
 
                 <ExperienceFieldArrayForm form={form} />
                 <EducationFieldArrayForm form={form} />
-                <FieldArrayForm form={form} name="skills" title="Skills" description="Relevant skills for your industry." placeholder="React, TypeScript, and Tailwind CSS"/>
+                <SkillsFieldArrayForm form={form} name="skills" title="Skills" description="Add your skills or select from the suggestions below." placeholder="e.g., Python" />
 
                 <div className="flex justify-end">
                     <Button type="submit" disabled={form.formState.isSubmitting}>
