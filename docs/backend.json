@@ -32,9 +32,44 @@
           }
         },
         "contactInfo": {
-          "type": "string",
+          "type": "object",
           "description": "The user's contact information.",
-          "format": "email"
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "linkedin": {
+              "type": "string",
+              "format": "uri"
+            },
+            "github": {
+              "type": "string",
+              "format": "uri"
+            },
+            "instagram": {
+              "type": "string",
+              "format": "uri"
+            },
+            "portfolio": {
+              "type": "string",
+              "format": "uri"
+            },
+            "other": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": [
+            "name",
+            "email"
+          ]
         }
       },
       "required": [

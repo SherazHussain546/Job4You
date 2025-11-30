@@ -20,8 +20,12 @@ const GeneratePersonalizedCoverLetterInputSchema = z.object({
       .object({
         name: z.string().describe('Your name'),
         email: z.string().describe('Your email'),
-        phone: z.string().describe('Your phone number'),
-        linkedin: z.string().describe('Your LinkedIn profile URL'),
+        phone: z.string().optional().describe('Your phone number'),
+        linkedin: z.string().optional().describe('Your LinkedIn profile URL'),
+        github: z.string().optional().describe('Your GitHub profile URL'),
+        instagram: z.string().optional().describe('Your Instagram profile URL'),
+        portfolio: z.string().optional().describe('Your portfolio URL'),
+        other: z.string().optional().describe('Other relevant URL'),
       })
       .describe('Your contact information'),
   }).describe('User profile data including education, experience, and skills.'),
@@ -53,8 +57,12 @@ const prompt = ai.definePrompt({
 User Profile:
 Name: {{{profileData.contactInfo.name}}}
 Email: {{{profileData.contactInfo.email}}}
-Phone: {{{profileData.contactInfo.phone}}}
-LinkedIn: {{{profileData.contactInfo.linkedin}}}
+{{#if profileData.contactInfo.phone}}Phone: {{{profileData.contactInfo.phone}}}{{/if}}
+{{#if profileData.contactInfo.linkedin}}LinkedIn: {{{profileData.contactInfo.linkedin}}}{{/if}}
+{{#if profileData.contactInfo.github}}GitHub: {{{profileData.contactInfo.github}}}{{/if}}
+{{#if profileData.contactInfo.portfolio}}Portfolio: {{{profileData.contactInfo.portfolio}}}{{/if}}
+{{#if profileData.contactInfo.instagram}}Instagram: {{{profileData.contactInfo.instagram}}}{{/if}}
+{{#if profileData.contactInfo.other}}Other: {{{profileData.contactInfo.other}}}{{/if}}
 
 Education:
 {{#each profileData.education}}- {{{this}}}{{/each}}

@@ -22,8 +22,12 @@ const TailorResumeToJobDescriptionInputSchema = z.object({
     contactInfo: z.object({
       name: z.string().describe('Name of the person'),
       email: z.string().describe('Email address'),
-      phone: z.string().describe('Phone number'),
-      linkedin: z.string().describe('LinkedIn profile URL'),
+      phone: z.string().optional().describe('Phone number'),
+      linkedin: z.string().optional().describe('LinkedIn profile URL'),
+      github: z.string().optional().describe('Your GitHub profile URL'),
+      instagram: z.string().optional().describe('Your Instagram profile URL'),
+      portfolio: z.string().optional().describe('Your portfolio URL'),
+      other: z.string().optional().describe('Other relevant URL'),
     }).describe('Contact information.'),
   }).describe('The user profile data containing education, experience, skills, and contact information.'),
 });
@@ -57,13 +61,25 @@ const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
 Job Description: {{{jobDescription}}}
 
 User Profile Data:
-Education: {{#each profileData.education}}{{{this}}}\n{{/each}}
-Experience: {{#each profileData.experience}}{{{this}}}\n{{/each}}
-Skills: {{#each profileData.skills}}{{{this}}}\n{{/each}}
-Contact Info: Name: {{{profileData.contactInfo.name}}}, Email: {{{profileData.contactInfo.email}}}, Phone: {{{profileData.contactInfo.phone}}}, LinkedIn: {{{profileData.contactInfo.linkedin}}}
+Contact Info:
+Name: {{{profileData.contactInfo.name}}}
+Email: {{{profileData.contactInfo.email}}}
+{{#if profileData.contactInfo.phone}}Phone: {{{profileData.contactInfo.phone}}}{{/if}}
+{{#if profileData.contactInfo.linkedin}}LinkedIn: {{{profileData.contactInfo.linkedin}}}{{/if}}
+{{#if profileData.contactInfo.github}}GitHub: {{{profileData.contactInfo.github}}}{{/if}}
+{{#if profileData.contactInfo.portfolio}}Portfolio: {{{profileData.contactInfo.portfolio}}}{{/if}}
+{{#if profileData.contactInfo.instagram}}Instagram: {{{profileData.contactInfo.instagram}}}{{/if}}
+{{#if profileData.contactInfo.other}}Other: {{{profileData.contactInfo.other}}}{{/if}}
+
+Education:
+{{#each profileData.education}}{{{this}}}\n{{/each}}
+Experience:
+{{#each profileData.experience}}{{{this}}}\n{{/each}}
+Skills:
+{{#each profileData.skills}}{{{this}}}\n{{/each}}
 
 
-Generate the complete LaTeX code for a professional resume tailored to the job description.  Make sure to include a \documentclass{article} and \begin{document} and \end{document} tags.
+Generate the complete LaTeX code for a professional resume tailored to the job description. Make sure to include a \\documentclass{article} and \\begin{document} and \\end{document} tags.
 `,
 });
 

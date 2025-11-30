@@ -3,15 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { z } from 'zod';
+import { doc, getDoc } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { useFirestore, useUser } from '@/firebase';
+import { useFirestore, useUser, setDocumentNonBlocking } from '@/firebase';
 import type { UserProfile } from '@/lib/types';
 import { defaultProfile } from '@/lib/types';
 import { profileSchema } from '@/lib/validators';
@@ -55,26 +54,17 @@ export default function ProfileEditor() {
     fetchProfile();
   }, [user, form, toast, firestore]);
   
-  const onSubmit = async (data: UserProfile) => {
+  const onSubmit = (data: UserProfile) => {
     if (!user) {
       toast({ title: 'Not Authenticated', description: 'You must be logged in to save your profile.', variant: 'destructive' });
       return;
     }
     
-    try {
-      await setDoc(doc(firestore, 'users', user.uid, 'profile', 'data'), { ...data, id: user.uid });
-      toast({
-        title: 'Success',
-        description: 'Your profile has been saved.',
-      });
-    } catch (error) {
-      console.error('Error saving profile:', error);
-      toast({
-        title: 'Error',
-        description: 'There was a problem saving your profile.',
-        variant: 'destructive',
-      });
-    }
+    setDocumentNonBlocking(doc(firestore, 'users', user.uid, 'profile', 'data'), { ...data, id: user.uid }, { merge: true });
+    toast({
+      title: 'Success',
+      description: 'Your profile has been saved.',
+    });
   };
 
   if (isLoading) {
@@ -108,7 +98,19 @@ export default function ProfileEditor() {
                             <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input placeholder="(123) 456-7890" {...field} /></FormControl><FormMessage /></FormItem>
                         )} />
                         <FormField control={form.control} name="contactInfo.linkedin" render={({ field }) => (
-                            <FormItem><FormLabel>LinkedIn Profile URL</FormLabel><FormControl><Input placeholder="linkedin.com/in/johndoe" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>LinkedIn Profile URL</FormLabel><FormControl><Input placeholder="https://linkedin.com/in/johndoe" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={form.control} name="contactInfo.github" render={({ field }) => (
+                            <FormItem><FormLabel>GitHub Profile URL</FormLabel><FormControl><Input placeholder="https://github.com/johndoe" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={form.control} name="contactInfo.portfolio" render={({ field }) => (
+                            <FormItem><FormLabel>Portfolio URL</FormLabel><FormControl><Input placeholder="https://johndoe.dev" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                         <FormField control={form.control} name="contactInfo.instagram" render={({ field }) => (
+                            <FormItem><FormLabel>Instagram Profile URL</FormLabel><FormControl><Input placeholder="https://instagram.com/johndoe" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={form.control} name="contactInfo.other" render={({ field }) => (
+                            <FormItem><FormLabel>Other URL</FormLabel><FormControl><Input placeholder="https://your-other-site.com" {...field} /></FormControl><FormMessage /></FormItem>
                         )} />
                     </CardContent>
                 </Card>
