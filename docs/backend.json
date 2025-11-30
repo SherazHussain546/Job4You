@@ -21,7 +21,26 @@
           "type": "array",
           "description": "An array of the user's work experiences.",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "The user's job title."
+              },
+              "company": {
+                "type": "string",
+                "description": "The name of the company/organization."
+              },
+              "responsibilities": {
+                "type": "string",
+                "description": "A description of the user's responsibilities in the role."
+              }
+            },
+            "required": [
+              "title",
+              "company",
+              "responsibilities"
+            ]
           }
         },
         "skills": {

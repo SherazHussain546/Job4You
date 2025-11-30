@@ -14,7 +14,11 @@ import {z} from 'genkit';
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
   profileData: z.object({
     education: z.array(z.string()).describe('List of educational experiences.'),
-    experience: z.array(z.string()).describe('List of work experiences.'),
+    experience: z.array(z.object({
+        title: z.string(),
+        company: z.string(),
+        responsibilities: z.string(),
+    })).describe('List of work experiences.'),
     skills: z.array(z.string()).describe('List of skills.'),
     contactInfo: z
       .object({
@@ -68,7 +72,10 @@ Education:
 {{#each profileData.education}}- {{{this}}}{{/each}}
 
 Experience:
-{{#each profileData.experience}}- {{{this}}}{{/each}}
+{{#each profileData.experience}}
+- **{{{this.title}}}** at **{{{this.company}}}**
+  - {{{this.responsibilities}}}
+{{/each}}
 
 Skills:
 {{#each profileData.skills}}- {{{this}}}{{/each}}

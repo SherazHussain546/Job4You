@@ -15,6 +15,7 @@ import type { UserProfile } from '@/lib/types';
 import { defaultProfile } from '@/lib/types';
 import { profileSchema } from '@/lib/validators';
 import FieldArrayForm from './field-array-form';
+import ExperienceFieldArrayForm from './experience-field-array-form';
 import { Loader2 } from 'lucide-react';
 
 export default function ProfileEditor() {
@@ -36,7 +37,20 @@ export default function ProfileEditor() {
         const docRef = doc(firestore, 'users', user.uid, 'profile', 'data');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          form.reset(docSnap.data() as UserProfile);
+          const data = docSnap.data();
+          // Ensure all fields exist to prevent uncontrolled component errors
+          const validatedData: UserProfile = {
+            ...defaultProfile,
+            ...data,
+            contactInfo: {
+              ...defaultProfile.contactInfo,
+              ...(data.contactInfo || {}),
+            },
+            education: data.education || [],
+            experience: data.experience || [],
+            skills: data.skills || [],
+          };
+          form.reset(validatedData);
         } else {
           form.reset(defaultProfile);
         }
@@ -115,7 +129,7 @@ export default function ProfileEditor() {
                     </CardContent>
                 </Card>
 
-                <FieldArrayForm form={form} name="experience" title="Work Experience" description="List your professional roles." placeholder="Software Engineer at Tech Corp - Built cool stuff."/>
+                <ExperienceFieldArrayForm form={form} />
                 <FieldArrayForm form={form} name="education" title="Education" description="Your academic background." placeholder="B.S. in Computer Science from State University"/>
                 <FieldArrayForm form={form} name="skills" title="Skills" description="Relevant skills for your industry." placeholder="React, TypeScript, and Tailwind CSS"/>
 

@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore, useUser } from '@/firebase';
 import type { UserProfile } from '@/lib/types';
+import { defaultProfile } from '@/lib/types';
 import { Bot, Loader2, FileWarning } from 'lucide-react';
 import OutputDisplay from './output-display';
 
@@ -53,7 +54,19 @@ export default function ResumeTailor() {
         return;
       }
       
-      const profileData = profileSnap.data() as UserProfile;
+      const savedData = profileSnap.data();
+      const profileData: UserProfile = {
+        ...defaultProfile,
+        ...savedData,
+         contactInfo: {
+          ...defaultProfile.contactInfo,
+          ...(savedData.contactInfo || {}),
+        },
+        education: savedData.education || [],
+        experience: savedData.experience || [],
+        skills: savedData.skills || [],
+      };
+
 
       const [resumeResult, coverLetterResult] = await Promise.all([
         tailorResumeToJobDescription({ jobDescription, profileData }),
