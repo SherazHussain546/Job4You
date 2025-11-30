@@ -29,7 +29,7 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
       </CardHeader>
       <CardContent className="space-y-4">
         {fields.map((field, index) => (
-          <div key={field.id} className="space-y-4 rounded-md border p-4 relative">
+          <div key={field.id} className="space-y-4 rounded-md border p-4 relative pt-8">
             <FormField
               control={form.control}
               name={`experience.${index}.title`}
