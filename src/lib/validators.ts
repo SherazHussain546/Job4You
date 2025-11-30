@@ -25,6 +25,7 @@ export const certificationSchema = z.object({
   organization: z.string().min(1, 'Issuing organization is required.'),
   date: z.string().optional(),
   link: optionalUrl,
+  achievements: z.string().optional(),
 });
 
 export const profileSchema = z.object({

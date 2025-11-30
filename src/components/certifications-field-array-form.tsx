@@ -8,6 +8,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/f
 import { Input } from './ui/input';
 import { Plus, Trash2 } from 'lucide-react';
 import type { UserProfile } from '@/lib/types';
+import { Textarea } from './ui/textarea';
 
 interface CertificationsFieldArrayFormProps {
   form: UseFormReturn<UserProfile>;
@@ -80,6 +81,19 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name={`certifications.${index}.achievements`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your Achievements (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Describe any projects or skills demonstrated for this certification." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
              <Button
                 type="button"
                 variant="ghost"
@@ -96,7 +110,7 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => append({ name: '', organization: '', date: '', link: '' })}
+          onClick={() => append({ name: '', organization: '', date: '', link: '', achievements: '' })}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add certification
