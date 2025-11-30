@@ -19,6 +19,7 @@ import ExperienceFieldArrayForm from './experience-field-array-form';
 import { Loader2 } from 'lucide-react';
 import EducationFieldArrayForm from './education-field-array-form';
 import ProjectsFieldArrayForm from './projects-field-array-form';
+import CertificationsFieldArrayForm from './certifications-field-array-form';
 
 export default function ProfileEditor() {
   const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +52,7 @@ export default function ProfileEditor() {
             education: data.education || [],
             experience: data.experience || [],
             projects: data.projects || [],
+            certifications: data.certifications || [],
             skills: data.skills || [],
           };
           form.reset(validatedData);
@@ -135,6 +137,7 @@ export default function ProfileEditor() {
                 <ExperienceFieldArrayForm form={form} />
                 <EducationFieldArrayForm form={form} />
                 <ProjectsFieldArrayForm form={form} />
+                <CertificationsFieldArrayForm form={form} />
                 <SkillsFieldArrayForm form={form} name="skills" title="Skills" description="Add your skills or select from the suggestions below." placeholder="e.g., Python" />
 
                 <div className="flex justify-end">
