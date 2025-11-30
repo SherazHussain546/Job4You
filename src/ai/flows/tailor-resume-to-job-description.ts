@@ -52,7 +52,7 @@ const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
   input: {schema: TailorResumeToJobDescriptionInputSchema},
   output: {schema: TailorResumeToJobDescriptionOutputSchema},
-  prompt: `You are an expert resume writer specializing in tailoring resumes to specific job descriptions. Use the user's profile data and the job description to create the best possible resume, in LaTeX format.
+  prompt: `You are an expert resume writer specializing in tailoring resumes to specific job descriptions. Use the user's profile data and the job description to create the best possible resume, in LaTeX format. You must only use the data provided in the user profile and not invent any details.
 
 Job Description: {{{jobDescription}}}
 
