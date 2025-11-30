@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile information for the ResumeCraft AI application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user profile."
+        },
+        "education": {
+          "type": "array",
+          "description": "An array of the user's educational experiences.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "experience": {
+          "type": "array",
+          "description": "An array of the user's work experiences.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "description": "An array of the user's skills.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contactInfo": {
+          "type": "string",
+          "description": "The user's contact information.",
+          "format": "email"
+        }
+      },
+      "required": [
+        "id",
+        "education",
+        "experience",
+        "skills",
+        "contactInfo"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}/profile",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile data. Access is restricted to the user identified by {userId}. No denormalized authorization fields are needed as access is path-based and depends solely on the authenticated user's ID matching the {userId} in the path.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to be simple and secure, focusing on user-owned data. It primarily stores user profiles.  Authorization Independence is achieved because there are no `get()` calls in the security rules; access is based solely on the `request.auth.uid` matching the `userId` path parameter.  The structure supports QAPs through path-based ownership, as only the authenticated user can access their own profile data, as enforced by security rules. This eliminates the need for complex filtering logic within the rules themselves. It uses `users/{userId}/profile` to associate profile documents with user IDs, enabling secure `list` operations because it naturally limits access to the user's specific data. It maintains invariants of ownership by directly associating data with the user's unique ID."
+  }
+}
