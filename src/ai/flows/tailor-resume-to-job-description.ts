@@ -16,7 +16,11 @@ const TailorResumeToJobDescriptionInputSchema = z.object({
     .string()
     .describe('The job description to tailor the resume to.'),
   profileData: z.object({
-    education: z.array(z.string()).describe('Array of education details.'),
+    education: z.array(z.object({
+        qualification: z.string(),
+        institute: z.string(),
+        achievements: z.string().optional(),
+    })).describe('Array of education details.'),
     experience: z.array(z.object({
         title: z.string(),
         company: z.string(),
@@ -76,7 +80,10 @@ Email: {{{profileData.contactInfo.email}}}
 {{#if profileData.contactInfo.other}}Other: {{{profileData.contactInfo.other}}}{{/if}}
 
 Education:
-{{#each profileData.education}}{{{this}}}\n{{/each}}
+{{#each profileData.education}}
+\\textbf{{{{{this.qualification}}}}} at \\textbf{{{{{this.institute}}}}}
+{{#if this.achievements}}{{{this.achievements}}}{{/if}}
+{{/each}}
 
 Experience:
 {{#each profileData.experience}}

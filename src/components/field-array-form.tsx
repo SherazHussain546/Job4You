@@ -11,7 +11,7 @@ import type { UserProfile } from '@/lib/types';
 
 interface FieldArrayFormProps {
   form: UseFormReturn<UserProfile>;
-  name: 'education' | 'experience' | 'skills';
+  name: 'skills';
   title: string;
   description: string;
   placeholder: string;

@@ -17,6 +17,7 @@ import { profileSchema } from '@/lib/validators';
 import FieldArrayForm from './field-array-form';
 import ExperienceFieldArrayForm from './experience-field-array-form';
 import { Loader2 } from 'lucide-react';
+import EducationFieldArrayForm from './education-field-array-form';
 
 export default function ProfileEditor() {
   const [isLoading, setIsLoading] = useState(true);
@@ -130,7 +131,7 @@ export default function ProfileEditor() {
                 </Card>
 
                 <ExperienceFieldArrayForm form={form} />
-                <FieldArrayForm form={form} name="education" title="Education" description="Your academic background." placeholder="B.S. in Computer Science from State University"/>
+                <EducationFieldArrayForm form={form} />
                 <FieldArrayForm form={form} name="skills" title="Skills" description="Relevant skills for your industry." placeholder="React, TypeScript, and Tailwind CSS"/>
 
                 <div className="flex justify-end">
