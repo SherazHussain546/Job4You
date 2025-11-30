@@ -50,7 +50,7 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
                 <FormItem>
                   <FormLabel>Company / Organization</FormLabel>
                   <FormControl>
-                    <Input placeholder="Tech Corp" {...field} />
+                    <Input placeholder="SYNCTECH.ie" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
