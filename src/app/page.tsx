@@ -1,23 +1,15 @@
 'use client';
 
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/auth-context';
+import { useUser } from '@/firebase';
 import LoginPage from '@/components/login-page';
 import Dashboard from '@/components/dashboard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AppLogo } from '@/components/icons';
 
 export default function Home() {
-  const authContext = useContext(AuthContext);
+  const { user, isUserLoading } = useUser();
 
-  if (!authContext) {
-    // This should not happen if the provider is set up correctly
-    return <div>Error: AuthContext not found.</div>;
-  }
-
-  const { user, loading } = authContext;
-
-  if (loading) {
+  if (isUserLoading) {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-4 bg-background">
         <AppLogo className="h-12 w-12 text-primary" />

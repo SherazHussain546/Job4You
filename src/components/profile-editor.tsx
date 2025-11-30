@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -11,8 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { AuthContext } from '@/contexts/auth-context';
-import { db } from '@/lib/firebase';
+import { useFirestore, useUser } from '@/firebase';
 import type { UserProfile } from '@/lib/types';
 import { defaultProfile } from '@/lib/types';
 import { profileSchema } from '@/lib/validators';
@@ -21,9 +20,9 @@ import { Loader2 } from 'lucide-react';
 
 export default function ProfileEditor() {
   const [isLoading, setIsLoading] = useState(true);
-  const authContext = useContext(AuthContext);
   const { toast } = useToast();
-  const user = authContext?.user;
+  const { user } = useUser();
+  const firestore = useFirestore();
 
   const form = useForm<UserProfile>({
     resolver: zodResolver(profileSchema),
@@ -35,7 +34,7 @@ export default function ProfileEditor() {
       if (!user) return;
       setIsLoading(true);
       try {
-        const docRef = doc(db, 'users', user.uid, 'data', 'profile');
+        const docRef = doc(firestore, 'users', user.uid, 'profile', 'data');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           form.reset(docSnap.data() as UserProfile);
@@ -54,7 +53,7 @@ export default function ProfileEditor() {
       }
     };
     fetchProfile();
-  }, [user, form, toast]);
+  }, [user, form, toast, firestore]);
   
   const onSubmit = async (data: UserProfile) => {
     if (!user) {
@@ -63,7 +62,7 @@ export default function ProfileEditor() {
     }
     
     try {
-      await setDoc(doc(db, 'users', user.uid, 'data', 'profile'), data);
+      await setDoc(doc(firestore, 'users', user.uid, 'profile', 'data'), { ...data, id: user.uid });
       toast({
         title: 'Success',
         description: 'Your profile has been saved.',

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { generatePersonalizedCoverLetter } from '@/ai/flows/generate-personalized-cover-letter';
 import { tailorResumeToJobDescription } from '@/ai/flows/tailor-resume-to-job-description';
@@ -8,8 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { AuthContext } from '@/contexts/auth-context';
-import { db } from '@/lib/firebase';
+import { useFirestore, useUser } from '@/firebase';
 import type { UserProfile } from '@/lib/types';
 import { Bot, Loader2, FileWarning } from 'lucide-react';
 import OutputDisplay from './output-display';
@@ -24,10 +23,11 @@ export default function ResumeTailor() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [output, setOutput] = useState<GenerationOutput | null>(null);
   const { toast } = useToast();
-  const authContext = useContext(AuthContext);
+  const { user } = useUser();
+  const firestore = useFirestore();
 
   const handleGenerate = async () => {
-    if (!authContext?.user) {
+    if (!user) {
       toast({ title: 'Error', description: 'You must be logged in.', variant: 'destructive' });
       return;
     }
@@ -40,7 +40,7 @@ export default function ResumeTailor() {
     setOutput(null);
 
     try {
-      const profileRef = doc(db, 'users', authContext.user.uid, 'data', 'profile');
+      const profileRef = doc(firestore, 'users', user.uid, 'profile', 'data');
       const profileSnap = await getDoc(profileRef);
 
       if (!profileSnap.exists()) {

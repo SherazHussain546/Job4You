@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useContext } from 'react';
+import { useState } from 'react';
+import { signOut } from 'firebase/auth';
 import {
   SidebarProvider,
   Sidebar,
@@ -14,9 +15,9 @@ import {
 } from '@/components/ui/sidebar';
 import { AppLogo } from '@/components/icons';
 import { Button } from './ui/button';
-import { AuthContext } from '@/contexts/auth-context';
+import { useAuth, useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { LogOut, User, FileText, Bot } from 'lucide-react';
+import { LogOut, User, Bot } from 'lucide-react';
 import ProfileEditor from './profile-editor';
 import ResumeTailor from './resume-tailor';
 
@@ -24,12 +25,16 @@ type Tab = 'profile' | 'tailor';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('tailor');
-  const authContext = useContext(AuthContext);
+  const { user } = useUser();
+  const auth = useAuth();
 
-  const user = authContext?.user;
   const getInitials = (name?: string | null) => {
     if (!name) return 'U';
     return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  };
+
+  const handleSignOut = async () => {
+    await signOut(auth);
   };
 
   return (
@@ -75,7 +80,7 @@ export default function Dashboard() {
                 <p className="truncate text-sm font-medium text-sidebar-foreground">{user?.displayName || 'Anonymous User'}</p>
                 <p className="truncate text-xs text-sidebar-foreground/70">{user?.email || 'No email'}</p>
             </div>
-            <Button variant="ghost" size="icon" className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent" onClick={authContext?.signOut}>
+            <Button variant="ghost" size="icon" className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent" onClick={handleSignOut}>
                 <LogOut size={18}/>
             </Button>
           </div>

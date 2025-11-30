@@ -1,20 +1,44 @@
 'use client';
 
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/auth-context';
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInAnonymously as firebaseSignInAnonymously,
+} from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AppLogo, GoogleIcon } from '@/components/icons';
 import { User } from 'lucide-react';
+import { useAuth, useUser } from '@/firebase';
+import { useState } from 'react';
 
 export default function LoginPage() {
-  const authContext = useContext(AuthContext);
+  const auth = useAuth();
+  const { isUserLoading } = useUser();
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
-  if (!authContext) {
-    return null;
-  }
+  const loading = isUserLoading || isSigningIn;
 
-  const { signInWithGoogle, signInAnonymously, loading } = authContext;
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      setIsSigningIn(true);
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error('Error signing in with Google', error);
+      setIsSigningIn(false);
+    }
+  };
+
+  const signInAnonymously = async () => {
+    try {
+      setIsSigningIn(true);
+      await firebaseSignInAnonymously(auth);
+    } catch (error) {
+      console.error('Error signing in anonymously', error);
+      setIsSigningIn(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
