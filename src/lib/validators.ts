@@ -14,6 +14,12 @@ export const educationSchema = z.object({
   achievements: z.string().optional(),
 });
 
+export const projectSchema = z.object({
+  name: z.string().min(1, 'Project name is required.'),
+  date: z.string().optional(),
+  achievements: z.string().min(1, 'Achievements are required.'),
+});
+
 export const profileSchema = z.object({
   contactInfo: z.object({
     name: z.string().min(1, 'Name is required.'),
@@ -27,5 +33,6 @@ export const profileSchema = z.object({
   }),
   education: z.array(educationSchema),
   experience: z.array(experienceSchema),
+  projects: z.array(projectSchema),
   skills: z.array(z.string().min(1, "Skill entry can't be empty.")),
 });

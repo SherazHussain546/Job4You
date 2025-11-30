@@ -23,6 +23,11 @@ const GeneratePersonalizedCoverLetterInputSchema = z.object({
         company: z.string(),
         responsibilities: z.string(),
     })).describe('List of work experiences.'),
+    projects: z.array(z.object({
+        name: z.string(),
+        date: z.string().optional(),
+        achievements: z.string(),
+    })).describe('List of projects.'),
     skills: z.array(z.string()).describe('List of skills.'),
     contactInfo: z
       .object({
@@ -82,6 +87,12 @@ Experience:
 {{#each profileData.experience}}
 - **{{{this.title}}}** at **{{{this.company}}}**
   - {{{this.responsibilities}}}
+{{/each}}
+
+Projects:
+{{#each profileData.projects}}
+- **{{{this.name}}}** ({{#if this.date}}{{{this.date}}}{{/if}})
+  - {{{this.achievements}}}
 {{/each}}
 
 Skills:

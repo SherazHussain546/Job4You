@@ -64,6 +64,7 @@ export default function ResumeTailor() {
         },
         education: savedData.education || [],
         experience: savedData.experience || [],
+        projects: savedData.projects || [],
         skills: savedData.skills || [],
       };
 
