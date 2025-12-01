@@ -299,7 +299,7 @@ export default function HowItWorksPage() {
                     </div>
                 </div>
                 
-                <div className="grid gap-8 md:grid-cols-2 md F:items-start">
+                <div className="grid gap-8 md:grid-cols-2 md:items-start">
                    <div className="relative flex flex-col items-center justify-center pt-8 md:order-first">
                         <div className="relative">
                             <Button size="lg">
@@ -332,7 +332,7 @@ export default function HowItWorksPage() {
                 </div>
 
                  <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div className="md:order-first">
+                  <div className="md:order-last">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">5</span>
@@ -347,29 +347,29 @@ export default function HowItWorksPage() {
                         <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
                     </CardContent>
                   </div>
-                    <div className="flex items-center justify-center p-4 md:order-last">
-                       <div className="w-48 h-64 bg-card rounded-md shadow-lg p-3 flex flex-col border text-xs">
+                    <div className="flex items-center justify-center p-4 md:order-first">
+                       <div className="w-60 h-80 bg-card rounded-md shadow-lg p-4 flex flex-col border text-sm">
                             <div className="flex items-start gap-2">
                                 <div className="flex-1">
-                                    <p className="font-bold text-sm">
+                                    <p className="font-bold">
                                       <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span>
                                     </p>
-                                    <p className="text-muted-foreground text-[10px]">AI Resume Assistant</p>
+                                    <p className="text-muted-foreground text-xs">AI Resume Assistant</p>
                                 </div>
                             </div>
                             <div className="space-y-1 pt-3">
-                                <h4 className="font-bold text-muted-foreground text-[10px] uppercase tracking-wider">Summary</h4>
+                                <h4 className="font-bold text-muted-foreground text-xs uppercase tracking-wider">Summary</h4>
                                 <div className="h-1.5 w-full bg-muted rounded-sm"></div>
                                 <div className="h-1.5 w-full bg-muted rounded-sm"></div>
                                 <div className="h-1.5 w-3/4 bg-muted rounded-sm"></div>
                             </div>
                             <div className="space-y-1 pt-3">
-                                <h4 className="font-bold text-muted-foreground text-[10px] uppercase tracking-wider">Experience</h4>
+                                <h4 className="font-bold text-muted-foreground text-xs uppercase tracking-wider">Experience</h4>
                                 <div className="h-1.5 w-full bg-muted rounded-sm"></div>
                                 <div className="h-1.5 w-5/6 bg-muted rounded-sm"></div>
                             </div>
                              <div className="space-y-1 pt-3">
-                                <h4 className="font-bold text-muted-foreground text-[10px] uppercase tracking-wider">Education</h4>
+                                <h4 className="font-bold text-muted-foreground text-xs uppercase tracking-wider">Education</h4>
                                 <div className="h-1.5 w-full bg-muted rounded-sm"></div>
                                 <div className="h-1.5 w-1/2 bg-muted rounded-sm"></div>
                             </div>
@@ -405,3 +405,5 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
