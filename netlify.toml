@@ -1,0 +1,7 @@
+[build]
+  command = "next build"
+  publish = ".next"
+
+[build.environment]
+  # Disable telemetry during build
+  NEXT_TELEMETRY_DISABLED = "1"
