@@ -111,7 +111,7 @@ export default function HowItWorksPage() {
               <div className="space-y-16">
                 
                 <div className="grid gap-4 md:grid-cols-2 md:items-center">
-                  <Card>
+                  <Card className="bg-transparent border-none shadow-none">
                     <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">1</span>
@@ -175,7 +175,7 @@ export default function HowItWorksPage() {
                     <div className="flex items-center justify-center pt-8 md:order-first">
                        <User className="w-24 h-24 text-primary/30" />
                     </div>
-                  <Card>
+                  <Card className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
@@ -195,7 +195,7 @@ export default function HowItWorksPage() {
                     <div className="flex items-center justify-center pt-8 md:order-last">
                        <ClipboardPaste className="w-24 h-24 text-primary/30" />
                     </div>
-                  <Card>
+                  <Card className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">3</span>
@@ -212,7 +212,7 @@ export default function HowItWorksPage() {
                 </div>
                 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <Card>
+                  <Card className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
@@ -236,7 +236,7 @@ export default function HowItWorksPage() {
                      <div className="flex items-center justify-center pt-8 md:order-last">
                        <FileText className="w-24 h-24 text-primary/30" />
                     </div>
-                  <Card>
+                  <Card className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">5</span>
