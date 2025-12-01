@@ -82,11 +82,15 @@ const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
   input: {schema: TailorResumeToJobDescriptionInputSchema},
   output: {schema: TailorResumeToJobDescriptionOutputSchema},
-  prompt: `You are an expert resume writer. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format.
-You must use the provided user profile data and tailor it to the given job description.
-Generate a professional summary, and select the most relevant skills, experiences, and projects.
+  prompt: `You are an expert resume writer. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
+You must use the user's profile data and tailor it to the given job description.
+Your AI actions are:
+1.  Generate a professional, one-sentence title for the user based on the job description (e.g., "Full-Stack Software Engineer & AI/Cloud Developer").
+2.  Create a "PROFESSIONAL SUMMARY" with 3-4 bullet points. Each point should be a concise, impactful statement that highlights the user's key qualifications, top skills, and relevant experience, all tailored to the job description.
+3.  In the "TECHNICAL SKILLS" section, select the most relevant skills from the user's profile that match the job description and categorize them.
+4.  For "PROFESSIONAL EXPERIENCE" and "DEVELOPMENT PROJECTS," rewrite the user's responsibilities and achievements to use action verbs and quantify results where possible. Align them with the requirements mentioned in the job description.
+5.  Conditionally render sections only if the corresponding data exists in the user's profile (e.g., if there are no projects, do not include the PROJECTS section).
 The final output must be only the LaTeX code, starting with \\documentclass and ending with \\end{document}.
-Conditionally render sections only if the corresponding data exists in the user's profile (e.g., if there are no projects, do not include the PROJECTS section).
 
 Job Description:
 {{{jobDescription}}}
