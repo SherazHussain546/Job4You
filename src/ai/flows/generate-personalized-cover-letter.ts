@@ -126,9 +126,9 @@ Use the following LaTeX template.
 % --------------------
 \\raggedright
 \\textbf{ {{{profileData.contactInfo.name}}} } \\\\
-{{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} \\\\ {{/if}}
-\\href{mailto:{{{profileData.contactInfo.email}}}}{{{{profileData.contactInfo.email}}}} \\\\
-{{#if profileData.contactInfo.linkedin}} \\href{https://{{{profileData.contactInfo.linkedin}}}}{LinkedIn Profile} \\\\ {{/if}}
+{{#if profileData.contactInfo.phone}}{{{profileData.contactInfo.phone}}} \\\\{{/if}}
+{{#if profileData.contactInfo.email}}\\href{mailto:{{{profileData.contactInfo.email}}}}{{{{profileData.contactInfo.email}}}} \\\\{{/if}}
+{{#if profileData.contactInfo.linkedin}}\\href{https://{{{profileData.contactInfo.linkedin}}}}{LinkedIn Profile} \\\\{{/if}}
 
 \\vspace{10pt}
 
