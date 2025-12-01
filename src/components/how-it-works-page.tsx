@@ -172,7 +172,7 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                    <div className="flex items-center justify-center pt-8 md:order-last">
+                    <div className="flex items-center justify-center pt-8">
                        <User className="w-24 h-24 text-primary/30" />
                     </div>
                   <Card>
