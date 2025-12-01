@@ -36,7 +36,7 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
                 <FormItem>
                   <FormLabel>Certification Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Certified Kubernetes Administrator" {...field} />
+                    <Input placeholder="e.g., Certified Kubernetes Administrator" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -49,7 +49,7 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
                 <FormItem>
                   <FormLabel>Issuing Organization</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., The Linux Foundation" {...field} />
+                    <Input placeholder="e.g., The Linux Foundation" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -62,7 +62,7 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
                 <FormItem>
                   <FormLabel>Date Issued (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., June 2023" {...field} />
+                    <Input placeholder="e.g., June 2023" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -75,7 +75,7 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
                 <FormItem>
                   <FormLabel>Certificate Link (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://your-certificate-link.com" {...field} />
+                    <Input placeholder="https://your-certificate-link.com" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -88,7 +88,7 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
                 <FormItem>
                   <FormLabel>Your Achievements (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe any projects or skills demonstrated for this certification." {...field} />
+                    <Textarea placeholder="Describe any projects or skills demonstrated for this certification." {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,7 +101,7 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
                 <FormItem>
                   <FormLabel>Skills Achieved (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="e.g., Kubernetes, Docker, CI/CD" {...field} />
+                    <Textarea placeholder="e.g., Kubernetes, Docker, CI/CD" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

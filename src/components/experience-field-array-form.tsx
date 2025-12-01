@@ -36,7 +36,7 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
                 <FormItem>
                   <FormLabel>Job Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Software Engineer" {...field} />
+                    <Input placeholder="Software Engineer" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -49,7 +49,7 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
                 <FormItem>
                   <FormLabel>Company / Organization</FormLabel>
                   <FormControl>
-                    <Input placeholder="SYNCTECH.ie" {...field} />
+                    <Input placeholder="SYNCTECH.ie" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -63,7 +63,7 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
                     <FormItem>
                     <FormLabel>Start Date</FormLabel>
                     <FormControl>
-                        <Input placeholder="e.g., March 2024" {...field} />
+                        <Input placeholder="e.g., March 2024" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -76,7 +76,7 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
                     <FormItem>
                     <FormLabel>End Date</FormLabel>
                     <FormControl>
-                        <Input placeholder="e.g., Present" {...field} />
+                        <Input placeholder="e.g., Present" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -90,7 +90,7 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
                 <FormItem>
                   <FormLabel>Responsibilities</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe your responsibilities..." {...field} />
+                    <Textarea placeholder="Describe your responsibilities..." {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

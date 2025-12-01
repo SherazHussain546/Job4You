@@ -37,7 +37,7 @@ export default function ProjectsFieldArrayForm({ form }: ProjectsFieldArrayFormP
                 <FormItem>
                   <FormLabel>Project Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="AI Resume Builder" {...field} />
+                    <Input placeholder="AI Resume Builder" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -50,7 +50,7 @@ export default function ProjectsFieldArrayForm({ form }: ProjectsFieldArrayFormP
                 <FormItem>
                   <FormLabel>Date / Timeline (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Jan 2023 - Mar 2023" {...field} />
+                    <Input placeholder="Jan 2023 - Mar 2023" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -63,7 +63,7 @@ export default function ProjectsFieldArrayForm({ form }: ProjectsFieldArrayFormP
                 <FormItem>
                   <FormLabel>Achievements / Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe the project and your key contributions..." {...field} />
+                    <Textarea placeholder="Describe the project and your key contributions..." {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -36,7 +36,7 @@ export default function EducationFieldArrayForm({ form }: EducationFieldArrayFor
                 <FormItem>
                   <FormLabel>Your Qualification</FormLabel>
                   <FormControl>
-                    <Input placeholder="B.S. in Computer Science" {...field} />
+                    <Input placeholder="B.S. in Computer Science" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -49,7 +49,7 @@ export default function EducationFieldArrayForm({ form }: EducationFieldArrayFor
                 <FormItem>
                   <FormLabel>Institute Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="State University" {...field} />
+                    <Input placeholder="State University" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -63,7 +63,7 @@ export default function EducationFieldArrayForm({ form }: EducationFieldArrayFor
                     <FormItem>
                     <FormLabel>Start Date</FormLabel>
                     <FormControl>
-                        <Input placeholder="e.g., August 2020" {...field} />
+                        <Input placeholder="e.g., August 2020" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -76,7 +76,7 @@ export default function EducationFieldArrayForm({ form }: EducationFieldArrayFor
                     <FormItem>
                     <FormLabel>End Date</FormLabel>
                     <FormControl>
-                        <Input placeholder="e.g., May 2024" {...field} />
+                        <Input placeholder="e.g., May 2024" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -90,7 +90,7 @@ export default function EducationFieldArrayForm({ form }: EducationFieldArrayFor
                 <FormItem>
                   <FormLabel>Your Achievements (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="e.g., Dean's List, relevant coursework, thesis..." {...field} />
+                    <Textarea placeholder="e.g., Dean's List, relevant coursework, thesis..." {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
