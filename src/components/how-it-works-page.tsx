@@ -198,7 +198,7 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                   <div className="flex items-center justify-center pt-8 md:order-first">
+                   <div className="flex items-center justify-center pt-8">
                         <Card className="w-full max-w-sm">
                             <CardHeader>
                                 <CardTitle>Profile</CardTitle>
@@ -332,7 +332,7 @@ export default function HowItWorksPage() {
                 </div>
 
                  <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div className="md:order-last">
+                  <div className="md:order-first">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">5</span>
