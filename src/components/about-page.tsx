@@ -112,12 +112,12 @@ export default function AboutPage() {
         {/* Our Story Section */}
         <section className="py-20 md:py-32 bg-secondary/30">
             <div className="container grid md:grid-cols-2 gap-12 items-center">
-                <div className="relative aspect-video rounded-xl shadow-2xl">
+                <div className="relative mx-auto w-full max-w-sm aspect-square">
                     <Image 
                         src="https://github.com/SherazHussain546/Job4You/blob/main/images/Logo2.png?raw=true"
                         alt="Job4You Logo"
                         fill
-                        className="object-contain rounded-xl"
+                        className="object-contain"
                         data-ai-hint="logo"
                     />
                 </div>
