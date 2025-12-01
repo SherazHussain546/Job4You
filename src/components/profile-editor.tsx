@@ -52,7 +52,10 @@ export default function ProfileEditor() {
             education: data.education || [],
             experience: data.experience || [],
             projects: data.projects || [],
-            certifications: data.certifications || [],
+            certifications: data.certifications?.map((cert: any) => ({
+                ...cert,
+                skillsAchieved: cert.skillsAchieved || ''
+            })) || [],
             skills: data.skills || [],
           };
           form.reset(validatedData);

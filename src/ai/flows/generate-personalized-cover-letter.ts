@@ -34,6 +34,7 @@ const GeneratePersonalizedCoverLetterInputSchema = z.object({
       date: z.string().optional(),
       link: z.string().optional(),
       achievements: z.string().optional(),
+      skillsAchieved: z.string().optional(),
     })).describe('List of certifications.'),
     skills: z.array(z.string()).describe('List of skills.'),
     contactInfo: z
@@ -107,6 +108,7 @@ Certifications:
 - **{{{this.name}}}** from **{{{this.organization}}}** ({{#if this.date}}{{{this.date}}}{{/if}})
   {{#if this.link}} - [View Certificate]({{{this.link}}}){{/if}}
   {{#if this.achievements}} - Achievements: {{{this.achievements}}}{{/if}}
+  {{#if this.skillsAchieved}} - Skills Achieved: {{{this.skillsAchieved}}}{{/if}}
 {{/each}}
 
 Skills:

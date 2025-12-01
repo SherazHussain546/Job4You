@@ -37,6 +37,7 @@ const TailorResumeToJobDescriptionInputSchema = z.object({
       date: z.string().optional(),
       link: z.string().optional(),
       achievements: z.string().optional(),
+      skillsAchieved: z.string().optional(),
     })).describe('Array of certification details.'),
     skills: z.array(z.string()).describe('Array of skills.'),
     contactInfo: z.object({
@@ -114,6 +115,7 @@ Certifications:
 \\textbf{{{{{this.name}}}}} from \\textbf{{{{{this.organization}}}}} {{#if this.date}}({{{this.date}}}){{/if}}
 {{#if this.link}}Link: {{{this.link}}}{{/if}}
 {{#if this.achievements}}Achievements: {{{this.achievements}}}{{/if}}
+{{#if this.skillsAchieved}}Skills Achieved: {{{this.skillsAchieved}}}{{/if}}
 {{/each}}
 
 Skills:

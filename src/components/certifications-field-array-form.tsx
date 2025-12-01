@@ -94,6 +94,19 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name={`certifications.${index}.skillsAchieved`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Skills Achieved (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="e.g., Kubernetes, Docker, CI/CD" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
              <Button
                 type="button"
                 variant="ghost"
@@ -110,7 +123,7 @@ export default function CertificationsFieldArrayForm({ form }: CertificationsFie
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => append({ name: '', organization: '', date: '', link: '', achievements: '' })}
+          onClick={() => append({ name: '', organization: '', date: '', link: '', achievements: '', skillsAchieved: '' })}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add certification

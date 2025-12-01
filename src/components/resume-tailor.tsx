@@ -65,7 +65,10 @@ export default function ResumeTailor() {
         education: savedData.education || [],
         experience: savedData.experience || [],
         projects: savedData.projects || [],
-        certifications: savedData.certifications || [],
+        certifications: savedData.certifications?.map((cert: any) => ({
+          ...cert,
+          skillsAchieved: cert.skillsAchieved || ''
+        })) || [],
         skills: savedData.skills || [],
       };
 

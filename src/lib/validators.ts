@@ -26,6 +26,7 @@ export const certificationSchema = z.object({
   date: z.string().optional(),
   link: optionalUrl,
   achievements: z.string().optional(),
+  skillsAchieved: z.string().optional(),
 });
 
 export const profileSchema = z.object({
