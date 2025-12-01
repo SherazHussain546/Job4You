@@ -93,7 +93,7 @@ export default function HowItWorksPage() {
       <main className="flex-1">
         <section className="py-20 md:py-32">
           <div className="container text-center">
-             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
+             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-base font-semibold text-primary">
                 &#92;guide&#123;workflow&#125;
             </code>
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
