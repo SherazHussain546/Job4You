@@ -133,6 +133,11 @@ export default function HowItWorksPage() {
                    <div className="flex items-center justify-center p-8">
                        <Card className="w-full max-w-sm">
                            <CardContent className="p-6 space-y-4">
+                                <div className="flex justify-center mb-4">
+                                    <div className="rounded-full bg-primary/10 p-4 text-primary">
+                                        <User className="h-10 w-10" />
+                                    </div>
+                                </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-muted-foreground">Email</label>
                                     <div className="flex items-center rounded-md border border-input bg-background p-2">
@@ -259,5 +264,7 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
 
     
