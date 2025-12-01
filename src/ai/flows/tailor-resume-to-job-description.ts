@@ -5,7 +5,7 @@
  * @fileOverview Tailors a user's resume (provided in profile data) to a specific job description using the Gemini API.
  *
  * - tailorResumeToJobDescription - A function that takes user profile data and a job description, then returns LaTeX code for a tailored resume.
- * - TailorResumeToJobDescriptionInput - The input type for the tailorResumeToJobDescription function.
+ * - TailorResumeToJobDescriptionInput - The input type for the tailorResumeTo-job-description function.
  * - TailorResumeToJobDescriptionOutput - The return type for the tailorResumeToJobDescription function.
  */
 
@@ -82,54 +82,139 @@ const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
   input: {schema: TailorResumeToJobDescriptionInputSchema},
   output: {schema: TailorResumeToJobDescriptionOutputSchema},
-  prompt: `You are an expert resume writer specializing in tailoring resumes to specific job descriptions. Use the user's profile data and the job description to create the best possible resume, in LaTeX format. You must only use the data provided in the user profile and not invent any details.
+  prompt: `You are an expert resume writer. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format.
+You must use the provided user profile data and tailor it to the given job description.
+Generate a professional summary, and select the most relevant skills, experiences, and projects.
+The final output must be only the LaTeX code, starting with \\documentclass and ending with \\end{document}.
 
-Job Description: {{{jobDescription}}}
+Job Description:
+{{{jobDescription}}}
 
-User Profile Data:
-Contact Info:
-Name: {{{profileData.contactInfo.name}}}
-Email: {{{profileData.contactInfo.email}}}
-{{#if profileData.contactInfo.phone}}Phone: {{{profileData.contactInfo.phone}}}{{/if}}
-{{#if profileData.contactInfo.linkedin}}LinkedIn: {{{profileData.contactInfo.linkedin}}}{{/if}}
-{{#if profileData.contactInfo.github}}GitHub: {{{profileData.contactInfo.github}}}{{/if}}
-{{#if profileData.contactInfo.portfolio}}Portfolio: {{{profileData.contactInfo.portfolio}}}{{/if}}
-{{#if profileData.contactInfo.instagram}}Instagram: {{{profileData.contactInfo.instagram}}}{{/if}}
-{{#if profileData.contactInfo.other}}Other: {{{profileData.contactInfo.other}}}{{/if}}
+Here is the LaTeX template to use. Fill in the placeholders based on the user's profile and the job description.
 
-Education:
+\\documentclass[10pt, a4paper]{article}
+
+% --- PDFlatex Compatible Preamble Block ---
+\\usepackage[T1]{fontenc}
+\\usepackage{mathptmx} % Use Times Roman as the default font (pdflatex compatible)
+\\usepackage[a4paper, top=0.5in, bottom=0.5in, left=0.6in, right=0.6in]{geometry}
+\\usepackage{titlesec} % For custom section styling
+\\usepackage{enumitem} % For compact lists
+\\usepackage{hyperref} % For clickable links
+
+% Customization for ATS optimization
+\\pagestyle{empty} % No page numbers
+\\setlength{\\parindent}{0pt} % No paragraph indent
+
+% Define link colors (black for printing/parsing)
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=black,
+}
+
+% Redefine section to be a simple, bold title
+\\titleformat{\\section}{\\vspace{-5pt}\\raggedright\\Large\\bfseries\\scshape}{}{0em}{}
+[\\titlerule]
+\\titlespacing*{\\section}{0pt}{8pt}{3pt} % Section spacing
+
+% Redefine itemize environment for compact spacing
+\\setlist[itemize]{
+    noitemsep, 
+    leftmargin=*, 
+    align=left,
+    topsep=3pt,
+    parsep=0pt,
+}
+
+% --- Custom Command for Role/Project Title ---
+\\newcommand{\\resitem}[3]{
+    \\vspace{3pt}
+    \\textbf{#1} \\hfill \\textbf{#3} \\\\
+    \\textit{#2} \\hfill
+}
+
+\\begin{document}
+
+% --------------------
+% 1. HEADER & CONTACT
+% --------------------
+\\begin{center}
+    {\\Huge \\textbf{ {{{profileData.contactInfo.name}}} }} \\\\
+    % AI: Generate a professional title based on the Job Description.
+    [Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer] \\\\
+    \\vspace{2pt}
+    {{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} $|$ {{/if}} \\href{mailto:{{{profileData.contactInfo.email}}}}{ {{{profileData.contactInfo.email}}} }
+    {{#if profileData.contactInfo.linkedin}} $|$ \\href{{{{profileData.contactInfo.linkedin}}}}{LinkedIn}{{/if}}
+    {{#if profileData.contactInfo.github}} $|$ \\href{{{{profileData.contactInfo.github}}}}{GitHub}{{/if}}
+    {{#if profileData.contactInfo.portfolio}} $|$ \\href{{{{profileData.contactInfo.portfolio}}}}{Portfolio}{{/if}}
+    {{#if profileData.contactInfo.instagram}} $|$ \\href{{{{profileData.contactInfo.instagram}}}}{Instagram}{{/if}}
+    {{#if profileData.contactInfo.other}} $|$ \\href{{{{profileData.contactInfo.other}}}}{Other URL}{{/if}}
+\\end{center}
+
+% --------------------
+% 2. PROFESSIONAL SUMMARY
+% --------------------
+% AI: Generate a concise, powerful professional summary (3-4 bullet points) that highlights the user's most relevant qualifications from their profile data in the context of the job description.
+\\section*{PROFESSIONAL SUMMARY}
+\\begin{itemize}
+    % \\item [Generated Summary Point 1]
+    % \\item [Generated Summary Point 2]
+    % \\item [Generated Summary Point 3]
+\\end{itemize}
+
+% --------------------
+% 3. TECHNICAL SKILLS
+% --------------------
+% AI: Select and categorize the user's most relevant skills for the job. You can create categories like 'Programming Languages', 'Frameworks & Libraries', 'Cloud & DevOps', etc.
+\\section*{TECHNICAL SKILLS}
+% Example: \\textbf{Programming Languages:} {{{profileData.skills}}} 
+% Categorize skills here
+
+% --------------------
+% 4. PROFESSIONAL EXPERIENCE
+% --------------------
+\\section*{PROFESSIONAL EXPERIENCE}
+{{#each profileData.experience}}
+\\resitem{ {{{this.title}}} }{ {{{this.company}}} }{ {{{this.startDate}}} -- {{{this.endDate}}} }
+\\begin{itemize}
+    \\item {{{this.responsibilities}}}
+\\end{itemize}
+{{/each}}
+
+% --------------------
+% 5. DEVELOPMENT PROJECTS
+% --------------------
+\\section*{DEVELOPMENT PROJECTS}
+{{#each profileData.projects}}
+\\resitem{ {{{this.name}}} }{}{ {{{this.date}}} }
+\\begin{itemize}
+    \\item {{{this.achievements}}}
+\\end{itemize}
+{{/each}}
+
+% --------------------
+% 6. EDUCATION & CERTIFICATES
+% --------------------
+\\section*{EDUCATION}
 {{#each profileData.education}}
-\\textbf{ {{{this.qualification}}} } at \\textbf{ {{{this.institute}}} } {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
+\\resitem{ {{{this.qualification}}} }{ {{{this.institute}}} }{ {{{this.startDate}}} -- {{{this.endDate}}} }
 {{#if this.achievements}}
-{{{this.achievements}}}
+\\begin{itemize}
+    \\item {{{this.achievements}}}
+\\end{itemize}
 {{/if}}
 {{/each}}
 
-Experience:
-{{#each profileData.experience}}
-\\textbf{ {{{this.title}}} } at \\textbf{ {{{this.company}}} } {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
-{{{this.responsibilities}}}
-{{/each}}
-
-Projects:
-{{#each profileData.projects}}
-\\textbf{ {{{this.name}}} } {{#if this.date}}({{{this.date}}}){{/if}}
-{{{this.achievements}}}
-{{/each}}
-
-Certifications:
+\\section*{CERTIFICATES \& TRAINING}
+\\begin{itemize}
 {{#each profileData.certifications}}
-\\textbf{ {{{this.name}}} } from \\textbf{ {{{this.organization}}} } {{#if this.date}}({{{this.date}}}){{/if}}
-{{#if this.link}}Link: {{{this.link}}}{{/if}}
-{{#if this.achievements}}Achievements: {{{this.achievements}}}{{/if}}
-{{#if this.skillsAchieved}}Skills Achieved: {{{this.skillsAchieved}}}{{/if}}
+    \\item \\textbf{ {{{this.name}}} }{{#if this.organization}} from \\textbf{ {{{this.organization}}} }{{/if}}: {{{this.achievements}}}{{#if this.skillsAchieved}} Skills: {{{this.skillsAchieved}}}{{/if}}
 {{/each}}
+\\end{itemize}
 
-Skills:
-{{#each profileData.skills}}{{{this}}}\n{{/each}}
-
-
-Generate the complete LaTeX code for a professional resume tailored to the job description. Make sure to include a \\documentclass{article} and \\begin{document} and \\end{document} tags.
+\\end{document}
 `,
 });
 
@@ -144,3 +229,5 @@ const tailorResumeToJobDescriptionFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    
