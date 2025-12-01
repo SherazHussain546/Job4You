@@ -156,7 +156,7 @@ Job Description:
     % AI: Generate a professional title based on the Job Description.
     [Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer] \\\\
     \\vspace{2pt}
-    {{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} $|$ {{/if}} \\href{mailto:{{{profileData.contactInfo.email}}}}{ {{{profileData.contactInfo.email}}} }
+    {{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} $|$ {{/if}} \\href{mailto:{{{profileData.contactInfo.email}}}}{{{{profileData.contactInfo.email}}}}
     {{#if profileData.contactInfo.linkedin}} $|$ \\href{https://{{{profileData.contactInfo.linkedin}}}}{LinkedIn}{{/if}}
     {{#if profileData.contactInfo.github}} $|$ \\href{https://{{{profileData.contactInfo.github}}}}{GitHub}{{/if}}
     {{#if profileData.contactInfo.portfolio}} $|$ \\href{https://{{{profileData.contactInfo.portfolio}}}}{Portfolio}{{/if}}
@@ -247,16 +247,10 @@ Job Description:
 
 \\end{document}
 `,
-});
-
-const tailorResumeToJobDescriptionFlow = ai.defineFlow(
-  {
-    name: 'tailorResumeToJobDescriptionFlow',
-    inputSchema: TailorResumeToJobDescriptionInputSchema,
-    outputSchema: TailorResumeToJobDescriptionOutputSchema,
   },
   async input => {
     const {output} = await tailorResumeToJobDescriptionPrompt(input);
     return output!;
   }
 );
+
