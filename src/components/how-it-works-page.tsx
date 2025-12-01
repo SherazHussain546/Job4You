@@ -22,6 +22,8 @@ import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { GoogleIcon } from './icons';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback } from './ui/avatar';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
 
 const CodeSnippet = ({ code }: { code: string }) => (
     <pre className="bg-muted text-muted-foreground rounded-md p-4 text-xs overflow-x-auto">
@@ -262,8 +264,20 @@ export default function HowItWorksPage() {
                       <p>Go to the "AI Tailor" tab. Find a job you're interested in and copy the entire job description. Paste it into the text area provided. This context is crucial for the AI to understand what the employer is looking for.</p>
                     </CardContent>
                   </div>
-                    <div className="flex items-center justify-center pt-8">
-                       <ClipboardPaste className="w-24 h-24 text-primary/30" />
+                    <div className="flex items-center justify-center p-4">
+                      <Card className="w-full max-w-sm">
+                          <CardHeader>
+                              <Label htmlFor="jd-example" className="text-lg font-medium">Job Description</Label>
+                          </CardHeader>
+                          <CardContent>
+                              <Textarea 
+                                  id="jd-example"
+                                  readOnly
+                                  className="h-48 text-xs text-muted-foreground"
+                                  value="Hiring a Senior Full-Stack Engineer with 5+ years of experience in React and Node.js. Must be proficient in cloud services (AWS preferred) and have a strong understanding of CI/CD pipelines..."
+                              />
+                          </CardContent>
+                      </Card>
                     </div>
                 </div>
                 
@@ -337,9 +351,3 @@ export default function HowItWorksPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
