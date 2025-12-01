@@ -3,14 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { useFirestore, useUser, setDocumentNonBlocking } from '@/firebase';
+import { useFirestore, useUser } from '@/firebase';
 import type { UserProfile } from '@/lib/types';
 import { defaultProfile } from '@/lib/types';
 import { profileSchema } from '@/lib/validators';
@@ -20,6 +20,8 @@ import { Loader2 } from 'lucide-react';
 import EducationFieldArrayForm from './education-field-array-form';
 import ProjectsFieldArrayForm from './projects-field-array-form';
 import CertificationsFieldArrayForm from './certifications-field-array-form';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function ProfileEditor() {
   const [isLoading, setIsLoading] = useState(true);
@@ -52,28 +54,18 @@ export default function ProfileEditor() {
             education: data.education?.map((edu: any) => ({
                 ...defaultProfile.education[0],
                 ...edu,
-                achievements: edu.achievements || '',
-                startDate: edu.startDate || '',
-                endDate: edu.endDate || '',
             })) || [],
             experience: data.experience?.map((exp: any) => ({
                 ...defaultProfile.experience[0],
                 ...exp,
-                startDate: exp.startDate || '',
-                endDate: exp.endDate || '',
             })) || [],
             projects: data.projects?.map((proj: any) => ({
                 ...defaultProfile.projects[0],
                 ...proj,
-                date: proj.date || '',
             })) || [],
             certifications: data.certifications?.map((cert: any) => ({
                 ...defaultProfile.certifications[0],
                 ...cert,
-                date: cert.date || '',
-                link: cert.link || '',
-                achievements: cert.achievements || '',
-                skillsAchieved: cert.skillsAchieved || '',
             })) || [],
             skills: data.skills || [],
           };
@@ -95,17 +87,36 @@ export default function ProfileEditor() {
     fetchProfile();
   }, [user, form, toast, firestore]);
   
-  const onSubmit = (data: UserProfile) => {
+  const onSubmit = async (data: UserProfile) => {
     if (!user) {
       toast({ title: 'Not Authenticated', description: 'You must be logged in to save your profile.', variant: 'destructive' });
       return;
     }
     
-    setDocumentNonBlocking(doc(firestore, 'users', user.uid, 'profile', 'data'), { ...data, id: user.uid }, { merge: true });
-    toast({
-      title: 'Success',
-      description: 'Your profile has been saved.',
-    });
+    const docRef = doc(firestore, 'users', user.uid, 'profile', 'data');
+    const dataToSave = { ...data, id: user.uid };
+
+    try {
+      await setDoc(docRef, dataToSave, { merge: true });
+      toast({
+        title: 'Success',
+        description: 'Your profile has been saved.',
+      });
+    } catch (error) {
+       errorEmitter.emit(
+        'permission-error',
+        new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'write',
+          requestResourceData: dataToSave,
+        })
+      );
+      toast({
+        title: 'Error Saving Profile',
+        description: 'There was a problem saving your profile. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
   if (isLoading) {
@@ -130,28 +141,28 @@ export default function ProfileEditor() {
                     </CardHeader>
                     <CardContent className="grid gap-4 md:grid-cols-2">
                         <FormField control={form.control} name="contactInfo.name" render={({ field }) => (
-                            <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
                         <FormField control={form.control} name="contactInfo.email" render={({ field }) => (
-                            <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" placeholder="john.doe@example.com" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" placeholder="john.doe@example.com" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
                         <FormField control={form.control} name="contactInfo.phone" render={({ field }) => (
-                            <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input placeholder="(123) 456-7890" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input placeholder="(123) 456-7890" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
                         <FormField control={form.control} name="contactInfo.linkedin" render={({ field }) => (
-                            <FormItem><FormLabel>LinkedIn Profile URL</FormLabel><FormControl><Input placeholder="https://linkedin.com/in/johndoe" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>LinkedIn Profile URL</FormLabel><FormControl><Input placeholder="https://linkedin.com/in/johndoe" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
                         <FormField control={form.control} name="contactInfo.github" render={({ field }) => (
-                            <FormItem><FormLabel>GitHub Profile URL</FormLabel><FormControl><Input placeholder="https://github.com/johndoe" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>GitHub Profile URL</FormLabel><FormControl><Input placeholder="https://github.com/johndoe" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
                         <FormField control={form.control} name="contactInfo.portfolio" render={({ field }) => (
-                            <FormItem><FormLabel>Portfolio URL</FormLabel><FormControl><Input placeholder="https://johndoe.dev" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>Portfolio URL</FormLabel><FormControl><Input placeholder="https://johndoe.dev" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
                          <FormField control={form.control} name="contactInfo.instagram" render={({ field }) => (
-                            <FormItem><FormLabel>Instagram Profile URL</FormLabel><FormControl><Input placeholder="https://instagram.com/johndoe" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>Instagram Profile URL</FormLabel><FormControl><Input placeholder="https://instagram.com/johndoe" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
                         <FormField control={form.control} name="contactInfo.other" render={({ field }) => (
-                            <FormItem><FormLabel>Other URL</FormLabel><FormControl><Input placeholder="https://your-other-site.com" {...field} /></FormControl><FormMessage /></FormItem>
+                            <FormItem><FormLabel>Other URL</FormLabel><FormControl><Input placeholder="https://your-other-site.com" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
                     </CardContent>
                 </Card>
