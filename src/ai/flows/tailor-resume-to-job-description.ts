@@ -95,9 +95,6 @@ The final output must be only the LaTeX code, starting with \\documentclass and 
 Job Description:
 {{{jobDescription}}}
 
-User Profile Data:
-{{{JSON.stringify profileData}}}
-
 % ATS-Optimized Resume Template: {{{profileData.contactInfo.name}}}
 % Designed for maximum parsing reliability by using simple document structure,
 % standard sectioning, and minimal custom formatting.
@@ -195,7 +192,7 @@ User Profile Data:
 \\section*{PROFESSIONAL EXPERIENCE}
 {{#each profileData.experience}}
 {{#if this.title}}
-\\resitem{ {{{this.title}}} }{ {{{this.company}}} }{ {{{this.startDate}}} -- {{{this.endDate}}} }
+\\resitem{ {{{this.title}}} }{ {{{this.company}}} }{ {{#if this.startDate}}{{{this.startDate}}} -- {{/if}}{{{this.endDate}}} }
 \\begin{itemize}
     % AI: Rewrite responsibilities to align with keywords from the job description. Use bullet points.
     \\item {{{this.responsibilities}}}
@@ -227,7 +224,7 @@ User Profile Data:
 \\section*{EDUCATION}
 {{#each profileData.education}}
 {{#if this.qualification}}
-\\resitem{ {{{this.qualification}}} }{ {{{this.institute}}} }{ {{{this.startDate}}} -- {{{this.endDate}}} }
+\\resitem{ {{{this.qualification}}} }{ {{{this.institute}}} }{ {{#if this.startDate}}{{{this.startDate}}} -- {{/if}}{{{this.endDate}}} }
 {{#if this.achievements}}
 \\begin{itemize}
     \\item {{{this.achievements}}}

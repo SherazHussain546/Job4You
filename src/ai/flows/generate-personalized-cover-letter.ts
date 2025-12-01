@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -85,10 +86,7 @@ Job Description:
 {{{jobDescription}}}
 
 User Profile Data:
-- Contact: {{{profileData.contactInfo.name}}}, {{{profileData.contactInfo.email}}}, {{{profileData.contactInfo.phone}}}, LinkedIn: {{{profileData.contactInfo.linkedin}}}
-- Experience: Highlight relevant achievements from {{{profileData.experience}}}
-- Skills: Select from {{{profileData.skills}}}
-- Projects: Draw from {{{profileData.projects}}}
+{{{JSON.stringify profileData}}}
 
 AI Actions:
 1.  Extract the Job Title, Company Name, Hiring Manager's Name, and the platform where the job was advertised from the job description.
@@ -130,7 +128,7 @@ Use the following LaTeX template.
 \\textbf{ {{{profileData.contactInfo.name}}} } \\\\
 {{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} \\\\ {{/if}}
 \\href{mailto:{{{profileData.contactInfo.email}}}}{ {{{profileData.contactInfo.email}}} } \\\\
-{{#if profileData.contactInfo.linkedin}} \\href{{{{profileData.contactInfo.linkedin}}}}{LinkedIn Profile} \\\\ {{/if}}
+{{#if profileData.contactInfo.linkedin}} \\href{https://{{{profileData.contactInfo.linkedin}}}}{LinkedIn Profile} \\\\ {{/if}}
 
 \\vspace{10pt}
 
