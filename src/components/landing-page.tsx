@@ -140,7 +140,7 @@ export default function LandingPage() {
                         </li>
                      </ul>
                 </div>
-                 <div className="relative aspect-square rounded-xl shadow-2xl">
+                 <div className="relative mx-auto w-full max-w-sm aspect-square">
                     <Image
                         src="https://github.com/SherazHussain546/Job4You/blob/main/images/Logo2.png?raw=true"
                         alt="Job4You Logo"
