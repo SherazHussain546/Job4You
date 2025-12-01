@@ -98,7 +98,7 @@ Email: {{{profileData.contactInfo.email}}}
 
 Education:
 {{#each profileData.education}}
-\\textbf{{{{{this.qualification}}}}} at \\textbf{{{{{this.institute}}}}} {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
+\\textbf{{{{this.qualification}}}}} at \\textbf{{{{this.institute}}}}} {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
 {{#if this.achievements}}
 {{{this.achievements}}}
 {{/if}}
@@ -106,19 +106,19 @@ Education:
 
 Experience:
 {{#each profileData.experience}}
-\\textbf{{{{{this.title}}}}} at \\textbf{{{{{this.company}}}}} {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
+\\textbf{{{{this.title}}}}} at \\textbf{{{{this.company}}}}} {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
 {{{this.responsibilities}}}
 {{/each}}
 
 Projects:
 {{#each profileData.projects}}
-\\textbf{{{{{this.name}}}}} {{#if this.date}}({{{this.date}}}){{/if}}
+\\textbf{{{{this.name}}}}} {{#if this.date}}({{{this.date}}}){{/if}}
 {{{this.achievements}}}
 {{/each}}
 
 Certifications:
 {{#each profileData.certifications}}
-\\textbf{{{{{this.name}}}}} from \\textbf{{{{{this.organization}}}}} {{#if this.date}}({{{this.date}}}){{/if}}
+\\textbf{{{{this.name}}}}} from \\textbf{{{{this.organization}}}}} {{#if this.date}}({{{this.date}}}){{/if}}
 {{#if this.link}}Link: {{{this.link}}}{{/if}}
 {{#if this.achievements}}Achievements: {{{this.achievements}}}{{/if}}
 {{#if this.skillsAchieved}}Skills Achieved: {{{this.skillsAchieved}}}{{/if}}
