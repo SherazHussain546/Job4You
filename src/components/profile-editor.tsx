@@ -92,8 +92,6 @@ export default function ProfileEditor() {
       toast({ title: 'Not Authenticated', description: 'You must be logged in to save your profile.', variant: 'destructive' });
       return;
     }
-
-    form.formState.isSubmitting = true;
     
     const profileDocRef = doc(firestore, 'users', user.uid, 'profile', 'data');
     const dataToSave = { ...data, id: user.uid };
@@ -129,8 +127,6 @@ export default function ProfileEditor() {
         description: 'There was a problem saving your profile. Please try again.',
         variant: 'destructive',
       });
-    } finally {
-      form.formState.isSubmitting = false;
     }
   };
 
