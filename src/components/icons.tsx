@@ -6,21 +6,35 @@ export function AppLogo(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
       {...props}
     >
-      <path d="M12 22h6a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3" />
-      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-      <path d="M5 18a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
-      <path d="M5 12v4" />
-      <path d="M3 12h4" />
-      <path d="m5 12-1.5-1.5" />
-      <path d="m5 12 1.5-1.5" />
-      <path d="m5 12 1.5 1.5" />
-      <path d="m5 12-1.5 1.5" />
+      <defs>
+        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: 'hsl(var(--accent))', stopOpacity: 1 }} />
+        </linearGradient>
+      </defs>
+      <path
+        stroke="url(#logoGradient)"
+        strokeWidth="2"
+        d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
+      />
+      <path
+        fill="hsl(var(--primary-foreground))"
+        d="M12 11a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"
+      />
+      <path
+        fill="hsl(var(--primary-foreground))"
+        d="M12 12.5c-2.32 0-4.45.8-6.14 2.12.3.4.63.78.98 1.14A7.95 7.95 0 0112 14a7.95 7.95 0 014.16 1.76c.35-.36.68-.74.98-1.14C16.45 13.3 14.32 12.5 12 12.5z"
+      />
+      <path
+        fill="hsl(var(--primary-foreground))"
+        d="M16 11.5l-3.5 3.5-1.5-1.5"
+        stroke="hsl(var(--background))"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
