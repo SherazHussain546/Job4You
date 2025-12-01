@@ -7,6 +7,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GoogleIcon } from '@/components/icons';
@@ -136,9 +137,11 @@ export default function LoginPage() {
     <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-        <h1 className="font-headline text-4xl">
-            <span className="font-body">Job</span><span className="text-primary">for</span><span className="font-body">You</span>
-        </h1>
+            <Link href="/" className="inline-block">
+                <h1 className="font-headline text-4xl">
+                    <span className="font-body">Job</span><span className="text-primary">for</span><span className="font-body">You</span>
+                </h1>
+            </Link>
           <CardDescription>Your AI-powered job application assistant</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
