@@ -53,7 +53,7 @@ export default function LoginPage() {
   const handleAuthError = (error: any) => {
     console.error('Authentication error', error);
     let description = 'An unexpected error occurred. Please try again.';
-    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
         description = 'Invalid email or password.';
     } else if (error.code === 'auth/email-already-in-use') {
         description = 'An account with this email already exists.';
