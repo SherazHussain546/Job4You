@@ -260,5 +260,3 @@ const tailorResumeToJobDescriptionFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    
