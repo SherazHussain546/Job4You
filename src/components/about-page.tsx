@@ -97,7 +97,10 @@ export default function AboutPage() {
         {/* About Us Section */}
         <section className="py-20 md:py-32">
           <div className="container text-center">
-            <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter">
+            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
+                &#92;know&#123;about_us&#125;
+            </code>
+            <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter mt-4">
               The Home of Scientific and Technical Writing
             </h1>
             <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
