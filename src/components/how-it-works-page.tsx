@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -17,6 +16,7 @@ import {
   GraduationCap,
   Sparkles,
   Lightbulb,
+  MousePointerClick,
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { GoogleIcon } from './icons';
@@ -206,8 +206,8 @@ export default function HowItWorksPage() {
                                         <AvatarFallback>JD</AvatarFallback>
                                     </Avatar>
                                     <div>
-                                        <div className="h-4 w-24 bg-muted-foreground/30 rounded-sm"></div>
-                                        <div className="mt-1 h-3 w-32 bg-muted-foreground/20 rounded-sm"></div>
+                                        <p className="font-semibold">John Doe</p>
+                                        <p className="text-muted-foreground">john.doe@example.com</p>
                                     </div>
                                 </div>
                                 <div className="space-y-2 rounded-md border p-3">
@@ -238,10 +238,10 @@ export default function HowItWorksPage() {
                                         <h4 className="font-semibold text-muted-foreground">Skills</h4>
                                     </div>
                                     <div className="flex flex-wrap gap-2 pt-1">
-                                        <Badge variant="secondary" className="h-5 w-16"></Badge>
-                                        <Badge variant="secondary" className="h-5 w-20"></Badge>
-                                        <Badge variant="secondary" className="h-5 w-12"></Badge>
-                                        <Badge variant="secondary" className="h-5 w-24"></Badge>
+                                        <Badge variant="secondary">React</Badge>
+                                        <Badge variant="secondary">Node.js</Badge>
+                                        <Badge variant="secondary">AWS</Badge>
+                                        <Badge variant="secondary">TypeScript</Badge>
                                     </div>
                                 </div>
                             </CardContent>
@@ -296,10 +296,17 @@ export default function HowItWorksPage() {
                       <p>Click the "Generate Application Kit" button. Our AI will analyze your profile against the job description and create a tailored resume and cover letter. The output will be in LaTeX, the gold standard for professional document formatting.</p>
                     </CardContent>
                   </div>
-                  <div className="space-y-4 flex flex-col items-center justify-center pt-8 md:order-first">
-                    <Bot className="w-24 h-24 text-primary/30" />
-                    <div className="w-full max-w-sm">
-                        <CodeSnippet code={resumeSnippet} />
+                  <div className="relative flex flex-col items-center justify-center pt-8 md:order-first">
+                    <div className="relative">
+                        <Button size="lg">
+                            <Bot className="mr-2 h-5 w-5" />
+                            Generate Application Kit
+                        </Button>
+                        <MousePointerClick className="absolute -right-4 -bottom-4 h-10 w-10 text-primary animate-click" />
+                    </div>
+
+                    <div className="w-full max-w-sm mt-8">
+                       <CodeSnippet code={resumeSnippet} />
                     </div>
                   </div>
                 </div>
@@ -353,7 +360,3 @@ export default function HowItWorksPage() {
     </div>
   );
 }
-
-    
-
-    
