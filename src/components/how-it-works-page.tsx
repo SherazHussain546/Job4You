@@ -180,6 +180,20 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
+                  <div className="bg-transparent border-none shadow-none md:order-last">
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
+                        <div>
+                             <CardTitle className="text-2xl">Create Your Professional Profile</CardTitle>
+                             <p className="text-muted-foreground mt-1">This is your master document.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Once you're in, navigate to the "Profile" tab. Here, you’ll fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents. Your profile is saved securely and can be updated at any time.</p>
+                    </CardContent>
+                  </div>
                     <div className="flex items-center justify-center p-4 md:order-first">
                         <Card className="w-full max-w-sm">
                             <CardHeader>
@@ -233,20 +247,6 @@ export default function HowItWorksPage() {
                             </CardContent>
                         </Card>
                     </div>
-                  <div className="bg-transparent border-none shadow-none">
-                     <CardHeader>
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
-                        <div>
-                             <CardTitle className="text-2xl">Create Your Professional Profile</CardTitle>
-                             <p className="text-muted-foreground mt-1">This is your master document.</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p>Once you're in, navigate to the "Profile" tab. Here, you’ll fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents. Your profile is saved securely and can be updated at any time.</p>
-                    </CardContent>
-                  </div>
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
@@ -282,11 +282,7 @@ export default function HowItWorksPage() {
                 </div>
                 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div className="space-y-4 flex flex-col items-center justify-center pt-8 md:order-first">
-                        <Bot className="w-24 h-24 text-primary/30" />
-                        <CodeSnippet code={resumeSnippet} />
-                  </div>
-                  <div className="bg-transparent border-none shadow-none">
+                  <div className="bg-transparent border-none shadow-none md:order-last">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
@@ -299,6 +295,12 @@ export default function HowItWorksPage() {
                     <CardContent>
                       <p>Click the "Generate Application Kit" button. Our AI will analyze your profile against the job description and create a tailored resume and cover letter. The output will be in LaTeX, the gold standard for professional document formatting.</p>
                     </CardContent>
+                  </div>
+                  <div className="space-y-4 flex flex-col items-center justify-center pt-8 md:order-first">
+                    <Bot className="w-24 h-24 text-primary/30" />
+                    <div className="w-full max-w-sm">
+                        <CodeSnippet code={resumeSnippet} />
+                    </div>
                   </div>
                 </div>
 
@@ -351,5 +353,7 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
 
     
