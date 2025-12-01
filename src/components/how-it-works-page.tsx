@@ -20,7 +20,7 @@ import {
   MousePointerClick,
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
-import { GoogleIcon, AppLogo } from './icons';
+import { GoogleIcon } from './icons';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { Label } from './ui/label';
@@ -32,21 +32,34 @@ const CodeSnippet = ({ code }: { code: string }) => {
     const [isTyping, setIsTyping] = useState(true);
 
     useEffect(() => {
-        setDisplayedCode('');
-        setIsTyping(true);
-        let i = 0;
-        const intervalId = setInterval(() => {
-            if (i < code.length) {
-                setDisplayedCode(prev => prev + code.charAt(i));
-                i++;
-            } else {
-                clearInterval(intervalId);
-                setIsTyping(false);
-            }
-        }, 10); // Adjust typing speed here
+        let typingInterval: NodeJS.Timeout;
+        let restartTimeout: NodeJS.Timeout;
 
-        return () => clearInterval(intervalId);
+        const startTyping = () => {
+            setDisplayedCode('');
+            setIsTyping(true);
+            let i = 0;
+            typingInterval = setInterval(() => {
+                if (i < code.length) {
+                    setDisplayedCode(prev => prev + code.charAt(i));
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    setIsTyping(false);
+                    // Wait for 2 seconds then restart
+                    restartTimeout = setTimeout(startTyping, 2000);
+                }
+            }, 50); // Adjust typing speed here
+        };
+
+        startTyping();
+
+        return () => {
+            clearInterval(typingInterval);
+            clearTimeout(restartTimeout);
+        };
     }, [code]);
+
 
     return (
         <pre className="bg-muted text-muted-foreground rounded-md p-4 text-xs overflow-x-auto relative">
@@ -78,7 +91,7 @@ export default function HowItWorksPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4">
+        <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2">
             <h1 className="text-2xl font-bold">
               <span className="font-body">Job</span>
@@ -118,7 +131,7 @@ export default function HowItWorksPage() {
 
       <main className="flex-1">
         <section className="py-20 md:py-32">
-          <div className="container px-4 text-center">
+          <div className="container px-4 text-center md:px-6">
              <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-base font-semibold text-primary">
                 &#92;guide&#123;workflow&#125;
             </code>
@@ -132,7 +145,7 @@ export default function HowItWorksPage() {
         </section>
 
         <section className="py-20 md:py-32 bg-secondary/30">
-          <div className="container px-4">
+          <div className="container px-4 md:px-6">
             <div className="mx-auto grid max-w-5xl items-center gap-y-16 gap-x-12">
               <div className="space-y-16">
                 
@@ -383,7 +396,7 @@ export default function HowItWorksPage() {
         </section>
 
         <section className="py-20 text-center">
-            <div className="container px-4">
+            <div className="container px-4 md:px-6">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold">Ready to Land Your Dream Job?</h2>
                 <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">Put our AI to the test and see how easy it is to create application materials that stand out.</p>
                 <div className="mt-8">
@@ -397,7 +410,7 @@ export default function HowItWorksPage() {
       </main>
 
       <footer className="py-6 border-t">
-        <div className="container px-4 text-center text-muted-foreground">
+        <div className="container px-4 text-center text-muted-foreground md:px-6">
           &copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All
           rights reserved.
         </div>
@@ -405,3 +418,5 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
