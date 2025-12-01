@@ -72,17 +72,6 @@ export type TailorResumeToJobDescriptionOutput = z.infer<
   typeof TailorResumeToJobDescriptionOutputSchema
 >;
 
-const tailorResumeToJobDescriptionFlow = ai.defineFlow(
-  {
-    name: 'tailorResumeToJobDescriptionFlow',
-    inputSchema: TailorResumeToJobDescriptionInputSchema,
-    outputSchema: TailorResumeToJobDescriptionOutputSchema,
-  },
-  async input => {
-    const {output} = await tailorResumeToJobDescriptionPrompt(input);
-    return output!;
-  }
-);
 
 export async function tailorResumeToJobDescription(
   input: TailorResumeToJobDescriptionInput
@@ -90,9 +79,49 @@ export async function tailorResumeToJobDescription(
   return tailorResumeToJobDescriptionFlow(input);
 }
 
+const tailorResumeToJobDescriptionFlow = ai.defineFlow(
+  {
+    name: 'tailorResumeToJobDescriptionFlow',
+    inputSchema: TailorResumeToJobDescriptionInputSchema,
+    outputSchema: TailorResumeToJobDescriptionOutputSchema,
+  },
+  async input => {
+    const { profileData } = input;
+    const contactParts = [];
+    if (profileData.contactInfo.phone) {
+        contactParts.push(profileData.contactInfo.phone);
+    }
+    if (profileData.contactInfo.email) {
+        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`);
+    }
+    if (profileData.contactInfo.linkedin) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`);
+    }
+    if (profileData.contactInfo.github) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.github}}{GitHub}`);
+    }
+     if (profileData.contactInfo.portfolio) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`);
+    }
+    if (profileData.contactInfo.instagram) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.instagram}}{Instagram}`);
+    }
+    if (profileData.contactInfo.other) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.other}}{Other URL}`);
+    }
+
+    const contactSection = contactParts.join(' $|$ ');
+
+    const augmentedInput = { ...input, contactSection };
+
+    const {output} = await tailorResumeToJobDescriptionPrompt(augmentedInput);
+    return output!;
+  }
+);
+
 const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
-  input: {schema: TailorResumeToJobDescriptionInputSchema},
+  input: {schema: TailorResumeToJobDescriptionInputSchema.extend({ contactSection: z.string() })},
   output: {schema: TailorResumeToJobDescriptionOutputSchema},
   prompt: `You are an expert resume writer. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
 You must use the user's profile data and tailor it to the given job description.
@@ -168,13 +197,7 @@ Job Description:
     % AI: Generate a professional title based on the Job Description.
     [Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer] \\\\
     \\vspace{2pt}
-    {{#if profileData.contactInfo.phone}}{{{profileData.contactInfo.phone}}}{{/if}}
-    {{#if profileData.contactInfo.email}} $|$ \\href{mailto:{{{profileData.contactInfo.email}}}}{{{{profileData.contactInfo.email}}}}{{/if}}
-    {{#if profileData.contactInfo.linkedin}} $|$ \\href{https://{{{profileData.contactInfo.linkedin}}}}{LinkedIn}{{/if}}
-    {{#if profileData.contactInfo.github}} $|$ \\href{https://{{{profileData.contactInfo.github}}}}{GitHub}{{/if}}
-    {{#if profileData.contactInfo.portfolio}} $|$ \\href{https://{{{profileData.contactInfo.portfolio}}}}{Portfolio}{{/if}}
-    {{#if profileData.contactInfo.instagram}} $|$ \\href{https://{{{profileData.contactInfo.instagram}}}}{Instagram}{{/if}}
-    {{#if profileData.contactInfo.other}} $|$ \\href{https://{{{profileData.contactInfo.other}}}}{Other URL}{{/if}}
+    {{{contactSection}}}
 \\end{center}
 
 % --------------------
@@ -259,4 +282,5 @@ Job Description:
 {{/if}}
 
 \\end{document}
-`});
+`,
+});

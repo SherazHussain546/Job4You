@@ -76,7 +76,7 @@ export async function generatePersonalizedCoverLetter(
 
 const prompt = ai.definePrompt({
   name: 'generatePersonalizedCoverLetterPrompt',
-  input: {schema: GeneratePersonalizedCoverLetterInputSchema},
+  input: {schema: GeneratePersonalizedCoverLetterInputSchema.extend({ contactSection: z.string() })},
   output: {schema: GeneratePersonalizedCoverLetterOutputSchema},
   prompt: `You are an expert career coach. Your task is to generate a compelling, professional cover letter in LaTeX format.
 You must use the provided user profile data and tailor it to the given job description.
@@ -126,9 +126,7 @@ Use the following LaTeX template.
 % --------------------
 \\raggedright
 \\textbf{ {{{profileData.contactInfo.name}}} } \\\\
-{{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} \\\\ {{/if}}
-{{#if profileData.contactInfo.email}} \\href{mailto:{{{profileData.contactInfo.email}}}}{{{{profileData.contactInfo.email}}}} \\\\ {{/if}}
-{{#if profileData.contactInfo.linkedin}} \\href{https://{{{profileData.contactInfo.linkedin}}}}{LinkedIn Profile} \\\\ {{/if}}
+{{{contactSection}}}
 
 \\vspace{10pt}
 
@@ -189,7 +187,23 @@ const generatePersonalizedCoverLetterFlow = ai.defineFlow(
     outputSchema: GeneratePersonalizedCoverLetterOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { profileData } = input;
+    const contactParts = [];
+    if (profileData.contactInfo.phone) {
+        contactParts.push(`${profileData.contactInfo.phone} \\\\`);
+    }
+    if (profileData.contactInfo.email) {
+        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
+    }
+    if (profileData.contactInfo.linkedin) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
+    }
+
+    const contactSection = contactParts.join('\n');
+    
+    const augmentedInput = { ...input, contactSection };
+
+    const {output} = await prompt(augmentedInput);
     return output!;
   }
 );
