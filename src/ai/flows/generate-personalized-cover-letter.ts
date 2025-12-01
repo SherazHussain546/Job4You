@@ -31,7 +31,7 @@ const GeneratePersonalizedCoverLetterInputSchema = z.object({
     projects: z.array(z.object({
         name: z.string(),
         date: z.string().optional(),
-        achievements: zstring(),
+        achievements: z.string(),
     })).describe('List of projects.'),
     certifications: z.array(z.object({
       name: z.string(),
