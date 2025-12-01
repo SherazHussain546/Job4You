@@ -140,12 +140,12 @@ export default function LandingPage() {
                      </ul>
                 </div>
                  <div className="relative aspect-video rounded-xl shadow-2xl">
-                    <Image 
-                        src="https://picsum.photos/seed/collaboration/1280/720"
-                        alt="Collaborative writing process"
+                    <Image
+                        src="https://github.com/SherazHussain546/Job4You/blob/main/images/Logo2.png?raw=true"
+                        alt="Job4You Logo"
                         fill
-                        className="object-cover rounded-xl"
-                        data-ai-hint="team collaboration"
+                        className="object-contain"
+                        data-ai-hint="logo"
                     />
                 </div>
             </div>
