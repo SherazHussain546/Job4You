@@ -99,7 +99,9 @@ Email: {{{profileData.contactInfo.email}}}
 Education:
 {{#each profileData.education}}
 \\textbf{{{{{this.qualification}}}}} at \\textbf{{{{{this.institute}}}}} {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
-{{#if this.achievements}}{{{this.achievements}}}{{/if}}
+{{#if this.achievements}}
+{{{this.achievements}}}
+{{/if}}
 {{/each}}
 
 Experience:
