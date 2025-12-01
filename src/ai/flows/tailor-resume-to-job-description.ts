@@ -167,22 +167,22 @@ User Profile Data:
 % 2. PROFESSIONAL SUMMARY
 % --------------------
 \\section*{PROFESSIONAL SUMMARY}
+% AI: Generate 3-4 bullet points for the summary, tailored to the job description.
 \\begin{itemize}
-    % AI: Generate 3-4 bullet points for the summary.
-    \\item [Generated Summary Point 1]
-    \\item [Generated Summary Point 2]
-    \\item [Generated Summary Point 3]
+    \\item [Generated Summary Point 1: Highlight key qualification and alignment with the role]
+    \\item [Generated Summary Point 2: Showcase a top technical skill relevant to the job]
+    \\item [Generated Summary Point 3: Mention a key achievement or experience]
 \\end{itemize}
 
 % --------------------
 % 3. TECHNICAL SKILLS
 % --------------------
 \\section*{TECHNICAL SKILLS}
-% AI: Select and categorize the user's most relevant skills.
-\\textbf{Programming Languages:} [List Languages] \\\\
-\\textbf{Frameworks \& Libraries:} [List Frameworks] \\\\
-\\textbf{Cloud \& DevOps:} [List DevOps Tools] \\\\
-\\textbf{Databases:} [List Databases]
+% AI: Select and categorize the user's most relevant skills based on the job description.
+\\textbf{Programming Languages:} [List Languages e.g., Python, TypeScript, SQL] \\\\
+\\textbf{Frameworks \& Libraries:} [List Frameworks e.g., React.js, Node.js, FastAPI] \\\\
+\\textbf{Cloud \& DevOps:} [List DevOps Tools e.g., AWS, Kubernetes, Docker, CI/CD] \\\\
+\\textbf{Databases:} [List Databases e.g., PostgreSQL, MongoDB, Firebase]
 
 % --------------------
 % 4. PROFESSIONAL EXPERIENCE
@@ -193,6 +193,7 @@ User Profile Data:
 {{#if this.title}}
 \\resitem{ {{{this.title}}} }{ {{{this.company}}} }{ {{{this.startDate}}} -- {{{this.endDate}}} }
 \\begin{itemize}
+    % AI: Rewrite responsibilities to align with keywords from the job description. Use bullet points.
     \\item {{{this.responsibilities}}}
 \\end{itemize}
 {{/if}}
@@ -208,6 +209,7 @@ User Profile Data:
 {{#if this.name}}
 \\resitem{ {{{this.name}}} }{}{ {{{this.date}}} }
 \\begin{itemize}
+    % AI: Rewrite achievements to highlight relevant technologies and outcomes.
     \\item {{{this.achievements}}}
 \\end{itemize}
 {{/if}}
