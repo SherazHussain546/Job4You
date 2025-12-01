@@ -18,9 +18,28 @@ export const defaultProfile: UserProfile = {
     portfolio: '',
     other: '',
   },
-  education: [],
-  experience: [],
-  projects: [],
-  certifications: [],
+  education: [{
+    qualification: '',
+    institute: '',
+    achievements: '',
+  }],
+  experience: [{
+    title: '',
+    company: '',
+    responsibilities: '',
+  }],
+  projects: [{
+    name: '',
+    date: '',
+    achievements: '',
+  }],
+  certifications: [{
+    name: '',
+    organization: '',
+    date: '',
+    link: '',
+    achievements: '',
+    skillsAchieved: '',
+  }],
   skills: [],
 };

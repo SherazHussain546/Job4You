@@ -49,12 +49,27 @@ export default function ProfileEditor() {
               ...defaultProfile.contactInfo,
               ...(data.contactInfo || {}),
             },
-            education: data.education || [],
-            experience: data.experience || [],
-            projects: data.projects || [],
+            education: data.education?.map((edu: any) => ({
+                ...defaultProfile.education[0],
+                ...edu,
+                achievements: edu.achievements || '',
+            })) || [],
+            experience: data.experience?.map((exp: any) => ({
+                ...defaultProfile.experience[0],
+                ...exp
+            })) || [],
+            projects: data.projects?.map((proj: any) => ({
+                ...defaultProfile.projects[0],
+                ...proj,
+                date: proj.date || '',
+            })) || [],
             certifications: data.certifications?.map((cert: any) => ({
+                ...defaultProfile.certifications[0],
                 ...cert,
-                skillsAchieved: cert.skillsAchieved || ''
+                date: cert.date || '',
+                link: cert.link || '',
+                achievements: cert.achievements || '',
+                skillsAchieved: cert.skillsAchieved || '',
             })) || [],
             skills: data.skills || [],
           };
