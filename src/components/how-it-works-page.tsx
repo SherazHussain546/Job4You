@@ -70,14 +70,6 @@ export default function HowItWorksPage() {
     {\\Huge \\textbf{ John Doe }} \\\\
     Full-Stack Software Engineer & AI/Cloud Developer \\\\
     \\vspace{2pt}
-    (123) 456-7890 $|$ \\href{mailto:john.doe@example.com}{john.doe@example.com} $|$ \\href{https://linkedin.com/in/johndoe}{LinkedIn}
-\\end{center}
-
-\\section*{PROFESSIONAL SUMMARY}
-\\begin{itemize}
-    \\item Results-driven Software Engineer with expertise in full-stack development...
-\\end{itemize}
-
 % ... and so on
 
 \\end{document}
@@ -145,7 +137,7 @@ export default function HowItWorksPage() {
               <div className="space-y-16">
                 
                 <div className="grid gap-4 md:grid-cols-2 md:items-center">
-                  <div className="bg-transparent border-none shadow-none">
+                  <div className="md:order-last">
                     <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">1</span>
@@ -206,7 +198,7 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                   <div className="flex items-center justify-center p-4">
+                   <div className="flex items-center justify-center pt-8 md:order-first">
                         <Card className="w-full max-w-sm">
                             <CardHeader>
                                 <CardTitle>Profile</CardTitle>
@@ -227,22 +219,22 @@ export default function HowItWorksPage() {
                                         <Briefcase className="h-4 w-4 text-muted-foreground" />
                                         <h4 className="font-semibold text-muted-foreground">Work Experience</h4>
                                     </div>
-                                    <div className="h-3 w-4/5 bg-muted-foreground/20 rounded-sm"></div>
-                                    <div className="h-3 w-full bg-muted-foreground/20 rounded-sm"></div>
+                                    <div className="h-3 w-4/5 bg-muted rounded-sm"></div>
+                                    <div className="h-3 w-full bg-muted rounded-sm"></div>
                                 </div>
                                 <div className="space-y-2 rounded-md border p-3">
                                     <div className="flex items-center gap-2">
                                         <GraduationCap className="h-4 w-4 text-muted-foreground" />
                                         <h4 className="font-semibold text-muted-foreground">Education</h4>
                                     </div>
-                                    <div className="h-3 w-3/4 bg-muted-foreground/20 rounded-sm"></div>
+                                    <div className="h-3 w-3/4 bg-muted rounded-sm"></div>
                                 </div>
                                 <div className="space-y-2 rounded-md border p-3">
                                     <div className="flex items-center gap-2">
                                         <Lightbulb className="h-4 w-4 text-muted-foreground" />
                                         <h4 className="font-semibold text-muted-foreground">Projects</h4>
                                     </div>
-                                    <div className="h-3 w-full bg-muted-foreground/20 rounded-sm"></div>
+                                    <div className="h-3 w-full bg-muted rounded-sm"></div>
                                 </div>
                                 <div className="space-y-2 rounded-md border p-3">
                                     <div className="flex items-center gap-2">
@@ -259,7 +251,7 @@ export default function HowItWorksPage() {
                             </CardContent>
                         </Card>
                     </div>
-                  <div className="bg-transparent border-none shadow-none">
+                  <div>
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
@@ -276,7 +268,7 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div className="bg-transparent border-none shadow-none md:order-last">
+                  <div className="md:order-last">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">3</span>
@@ -290,7 +282,7 @@ export default function HowItWorksPage() {
                       <p>Go to the "AI Tailor" tab. Find a job you're interested in and copy the entire job description. Paste it into the text area provided. This context is crucial for the AI to understand what the employer is looking for.</p>
                     </CardContent>
                   </div>
-                    <div className="flex items-center justify-center p-4 md:order-first">
+                    <div className="flex items-center justify-center p-4">
                       <Card className="w-full max-w-sm">
                           <CardHeader>
                               <Label htmlFor="jd-example" className="text-lg font-medium">Job Description</Label>
@@ -308,7 +300,7 @@ export default function HowItWorksPage() {
                 </div>
                 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                   <div className="relative flex flex-col items-center justify-center pt-8">
+                   <div className="relative flex flex-col items-center justify-center pt-8 md:order-first">
                         <div className="relative">
                             <Button size="lg">
                                 <Bot className="mr-2 h-5 w-5" />
@@ -318,12 +310,12 @@ export default function HowItWorksPage() {
                         </div>
 
                         <div className="w-full max-w-sm mt-8">
-                           <div className="w-full max-w-sm">
+                           <div className="w-full">
                               <CodeSnippet code={resumeSnippet} />
                             </div>
                         </div>
                     </div>
-                  <div className="bg-transparent border-none shadow-none">
+                  <div>
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
@@ -340,7 +332,7 @@ export default function HowItWorksPage() {
                 </div>
 
                  <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div className="bg-transparent border-none shadow-none md:order-last">
+                  <div className="md:order-last">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">5</span>
@@ -355,7 +347,7 @@ export default function HowItWorksPage() {
                         <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
                     </CardContent>
                   </div>
-                    <div className="flex items-center justify-center p-4 md:order-first">
+                    <div className="flex items-center justify-center p-4">
                        <div className="w-48 h-64 bg-card rounded-md shadow-lg p-3 flex flex-col border text-xs">
                             <div className="flex items-start gap-2">
                                 <AppLogo className="h-8 w-8 text-primary shrink-0" />
