@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -306,7 +307,9 @@ export default function HowItWorksPage() {
                     </div>
 
                     <div className="w-full max-w-sm mt-8">
-                       <CodeSnippet code={resumeSnippet} />
+                       <div className="w-full max-w-sm">
+                          <CodeSnippet code={resumeSnippet} />
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -360,3 +363,5 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
