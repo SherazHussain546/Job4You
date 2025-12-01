@@ -13,9 +13,15 @@ import {
   LogIn,
   Mail,
   KeyRound,
+  Briefcase,
+  GraduationCap,
+  Sparkles,
+  Lightbulb,
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { GoogleIcon } from './icons';
+import { Badge } from './ui/badge';
+import { Avatar, AvatarFallback } from './ui/avatar';
 
 const CodeSnippet = ({ code }: { code: string }) => (
     <pre className="bg-muted text-muted-foreground rounded-md p-4 text-xs overflow-x-auto">
@@ -111,7 +117,7 @@ export default function HowItWorksPage() {
               <div className="space-y-16">
                 
                 <div className="grid gap-4 md:grid-cols-2 md:items-center">
-                  <Card className="bg-transparent border-none shadow-none">
+                  <div className="bg-transparent border-none shadow-none">
                     <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">1</span>
@@ -126,15 +132,15 @@ export default function HowItWorksPage() {
                         Begin by creating an account. You can sign up quickly using your Google account, a traditional email and password, or explore the app by signing in anonymously.
                       </p>
                     </CardContent>
-                  </Card>
+                  </div>
                    <div className="flex items-center justify-center p-8">
                        <Card className="w-full max-w-sm">
-                           <CardContent className="p-6 space-y-4">
-                                <div className="flex justify-center mb-4">
-                                    <div className="rounded-full bg-primary/10 p-4 text-primary">
-                                        <User className="h-10 w-10" />
-                                    </div>
+                            <CardHeader className="items-center">
+                                <div className="rounded-full bg-primary/10 p-4 text-primary">
+                                    <User className="h-10 w-10" />
                                 </div>
+                           </CardHeader>
+                           <CardContent className="p-6 space-y-4">
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-muted-foreground">Email</label>
                                     <div className="flex items-center rounded-md border border-input bg-background p-2">
@@ -172,10 +178,60 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                    <div className="flex items-center justify-center pt-8 md:order-first">
-                       <User className="w-24 h-24 text-primary/30" />
+                    <div className="flex items-center justify-center p-4 md:order-first">
+                        <Card className="w-full max-w-sm">
+                            <CardHeader>
+                                <CardTitle>Profile</CardTitle>
+                                <CardDescription>Your professional blueprint.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4 text-sm">
+                                <div className="flex items-center gap-3 rounded-md border p-3">
+                                    <Avatar>
+                                        <AvatarFallback>JD</AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                        <div className="h-4 w-24 bg-muted-foreground/30 rounded-sm"></div>
+                                        <div className="mt-1 h-3 w-32 bg-muted-foreground/20 rounded-sm"></div>
+                                    </div>
+                                </div>
+                                <div className="space-y-2 rounded-md border p-3">
+                                    <div className="flex items-center gap-2">
+                                        <Briefcase className="h-4 w-4 text-muted-foreground" />
+                                        <h4 className="font-semibold text-muted-foreground">Work Experience</h4>
+                                    </div>
+                                    <div className="h-3 w-4/5 bg-muted-foreground/20 rounded-sm"></div>
+                                    <div className="h-3 w-full bg-muted-foreground/20 rounded-sm"></div>
+                                </div>
+                                <div className="space-y-2 rounded-md border p-3">
+                                    <div className="flex items-center gap-2">
+                                        <GraduationCap className="h-4 w-4 text-muted-foreground" />
+                                        <h4 className="font-semibold text-muted-foreground">Education</h4>
+                                    </div>
+                                    <div className="h-3 w-3/4 bg-muted-foreground/20 rounded-sm"></div>
+                                </div>
+                                <div className="space-y-2 rounded-md border p-3">
+                                    <div className="flex items-center gap-2">
+                                        <Lightbulb className="h-4 w-4 text-muted-foreground" />
+                                        <h4 className="font-semibold text-muted-foreground">Projects</h4>
+                                    </div>
+                                    <div className="h-3 w-full bg-muted-foreground/20 rounded-sm"></div>
+                                </div>
+                                <div className="space-y-2 rounded-md border p-3">
+                                    <div className="flex items-center gap-2">
+                                        <Sparkles className="h-4 w-4 text-muted-foreground" />
+                                        <h4 className="font-semibold text-muted-foreground">Skills</h4>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 pt-1">
+                                        <Badge variant="secondary" className="h-5 w-16"></Badge>
+                                        <Badge variant="secondary" className="h-5 w-20"></Badge>
+                                        <Badge variant="secondary" className="h-5 w-12"></Badge>
+                                        <Badge variant="secondary" className="h-5 w-24"></Badge>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </div>
-                  <Card className="bg-transparent border-none shadow-none">
+                  <div className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
@@ -188,14 +244,14 @@ export default function HowItWorksPage() {
                     <CardContent>
                       <p>Once you're in, navigate to the "Profile" tab. Here, you’ll fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents. Your profile is saved securely and can be updated at any time.</p>
                     </CardContent>
-                  </Card>
+                  </div>
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                    <div className="flex items-center justify-center pt-8 md:order-last">
+                    <div className="flex items-center justify-center pt-8">
                        <ClipboardPaste className="w-24 h-24 text-primary/30" />
                     </div>
-                  <Card className="bg-transparent border-none shadow-none">
+                  <div className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">3</span>
@@ -208,11 +264,14 @@ export default function HowItWorksPage() {
                     <CardContent>
                       <p>Go to the "AI Tailor" tab. Find a job you're interested in and copy the entire job description. Paste it into the text area provided. This context is crucial for the AI to understand what the employer is looking for.</p>
                     </CardContent>
-                  </Card>
+                  </div>
                 </div>
                 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <Card className="bg-transparent border-none shadow-none">
+                   <div className="flex items-center justify-center pt-8 md:order-first">
+                       <Bot className="w-24 h-24 text-primary/30" />
+                  </div>
+                  <div className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
@@ -226,17 +285,14 @@ export default function HowItWorksPage() {
                       <p>Click the "Generate Application Kit" button. Our AI will analyze your profile against the job description and create a tailored resume and cover letter. The output will be in LaTeX, the gold standard for professional document formatting.</p>
                       <CodeSnippet code={resumeSnippet} />
                     </CardContent>
-                  </Card>
-                   <div className="flex items-center justify-center pt-8 md:order-first">
-                       <Bot className="w-24 h-24 text-primary/30" />
                   </div>
                 </div>
 
                  <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                     <div className="flex items-center justify-center pt-8 md:order-last">
+                     <div className="flex items-center justify-center pt-8">
                        <FileText className="w-24 h-24 text-primary/30" />
                     </div>
-                  <Card className="bg-transparent border-none shadow-none">
+                  <div className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">5</span>
@@ -250,7 +306,7 @@ export default function HowItWorksPage() {
                         <p>Copy the generated LaTeX code for each document. Use the embedded Overleaf editor on the page or go to Overleaf.com, create a new blank project, paste the code, and click "Recompile." You'll have a perfectly formatted, professional PDF ready to submit.</p>
                         <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
                     </CardContent>
-                  </Card>
+                  </div>
                 </div>
 
               </div>
@@ -281,3 +337,5 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
