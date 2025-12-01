@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -10,8 +11,11 @@ import {
   FileText,
   Menu,
   LogIn,
+  Mail,
+  KeyRound,
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { GoogleIcon } from './icons';
 
 const CodeSnippet = ({ code }: { code: string }) => (
     <pre className="bg-muted text-muted-foreground rounded-md p-4 text-xs overflow-x-auto">
@@ -106,7 +110,7 @@ export default function HowItWorksPage() {
             <div className="mx-auto grid max-w-5xl items-center gap-y-16 gap-x-12">
               <div className="space-y-16">
                 
-                <div className="grid gap-4 md:grid-cols-2 md:items-start">
+                <div className="grid gap-4 md:grid-cols-2 md:items-center">
                   <Card>
                     <CardHeader>
                       <div className="flex items-center gap-4">
@@ -126,8 +130,42 @@ export default function HowItWorksPage() {
                       </p>
                     </CardContent>
                   </Card>
-                   <div className="flex items-center justify-center pt-8">
-                       <LogIn className="w-24 h-24 text-primary/30" />
+                   <div className="flex items-center justify-center p-8">
+                       <Card className="w-full max-w-sm">
+                           <CardContent className="p-6 space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-muted-foreground">Email</label>
+                                    <div className="flex items-center rounded-md border border-input bg-background p-2">
+                                        <Mail className="h-5 w-5 text-muted-foreground" />
+                                        <div className="ml-2 h-4 w-40 bg-muted-foreground/30 rounded-sm"></div>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-muted-foreground">Password</label>
+                                    <div className="flex items-center rounded-md border border-input bg-background p-2">
+                                        <KeyRound className="h-5 w-5 text-muted-foreground" />
+                                        <div className="ml-2 h-4 w-40 bg-muted-foreground/30 rounded-sm"></div>
+                                    </div>
+                                </div>
+                                <div className="h-10 w-full bg-primary rounded-md flex items-center justify-center text-primary-foreground font-medium">
+                                    Sign Up
+                                </div>
+                                 <div className="relative">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <span className="w-full border-t" />
+                                    </div>
+                                    <div className="relative flex justify-center text-xs uppercase">
+                                        <span className="bg-card px-2 text-muted-foreground">
+                                        Or
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="h-10 w-full border border-input rounded-md flex items-center justify-center text-foreground font-medium gap-2">
+                                    <GoogleIcon className="h-5 w-5" />
+                                    Sign Up with Google
+                                </div>
+                           </CardContent>
+                       </Card>
                   </div>
                 </div>
 
@@ -221,3 +259,5 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
