@@ -11,8 +11,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useFirestore, useUser } from '@/firebase';
 import type { UserProfile } from '@/lib/types';
 import { defaultProfile } from '@/lib/types';
-import { Bot, Loader2, FileWarning } from 'lucide-react';
+import { Bot, Loader2, FileWarning, ExternalLink } from 'lucide-react';
 import OutputDisplay from './output-display';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
 interface GenerationOutput {
   latexCode: string;
@@ -145,22 +146,48 @@ export default function ResumeTailor() {
       )}
 
       {output && (
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
-            <OutputDisplay 
-                title="Tailored Resume"
-                content={output.latexCode}
-                language="latex"
-                downloadExtension="tex"
-                downloadFilename="resume.tex"
-            />
-            <OutputDisplay 
-                title="Personalized Cover Letter"
-                content={output.coverLetter}
-                language="markdown"
-                downloadExtension="md"
-                downloadFilename="cover-letter.md"
-                enablePrint
-            />
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className='space-y-8'>
+                <OutputDisplay 
+                    title="Tailored Resume (LaTeX)"
+                    content={output.latexCode}
+                    language="latex"
+                    downloadExtension="tex"
+                    downloadFilename="resume.tex"
+                />
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Next Steps: Create Your PDF Resume</CardTitle>
+                        <CardDescription>Follow these instructions to compile your LaTeX code into a professional PDF.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
+                            <li>Copy the LaTeX code from the panel above.</li>
+                            <li>
+                                Go to{' '}
+                                <a href="https://www.overleaf.com" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
+                                    Overleaf.com <ExternalLink className="inline-block h-4 w-4" />
+                                </a>{' '}
+                                and sign up for a free account.
+                            </li>
+                            <li>Start a new project with a "Blank Project" template.</li>
+                            <li>Paste the code you copied into the main editor file (usually `main.tex`).</li>
+                            <li>Click the "Recompile" button.</li>
+                            <li>Your professionally formatted, ATS-optimized resume is ready! You can now download the PDF and start applying for jobs.</li>
+                        </ol>
+                    </CardContent>
+                </Card>
+            </div>
+            <div>
+                <OutputDisplay 
+                    title="Personalized Cover Letter"
+                    content={output.coverLetter}
+                    language="markdown"
+                    downloadExtension="md"
+                    downloadFilename="cover-letter.md"
+                    enablePrint
+                />
+            </div>
         </div>
       )}
 
