@@ -25,12 +25,37 @@ import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
+import { useEffect, useState } from 'react';
 
-const CodeSnippet = ({ code }: { code: string }) => (
-    <pre className="bg-muted text-muted-foreground rounded-md p-4 text-xs overflow-x-auto">
-        <code>{code}</code>
-    </pre>
-);
+const CodeSnippet = ({ code }: { code: string }) => {
+    const [displayedCode, setDisplayedCode] = useState('');
+    const [isTyping, setIsTyping] = useState(true);
+
+    useEffect(() => {
+        setDisplayedCode('');
+        setIsTyping(true);
+        let i = 0;
+        const intervalId = setInterval(() => {
+            if (i < code.length) {
+                setDisplayedCode(prev => prev + code.charAt(i));
+                i++;
+            } else {
+                clearInterval(intervalId);
+                setIsTyping(false);
+            }
+        }, 10); // Adjust typing speed here
+
+        return () => clearInterval(intervalId);
+    }, [code]);
+
+    return (
+        <pre className="bg-muted text-muted-foreground rounded-md p-4 text-xs overflow-x-auto relative">
+            <code>{displayedCode}</code>
+            {isTyping && <span className="animate-pulse">|</span>}
+        </pre>
+    );
+};
+
 
 export default function HowItWorksPage() {
 
@@ -195,7 +220,7 @@ export default function HowItWorksPage() {
                       <p>Once you're in, navigate to the "Profile" tab. Here, you’ll fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents. Your profile is saved securely and can be updated at any time.</p>
                     </CardContent>
                   </div>
-                    <div className="flex items-center justify-center p-4 md:order-first">
+                  <div className="flex items-center justify-center p-4 md:order-first">
                         <Card className="w-full max-w-sm">
                             <CardHeader>
                                 <CardTitle>Profile</CardTitle>
@@ -363,5 +388,7 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
 
     
