@@ -248,9 +248,6 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                    <div className="flex items-center justify-center pt-8">
-                       <ClipboardPaste className="w-24 h-24 text-primary/30" />
-                    </div>
                   <div className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
@@ -265,6 +262,9 @@ export default function HowItWorksPage() {
                       <p>Go to the "AI Tailor" tab. Find a job you're interested in and copy the entire job description. Paste it into the text area provided. This context is crucial for the AI to understand what the employer is looking for.</p>
                     </CardContent>
                   </div>
+                    <div className="flex items-center justify-center pt-8">
+                       <ClipboardPaste className="w-24 h-24 text-primary/30" />
+                    </div>
                 </div>
                 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
@@ -289,9 +289,6 @@ export default function HowItWorksPage() {
                 </div>
 
                  <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                     <div className="flex items-center justify-center pt-8">
-                       <FileText className="w-24 h-24 text-primary/30" />
-                    </div>
                   <div className="bg-transparent border-none shadow-none">
                      <CardHeader>
                       <div className="flex items-center gap-4">
@@ -307,6 +304,9 @@ export default function HowItWorksPage() {
                         <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
                     </CardContent>
                   </div>
+                     <div className="flex items-center justify-center pt-8">
+                       <FileText className="w-24 h-24 text-primary/30" />
+                    </div>
                 </div>
 
               </div>
@@ -337,6 +337,8 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
 
     
 
