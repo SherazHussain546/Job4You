@@ -96,7 +96,10 @@
     top: 0;
     width: 100%;
     height: 100%;
-    padding: 2rem;
+    padding: 1rem;
     overflow: visible;
+  }
+  header, footer, .no-print {
+    display: none;
   }
 }

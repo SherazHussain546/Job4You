@@ -10,8 +10,10 @@ import {
   Globe,
   Scaling,
   HeartHandshake,
+  Menu,
 } from 'lucide-react';
 import Image from 'next/image';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
 export default function AboutPage() {
   const values = [
@@ -64,7 +66,7 @@ export default function AboutPage() {
               <span className="font-body">You</span>
             </h1>
           </Link>
-          <nav className="flex items-center gap-2">
+          <nav className="hidden items-center gap-2 md:flex">
              <Button variant="ghost" asChild>
                 <Link href="/about">About Us</Link>
             </Button>
@@ -72,6 +74,21 @@ export default function AboutPage() {
               <Link href="/login">Get Started</Link>
             </Button>
           </nav>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <div className="grid gap-4 py-4">
+                 <Link href="/about" className="text-lg font-medium">About Us</Link>
+                 <Button asChild>
+                   <Link href="/login">Get Started</Link>
+                 </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </header>
 

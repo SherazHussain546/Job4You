@@ -154,7 +154,7 @@ export default function ProfileEditor() {
                         <CardTitle>Contact Information</CardTitle>
                         <CardDescription>How recruiters can reach you.</CardDescription>
                     </CardHeader>
-                    <CardContent className="grid gap-4 md:grid-cols-2">
+                    <CardContent className="grid gap-4 sm:grid-cols-2">
                         <FormField control={form.control} name="contactInfo.name" render={({ field }) => (
                             <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} value={field.value ?? ''} /></FormControl><FormMessage /></FormItem>
                         )} />
