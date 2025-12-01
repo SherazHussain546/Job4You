@@ -46,8 +46,21 @@ export default function LoginPage() {
 
   const loading = isUserLoading || isSigningIn;
 
-  const loginForm = useForm<LoginData>({ resolver: zodResolver(loginSchema) });
-  const signupForm = useForm<SignupData>({ resolver: zodResolver(signupSchema) });
+  const loginForm = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+  const signupForm = useForm<SignupData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
 
   const handleAuthError = (error: any) => {
