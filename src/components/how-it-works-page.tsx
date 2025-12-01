@@ -206,21 +206,7 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div className="bg-transparent border-none shadow-none md:order-last">
-                     <CardHeader>
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
-                        <div>
-                             <CardTitle className="text-2xl">Create Your Professional Profile</CardTitle>
-                             <p className="text-muted-foreground mt-1">This is your master document.</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p>Once you're in, navigate to the "Profile" tab. Here, you’ll fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents. Your profile is saved securely and can be updated at any time.</p>
-                    </CardContent>
-                  </div>
-                  <div className="flex items-center justify-center p-4 md:order-first">
+                   <div className="flex items-center justify-center p-4 md:order-first">
                         <Card className="w-full max-w-sm">
                             <CardHeader>
                                 <CardTitle>Profile</CardTitle>
@@ -273,6 +259,20 @@ export default function HowItWorksPage() {
                             </CardContent>
                         </Card>
                     </div>
+                  <div className="bg-transparent border-none shadow-none md:order-last">
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
+                        <div>
+                             <CardTitle className="text-2xl">Create Your Professional Profile</CardTitle>
+                             <p className="text-muted-foreground mt-1">This is your master document.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Once you're in, navigate to the "Profile" tab. Here, you’ll fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents. Your profile is saved securely and can be updated at any time.</p>
+                    </CardContent>
+                  </div>
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
@@ -308,20 +308,6 @@ export default function HowItWorksPage() {
                 </div>
                 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div className="bg-transparent border-none shadow-none md:order-last">
-                     <CardHeader>
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
-                        <div>
-                             <CardTitle className="text-2xl">Generate Your Documents</CardTitle>
-                             <p className="text-muted-foreground mt-1">Let the AI do the heavy lifting.</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p>Click the "Generate Application Kit" button. Our AI will analyze your profile against the job description and create a tailored resume and cover letter. The output will be in LaTeX, the gold standard for professional document formatting.</p>
-                    </CardContent>
-                  </div>
                   <div className="relative flex flex-col items-center justify-center pt-8 md:order-first">
                     <div className="relative">
                         <Button size="lg">
@@ -336,6 +322,20 @@ export default function HowItWorksPage() {
                           <CodeSnippet code={resumeSnippet} />
                         </div>
                     </div>
+                  </div>
+                  <div className="bg-transparent border-none shadow-none md:order-last">
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
+                        <div>
+                             <CardTitle className="text-2xl">Generate Your Documents</CardTitle>
+                             <p className="text-muted-foreground mt-1">Let the AI do the heavy lifting.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Click the "Generate Application Kit" button. Our AI will analyze your profile against the job description and create a tailored resume and cover letter. The output will be in LaTeX, the gold standard for professional document formatting.</p>
+                    </CardContent>
                   </div>
                 </div>
 
@@ -355,8 +355,27 @@ export default function HowItWorksPage() {
                         <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
                     </CardContent>
                   </div>
-                     <div className="flex items-center justify-center pt-8">
-                       <FileText className="w-24 h-24 text-primary/30" />
+                    <div className="flex items-center justify-center p-4">
+                        <div className="w-48 h-64 bg-card rounded-md shadow-lg p-4 flex flex-col gap-2 border">
+                            <div className="flex items-center gap-2">
+                                <div className="h-8 w-8 rounded-full bg-muted"></div>
+                                <div className="flex-1 space-y-1">
+                                    <div className="h-3 w-3/4 bg-muted rounded"></div>
+                                    <div className="h-2 w-1/2 bg-muted rounded"></div>
+                                </div>
+                            </div>
+                            <div className="space-y-2 pt-4">
+                                <div className="h-2 w-full bg-muted rounded"></div>
+                                <div className="h-2 w-full bg-muted rounded"></div>
+                                <div className="h-2 w-3/4 bg-muted rounded"></div>
+                            </div>
+                            <div className="space-y-2 pt-4">
+                                <div className="h-2 w-1/3 bg-muted rounded font-bold"></div>
+                                <div className="h-2 w-full bg-muted rounded"></div>
+                                <div className="h-2 w-full bg-muted rounded"></div>
+                                <div className="h-2 w-5/6 bg-muted rounded"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
