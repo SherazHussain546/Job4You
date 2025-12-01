@@ -55,6 +55,7 @@ export default function ResumeTailor() {
       }
       
       const savedData = profileSnap.data();
+      // Deep merge to ensure all nested properties have default values
       const profileData: UserProfile = {
         ...defaultProfile,
         ...savedData,
@@ -63,19 +64,20 @@ export default function ResumeTailor() {
           ...(savedData.contactInfo || {}),
         },
         education: savedData.education?.map((edu: any) => ({
+          ...defaultProfile.education[0],
           ...edu,
-          startDate: edu.startDate || '',
-          endDate: edu.endDate || '',
         })) || [],
         experience: savedData.experience?.map((exp: any) => ({
+          ...defaultProfile.experience[0],
           ...exp,
-          startDate: exp.startDate || '',
-          endDate: exp.endDate || '',
         })) || [],
-        projects: savedData.projects || [],
+        projects: savedData.projects?.map((proj: any) => ({
+            ...defaultProfile.projects[0],
+            ...proj,
+        })) || [],
         certifications: savedData.certifications?.map((cert: any) => ({
+          ...defaultProfile.certifications[0],
           ...cert,
-          skillsAchieved: cert.skillsAchieved || ''
         })) || [],
         skills: savedData.skills || [],
       };
