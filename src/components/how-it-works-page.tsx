@@ -137,7 +137,7 @@ export default function HowItWorksPage() {
               <div className="space-y-16">
                 
                 <div className="grid gap-4 md:grid-cols-2 md:items-center">
-                  <div className="md:order-last">
+                  <div>
                     <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">1</span>
@@ -332,8 +332,22 @@ export default function HowItWorksPage() {
                 </div>
 
                  <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div className="md:order-last">
-                    <div className="flex items-center justify-center p-4">
+                  <div>
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">5</span>
+                         <div>
+                             <CardTitle className="text-2xl">Compile and Download Your PDF</CardTitle>
+                             <p className="text-muted-foreground mt-1">Get your publication-ready files.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p>Copy the generated LaTeX code for each document. Use the embedded Overleaf editor on the page or go to Overleaf.com, create a new blank project, paste the code, and click "Recompile." You'll have a perfectly formatted, professional PDF ready to submit.</p>
+                        <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
+                    </CardContent>
+                  </div>
+                  <div className="flex items-center justify-center p-4">
                        <div className="w-60 h-80 bg-card rounded-md shadow-lg p-4 flex flex-col border text-sm">
                             <div className="flex items-start gap-2">
                                 <div className="flex-1">
@@ -361,22 +375,6 @@ export default function HowItWorksPage() {
                             </div>
                         </div>
                     </div>
-                  </div>
-                  <div>
-                     <CardHeader>
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">5</span>
-                         <div>
-                             <CardTitle className="text-2xl">Compile and Download Your PDF</CardTitle>
-                             <p className="text-muted-foreground mt-1">Get your publication-ready files.</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <p>Copy the generated LaTeX code for each document. Use the embedded Overleaf editor on the page or go to Overleaf.com, create a new blank project, paste the code, and click "Recompile." You'll have a perfectly formatted, professional PDF ready to submit.</p>
-                        <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
-                    </CardContent>
-                  </div>
                 </div>
 
               </div>
@@ -407,6 +405,8 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
 
     
 
