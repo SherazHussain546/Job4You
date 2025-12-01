@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { AppLogo } from '@/components/icons';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { FileText, Bot, Briefcase } from 'lucide-react';
+import { FileText, Bot, Users } from 'lucide-react';
 import Image from 'next/image';
 
 export default function LandingPage() {
@@ -32,18 +31,18 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="py-20 md:py-32">
           <div className="container text-center">
-            <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter">
-              Land Your Dream Job with AI
+             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
+                &#92;begin&#123;awesome_paper&#125;
+            </code>
+            <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter mt-4">
+              Write like a rocket scientist with Job4You
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-              Job4You uses cutting-edge AI to instantly tailor your resume and craft personalized cover letters, making you the perfect candidate for any role.
+              The collaborative, online LaTeX editor that anyone can use.
             </p>
             <div className="mt-8 flex justify-center gap-4">
               <Button size="lg" asChild>
                 <Link href="/login">Start for Free</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="#features">Learn More</Link>
               </Button>
             </div>
           </div>
@@ -53,8 +52,8 @@ export default function LandingPage() {
         <section id="features" className="py-20 md:py-32 bg-secondary/30">
           <div className="container">
             <div className="text-center">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold">Why Choose Job4You?</h2>
-              <p className="mt-2 text-muted-foreground">Everything you need to stand out in a crowded job market.</p>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold">The Right Tool for Your Job</h2>
+               <p className="mt-2 text-muted-foreground">Purpose-built for scientific and technical writing. Powered by <a href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="text-primary underline">SYNC TECH Solutions</a>.</p>
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-3">
               <Card>
@@ -62,10 +61,21 @@ export default function LandingPage() {
                   <div className="rounded-full bg-primary/10 p-4 text-primary">
                     <Bot className="h-8 w-8" />
                   </div>
-                  <CardTitle>AI Resume Tailoring</CardTitle>
+                  <CardTitle>AI-Powered Assistance</CardTitle>
                 </CardHeader>
                 <CardContent className='text-center text-muted-foreground'>
-                  Our AI analyzes any job description and rewrites your resume in seconds to highlight your most relevant skills and experience.
+                  Our AI analyzes your text to suggest improvements, catch errors, and help you articulate complex ideas with clarity.
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className='items-center'>
+                   <div className="rounded-full bg-primary/10 p-4 text-primary">
+                    <Users className="h-8 w-8" />
+                  </div>
+                  <CardTitle>Seamless Collaboration</CardTitle>
+                </CardHeader>
+                <CardContent className='text-center text-muted-foreground'>
+                  Work with co-authors in real-time, track changes, and manage versions effortlessly, just like a Google Doc.
                 </CardContent>
               </Card>
               <Card>
@@ -73,21 +83,10 @@ export default function LandingPage() {
                    <div className="rounded-full bg-primary/10 p-4 text-primary">
                     <FileText className="h-8 w-8" />
                   </div>
-                  <CardTitle>Personalized Cover Letters</CardTitle>
-                </CardHeader>
-                <CardContent className='text-center text-muted-foreground'>
-                  Generate compelling, unique cover letters for each application. No more writer's block or generic templates.
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='items-center'>
-                   <div className="rounded-full bg-primary/10 p-4 text-primary">
-                    <Briefcase className="h-8 w-8" />
-                  </div>
                   <CardTitle>Professional Formatting</CardTitle>
                 </CardHeader>
                 <CardContent className='text-center text-muted-foreground'>
-                 Export your tailored resume as a professional, ATS-friendly LaTeX PDF that will impress recruiters.
+                 Export your work as a perfectly formatted, publication-ready PDF using the power of LaTeX, without the steep learning curve.
                 </CardContent>
               </Card>
             </div>
@@ -98,39 +97,39 @@ export default function LandingPage() {
         <section className="py-20 md:py-32">
             <div className="container grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                     <h2 className="font-headline text-3xl md:text-4xl font-bold">Get Started in 3 Easy Steps</h2>
-                     <p className="mt-2 text-muted-foreground">From job description to job application in minutes.</p>
+                     <h2 className="font-headline text-3xl md:text-4xl font-bold">From Idea to Publication in Minutes</h2>
+                     <p className="mt-2 text-muted-foreground">A streamlined workflow for technical authors.</p>
                      <ul className="mt-8 space-y-6 text-lg">
                         <li className='flex items-start gap-4'>
                             <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold'>1</div>
                             <div className='flex-1'>
-                                <h3 className='font-semibold'>Create Your Profile</h3>
-                                <p className='text-muted-foreground text-sm'>Fill out your professional profile once. We'll use this as the master source for all your applications.</p>
+                                <h3 className='font-semibold'>Start a Project</h3>
+                                <p className='text-muted-foreground text-sm'>Create a new document from scratch or use one of our templates for papers, reports, or presentations.</p>
                             </div>
                         </li>
                          <li className='flex items-start gap-4'>
                             <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold'>2</div>
                              <div className='flex-1'>
-                                <h3 className='font-semibold'>Paste the Job Description</h3>
-                                <p className='text-muted-foreground text-sm'>Find a job you love and simply paste the description into our AI tailor.</p>
+                                <h3 className='font-semibold'>Write & Collaborate</h3>
+                                <p className='text-muted-foreground text-sm'>Focus on your content while our rich-text editor handles the LaTeX. Invite colleagues to edit and comment in real-time.</p>
                             </div>
                         </li>
                          <li className='flex items-start gap-4'>
                             <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold'>3</div>
                              <div className='flex-1'>
-                                <h3 className='font-semibold'>Generate & Download</h3>
-                                <p className='text-muted-foreground text-sm'>Let our AI work its magic. Download your perfectly tailored resume and cover letter, ready to submit.</p>
+                                <h3 className='font-semibold'>Publish & Share</h3>
+                                <p className='text-muted-foreground text-sm'>Let our AI assist with final touches, then compile and download your professional PDF, ready for submission.</p>
                             </div>
                         </li>
                      </ul>
                 </div>
                  <div className="relative aspect-video rounded-xl shadow-2xl">
                     <Image 
-                        src="https://picsum.photos/seed/job-search/1280/720"
-                        alt="Job application process"
+                        src="https://picsum.photos/seed/collaboration/1280/720"
+                        alt="Collaborative writing process"
                         fill
                         className="object-cover rounded-xl"
-                        data-ai-hint="job search"
+                        data-ai-hint="team collaboration"
                     />
                 </div>
             </div>
@@ -140,7 +139,7 @@ export default function LandingPage() {
 
       <footer className="py-6 border-t">
         <div className="container text-center text-muted-foreground">
-          &copy; {new Date().getFullYear()} Job4You. All rights reserved.
+          &copy; {new Date().getFullYear()} Job4You by SYNC TECH Solutions. All rights reserved.
         </div>
       </footer>
     </div>

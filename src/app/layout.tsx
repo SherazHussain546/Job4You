@@ -4,8 +4,32 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
-  title: 'Job4You',
-  description: 'Your AI-powered job application assistant',
+  title: 'Job4You | The Online LaTeX Editor for Technical Writing',
+  description: 'Write like a rocket scientist with Job4You—the collaborative, online LaTeX editor that anyone can use. Purpose-built for scientific and technical writing.',
+  keywords: ['LaTeX editor', 'online LaTeX', 'collaborative writing', 'scientific writing', 'technical writing', 'research papers', 'Job4You', 'SYNC TECH Solutions'],
+  authors: [{ name: 'SYNC TECH Solutions', url: 'https://synctech.ie' }],
+  openGraph: {
+    title: 'Job4You | The Online LaTeX Editor for Technical Writing',
+    description: 'The collaborative, online LaTeX editor that makes it easy to write, edit, and share your scientific and technical documents.',
+    url: 'https://job4you.app', // Replace with your actual domain
+    siteName: 'Job4You',
+    images: [
+      {
+        url: 'https://picsum.photos/seed/og-image/1200/630', // Replace with a real OG image
+        width: 1200,
+        height: 630,
+        alt: 'A preview of the Job4You collaborative LaTeX editor.',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Job4You | The Online LaTeX Editor for Technical Writing',
+    description: 'The collaborative, online LaTeX editor that anyone can use. Purpose-built for scientific and technical writing.',
+    images: ['https://picsum.photos/seed/twitter-image/1200/600'], // Replace with a real Twitter image
+  },
 };
 
 export default function RootLayout({
