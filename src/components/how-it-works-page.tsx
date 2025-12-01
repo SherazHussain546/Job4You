@@ -299,7 +299,7 @@ export default function HowItWorksPage() {
                     </div>
                 </div>
                 
-                <div className="grid gap-8 md:grid-cols-2 md:items-start">
+                <div className="grid gap-8 md:grid-cols-2 md F:items-start">
                    <div className="relative flex flex-col items-center justify-center pt-8 md:order-first">
                         <div className="relative">
                             <Button size="lg">
@@ -347,10 +347,9 @@ export default function HowItWorksPage() {
                         <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
                     </CardContent>
                   </div>
-                    <div className="flex items-center justify-center p-4">
+                    <div className="flex items-center justify-center p-4 md:order-last">
                        <div className="w-48 h-64 bg-card rounded-md shadow-lg p-3 flex flex-col border text-xs">
                             <div className="flex items-start gap-2">
-                                <AppLogo className="h-8 w-8 text-primary shrink-0" />
                                 <div className="flex-1">
                                     <p className="font-bold text-sm">
                                       <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span>
