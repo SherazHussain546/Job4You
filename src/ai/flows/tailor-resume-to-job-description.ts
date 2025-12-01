@@ -5,7 +5,7 @@
  * @fileOverview Tailors a user's resume (provided in profile data) to a specific job description using the Gemini API.
  *
  * - tailorResumeToJobDescription - A function that takes user profile data and a job description, then returns LaTeX code for a tailored resume.
- * - TailorResumeToJobDescriptionInput - The input type for the tailorResumeTo-job-description function.
+ * - TailorResumeToJobDescriptionInput - The input type for the tailorResumeToJobDescription function.
  * - TailorResumeToJobDescriptionOutput - The return type for the tailorResumeToJobDescription function.
  */
 
@@ -71,12 +71,6 @@ const TailorResumeToJobDescriptionOutputSchema = z.object({
 export type TailorResumeToJobDescriptionOutput = z.infer<
   typeof TailorResumeToJobDescriptionOutputSchema
 >;
-
-export async function tailorResumeToJobDescription(
-  input: TailorResumeToJobDescriptionInput
-): Promise<TailorResumeToJobDescriptionOutput> {
-  return tailorResumeToJobDescriptionFlow(input);
-}
 
 const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
@@ -157,11 +151,11 @@ Job Description:
     [Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer] \\\\
     \\vspace{2pt}
     {{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} $|$ {{/if}} \\href{mailto:{{{profileData.contactInfo.email}}}}{{{{profileData.contactInfo.email}}}}
-    {{#if profileData.contactInfo.linkedin}} $|$ \\href{https://{{{profileData.contactInfo.linkedin}}}}{LinkedIn}{{/if}}
-    {{#if profileData.contactInfo.github}} $|$ \\href{https://{{{profileData.contactInfo.github}}}}{GitHub}{{/if}}
-    {{#if profileData.contactInfo.portfolio}} $|$ \\href{https://{{{profileData.contactInfo.portfolio}}}}{Portfolio}{{/if}}
-    {{#if profileData.contactInfo.instagram}} $|$ \\href{https://{{{profileData.contactInfo.instagram}}}}{Instagram}{{/if}}
-    {{#if profileData.contactInfo.other}} $|$ \\href{https://{{{profileData.contactInfo.other}}}}{Other URL}{{/if}}
+    {{#if profileData.contactInfo.linkedin}} $|$ \\href{{{{profileData.contactInfo.linkedin}}}}{LinkedIn}{{/if}}
+    {{#if profileData.contactInfo.github}} $|$ \\href{{{{profileData.contactInfo.github}}}}{GitHub}{{/if}}
+    {{#if profileData.contactInfo.portfolio}} $|$ \\href{{{{profileData.contactInfo.portfolio}}}}{Portfolio}{{/if}}
+    {{#if profileData.contactInfo.instagram}} $|$ \\href{{{{profileData.contactInfo.instagram}}}}{Instagram}{{/if}}
+    {{#if profileData.contactInfo.other}} $|$ \\href{{{{profileData.contactInfo.other}}}}{Other URL}{{/if}}
 \\end{center}
 
 % --------------------
@@ -247,6 +241,13 @@ Job Description:
 
 \\end{document}
 `,
+});
+
+const tailorResumeToJobDescriptionFlow = ai.defineFlow(
+  {
+    name: 'tailorResumeToJobDescriptionFlow',
+    inputSchema: TailorResumeToJobDescriptionInputSchema,
+    outputSchema: TailorResumeToJobDescriptionOutputSchema,
   },
   async input => {
     const {output} = await tailorResumeToJobDescriptionPrompt(input);
@@ -254,3 +255,8 @@ Job Description:
   }
 );
 
+export async function tailorResumeToJobDescription(
+  input: TailorResumeToJobDescriptionInput
+): Promise<TailorResumeToJobDescriptionOutput> {
+  return tailorResumeToJobDescriptionFlow(input);
+}
