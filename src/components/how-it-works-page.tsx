@@ -282,8 +282,9 @@ export default function HowItWorksPage() {
                 </div>
                 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                   <div className="flex items-center justify-center pt-8 md:order-first">
+                  <div className="space-y-4 flex flex-col items-center justify-center pt-8 md:order-first">
                         <Bot className="w-24 h-24 text-primary/30" />
+                        <CodeSnippet code={resumeSnippet} />
                   </div>
                   <div className="bg-transparent border-none shadow-none">
                      <CardHeader>
@@ -297,7 +298,6 @@ export default function HowItWorksPage() {
                     </CardHeader>
                     <CardContent>
                       <p>Click the "Generate Application Kit" button. Our AI will analyze your profile against the job description and create a tailored resume and cover letter. The output will be in LaTeX, the gold standard for professional document formatting.</p>
-                       <CodeSnippet code={resumeSnippet} />
                     </CardContent>
                   </div>
                 </div>
@@ -351,3 +351,5 @@ export default function HowItWorksPage() {
     </div>
   );
 }
+
+    
