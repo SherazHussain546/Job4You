@@ -163,7 +163,7 @@ I am writing to express my enthusiastic interest in the **[Job Title]** position
 
 % AI: Write a body paragraph connecting your experience to the job. Use a specific, powerful example.
 % Use quantifiable data from the user's profile if available.
-My background spans complex, end-to-end development, specializing in modern frameworks such as [Your Frameworks, e.g., Angular, React.js] and scalable cloud services like [Your Cloud Skills, e.g., AWS, Kubernetes]. In my project work, I consistently focused on developing practical, high-impact solutions. For example, [Select a strong project or experience from the user's profile and describe it, e.g., the Market Genius platform I architected...]. This demonstrates my ability to transition from concept to deployment in a complex domain.
+My background spans complex, end-to-end development, specializing in modern frameworks such as [Your Frameworks, eg., Angular, React.js] and scalable cloud services like [Your Cloud Skills, e.g., AWS, Kubernetes]. In my project work, I consistently focused on developing practical, high-impact solutions. For example, [Select a strong project or experience from the user's profile and describe it, e.g., the Market Genius platform I architected...]. This demonstrates my ability to transition from concept to deployment in a complex domain.
 
 % AI: Write another body paragraph showing you understand business impact or are a cultural fit.
 Furthermore, my development experience is directly complemented by [Mention a relevant achievement or quality, e.g., quantifiable business achievements]. I believe that combining engineering excellence with a strong understanding of commercial impact is crucial for a development role at **[Company Name]**.

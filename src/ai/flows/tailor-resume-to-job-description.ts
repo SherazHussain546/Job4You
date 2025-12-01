@@ -259,5 +259,4 @@ Job Description:
 {{/if}}
 
 \\end{document}
-`
-});
+`});
