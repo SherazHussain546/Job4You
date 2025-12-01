@@ -31,7 +31,7 @@ const GeneratePersonalizedCoverLetterInputSchema = z.object({
     projects: z.array(z.object({
         name: z.string(),
         date: z.string().optional(),
-        achievements: z.string(),
+        achievements: zstring(),
     })).describe('List of projects.'),
     certifications: z.array(z.object({
       name: z.string(),
@@ -193,5 +193,3 @@ const generatePersonalizedCoverLetterFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    
