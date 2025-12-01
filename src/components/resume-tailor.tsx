@@ -146,7 +146,7 @@ export default function ResumeTailor() {
       )}
 
       {output && (
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-8">
             <div className='space-y-8'>
                 <OutputDisplay 
                     title="Tailored Resume (LaTeX)"
@@ -157,28 +157,42 @@ export default function ResumeTailor() {
                 />
                  <Card>
                     <CardHeader>
-                        <CardTitle>Next Steps: Create Your PDF Resume</CardTitle>
-                        <CardDescription>Follow these instructions to compile your LaTeX code into a professional PDF.</CardDescription>
+                        <CardTitle>How to Create Your PDF Resume</CardTitle>
+                        <CardDescription>If the Overleaf window opposite does not load, follow these steps.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
                             <li>Copy the LaTeX code from the panel above.</li>
                             <li>
                                 Go to{' '}
-                                <a href="https://www.overleaf.com" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
+                                <a href="https://www.overleaf.com/project" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
                                     Overleaf.com <ExternalLink className="inline-block h-4 w-4" />
                                 </a>{' '}
-                                and sign up for a free account.
+                                and sign up or log in.
                             </li>
-                            <li>Start a new project with a "Blank Project" template.</li>
-                            <li>Paste the code you copied into the main editor file (usually `main.tex`).</li>
-                            <li>Click the "Recompile" button.</li>
-                            <li>Your professionally formatted, ATS-optimized resume is ready! You can now download the PDF and start applying for jobs.</li>
+                            <li>Create a "Blank Project" and give it a name.</li>
+                            <li>Paste the code you copied into the editor (replacing any existing content in `main.tex`).</li>
+                            <li>Click the "Recompile" button to see your PDF.</li>
                         </ol>
                     </CardContent>
                 </Card>
             </div>
-            <div>
+            <div className='space-y-8'>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Overleaf Editor</CardTitle>
+                        <CardDescription>Compile your LaTeX code here. You may need to sign in.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="aspect-video w-full rounded-md border bg-muted">
+                            <iframe 
+                                src="https://www.overleaf.com" 
+                                className="h-full w-full"
+                                title="Overleaf Editor"
+                            ></iframe>
+                        </div>
+                    </CardContent>
+                </Card>
                 <OutputDisplay 
                     title="Personalized Cover Letter"
                     content={output.coverLetter}
