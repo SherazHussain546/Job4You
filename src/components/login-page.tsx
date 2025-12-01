@@ -7,7 +7,7 @@ import {
 } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AppLogo, GoogleIcon } from '@/components/icons';
+import { GoogleIcon } from '@/components/icons';
 import { User } from 'lucide-react';
 import { useAuth, useUser } from '@/firebase';
 import { useState } from 'react';
@@ -44,10 +44,9 @@ export default function LoginPage() {
     <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <AppLogo className="h-8 w-8 text-primary" />
-          </div>
-          <CardTitle className="font-headline text-3xl">Job4You</CardTitle>
+          <CardTitle className="font-headline text-4xl">
+            <span className="font-body">Job</span><span className="font-headline text-primary">for</span><span className="font-body">You</span>
+          </CardTitle>
           <CardDescription>Your AI-powered job application assistant</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
