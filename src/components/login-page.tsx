@@ -47,8 +47,8 @@ export default function LoginPage() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             <AppLogo className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="font-headline text-3xl">ResumeCraft AI</CardTitle>
-          <CardDescription>The Smart Resume Tailor</CardDescription>
+          <CardTitle className="font-headline text-3xl">Job4You</CardTitle>
+          <CardDescription>Your AI-powered job application assistant</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <Button onClick={signInWithGoogle} disabled={loading}>

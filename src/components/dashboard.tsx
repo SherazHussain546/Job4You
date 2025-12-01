@@ -43,7 +43,7 @@ export default function Dashboard() {
         <SidebarHeader>
           <div className="flex items-center gap-2">
             <AppLogo className="h-8 w-8 text-sidebar-primary" />
-            <h1 className="font-headline text-xl font-semibold text-sidebar-foreground">ResumeCraft</h1>
+            <h1 className="font-headline text-xl font-semibold text-sidebar-foreground">Job4You</h1>
           </div>
         </SidebarHeader>
         <SidebarContent className="p-2">
