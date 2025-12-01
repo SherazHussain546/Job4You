@@ -328,7 +328,7 @@ export default function HowItWorksPage() {
                             <Bot className="mr-2 h-5 w-5" />
                             Generate Application Kit
                         </Button>
-                        <MousePointerClick className="absolute -right-4 -bottom-4 h-10 w-10 text-primary animate-click" />
+                        <MousePointerClick className="absolute -right-4 -bottom-4 h-10 w-10 text-accent animate-click" />
                     </div>
 
                     <div className="w-full max-w-sm mt-8">
@@ -388,7 +388,3 @@ export default function HowItWorksPage() {
     </div>
   );
 }
-
-    
-
-    
