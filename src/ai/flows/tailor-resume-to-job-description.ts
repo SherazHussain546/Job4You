@@ -73,12 +73,6 @@ export type TailorResumeToJobDescriptionOutput = z.infer<
 >;
 
 
-export async function tailorResumeToJobDescription(
-  input: TailorResumeToJobDescriptionInput
-): Promise<TailorResumeToJobDescriptionOutput> {
-  return tailorResumeToJobDescriptionFlow(input);
-}
-
 const tailorResumeToJobDescriptionFlow = ai.defineFlow(
   {
     name: 'tailorResumeToJobDescriptionFlow',
@@ -87,30 +81,34 @@ const tailorResumeToJobDescriptionFlow = ai.defineFlow(
   },
   async input => {
     const { profileData } = input;
-    const contactParts = [];
+    let contactSection = '';
     if (profileData.contactInfo.phone) {
-        contactParts.push(profileData.contactInfo.phone);
+        contactSection += profileData.contactInfo.phone;
     }
     if (profileData.contactInfo.email) {
-        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`);
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`;
     }
     if (profileData.contactInfo.linkedin) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`);
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`;
     }
     if (profileData.contactInfo.github) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.github}}{GitHub}`);
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.github}}{GitHub}`;
     }
      if (profileData.contactInfo.portfolio) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`);
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`;
     }
     if (profileData.contactInfo.instagram) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.instagram}}{Instagram}`);
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.instagram}}{Instagram}`;
     }
     if (profileData.contactInfo.other) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.other}}{Other URL}`);
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.other}}{Other URL}`;
     }
-
-    const contactSection = contactParts.join(' $|$ ');
 
     const augmentedInput = { ...input, contactSection };
 
@@ -119,18 +117,26 @@ const tailorResumeToJobDescriptionFlow = ai.defineFlow(
   }
 );
 
+export async function tailorResumeToJobDescription(
+  input: TailorResumeToJobDescriptionInput
+): Promise<TailorResumeToJobDescriptionOutput> {
+  return tailorResumeToJobDescriptionFlow(input);
+}
+
 const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
   input: {schema: TailorResumeToJobDescriptionInputSchema.extend({ contactSection: z.string() })},
   output: {schema: TailorResumeToJobDescriptionOutputSchema},
-  prompt: `You are an expert resume writer. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
-You must use the user's profile data and tailor it to the given job description.
+  prompt: `You are an expert resume writer and career coach. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
+Your writing must be grammatically perfect and use a highly professional tone.
+You must analyze the user's profile data and the job description to create a resume that is powerfully tailored for the specific role.
+
 Your AI actions are:
-1.  Generate a professional, one-sentence title for the user based on the job description (e.g., "Full-Stack Software Engineer & AI/Cloud Developer").
-2.  Create a "PROFESSIONAL SUMMARY" with 3-4 bullet points. Each point should be a concise, impactful statement that highlights the user's key qualifications, top skills, and relevant experience, all tailored to the job description.
-3.  In the "TECHNICAL SKILLS" section, select the most relevant skills from the user's profile that match the job description and categorize them.
-4.  For "PROFESSIONAL EXPERIENCE" and "DEVELOPMENT PROJECTS," rewrite the user's responsibilities and achievements to use action verbs and quantify results where possible. Align them with the requirements mentioned in the job description.
-5.  Conditionally render sections only if the corresponding data exists in the user's profile (e.g., if there are no projects, do not include the PROJECTS section).
+1.  Generate a professional, one-sentence title for the user that mirrors the job title from the job description (e.g., "Full-Stack Software Engineer & AI/Cloud Developer").
+2.  Create a "PROFESSIONAL SUMMARY" with 3-4 bullet points. Each point must be a concise, impactful statement that highlights the user's most relevant qualifications and skills, directly aligning with the key requirements in the job description.
+3.  In the "TECHNICAL SKILLS" section, be highly selective. Choose only the most relevant skills from the user's profile that are explicitly mentioned or strongly implied in the job description. Categorize them logically.
+4.  For "PROFESSIONAL EXPERIENCE" and "DEVELOPMENT PROJECTS," select only the 1-2 most relevant roles or projects. For each, rewrite the responsibilities and achievements to use powerful action verbs and quantify results. Directly map these accomplishments to the needs stated in the job description. Omit experiences and projects that are not relevant.
+5.  Conditionally render sections only if there is relevant data to show (e.g., if no selected projects are relevant, do not include the PROJECTS section).
 The final output must be only the LaTeX code, starting with \\documentclass and ending with \\end{document}.
 
 Job Description:

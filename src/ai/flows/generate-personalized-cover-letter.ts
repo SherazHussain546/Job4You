@@ -74,11 +74,40 @@ export async function generatePersonalizedCoverLetter(
   return generatePersonalizedCoverLetterFlow(input);
 }
 
+const generatePersonalizedCoverLetterFlow = ai.defineFlow(
+  {
+    name: 'generatePersonalizedCoverLetterFlow',
+    inputSchema: GeneratePersonalizedCoverLetterInputSchema,
+    outputSchema: GeneratePersonalizedCoverLetterOutputSchema,
+  },
+  async input => {
+    const { profileData } = input;
+    const contactParts = [];
+    if (profileData.contactInfo.phone) {
+        contactParts.push(`${profileData.contactInfo.phone} \\\\`);
+    }
+    if (profileData.contactInfo.email) {
+        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
+    }
+    if (profileData.contactInfo.linkedin) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
+    }
+
+    const contactSection = contactParts.join('\n');
+    
+    const augmentedInput = { ...input, contactSection };
+
+    const {output} = await prompt(augmentedInput);
+    return output!;
+  }
+);
+
 const prompt = ai.definePrompt({
   name: 'generatePersonalizedCoverLetterPrompt',
   input: {schema: GeneratePersonalizedCoverLetterInputSchema.extend({ contactSection: z.string() })},
   output: {schema: GeneratePersonalizedCoverLetterOutputSchema},
-  prompt: `You are an expert career coach. Your task is to generate a compelling, professional cover letter in LaTeX format.
+  prompt: `You are an expert career coach and professional writer. Your task is to generate a compelling, professional cover letter in LaTeX format.
+Your writing must be flawless, with no grammatical errors, and maintain a highly professional tone.
 You must use the provided user profile data and tailor it to the given job description.
 The final output must be only the LaTeX code, starting with \\documentclass and ending with \\end{document}.
 
@@ -86,12 +115,10 @@ Job Description:
 {{{jobDescription}}}
 
 AI Actions:
-1.  Extract the Job Title, Company Name, Hiring Manager's Name, and the platform where the job was advertised from the job description.
-    - If Hiring Manager is not found, use "Hiring Team".
-    - If platform is not found, omit that part.
+1.  Extract the Job Title, Company Name, and Hiring Manager's Name from the job description. If Hiring Manager is not found, use "Hiring Team".
 2.  Generate a compelling opening paragraph introducing the user and stating the role they're applying for.
-3.  Write 2-3 body paragraphs connecting the user's skills and experience (from their profile) directly to the job requirements. Use quantifiable achievements where possible.
-4.  Write a closing paragraph that expresses enthusiasm for the company and includes a strong call to action.
+3.  Write 2-3 body paragraphs. For these paragraphs, you must be highly selective. Analyze the job description and the user's profile, then choose the *single most relevant* project or work experience to highlight. Connect the user's skills and achievements from that example directly to the key requirements of the job. Use quantifiable achievements where possible. Do not list everything; choose the best.
+4.  Write a closing paragraph that expresses genuine enthusiasm for the company and includes a strong call to action.
 5.  Replace all placeholders like [Job Title] with the extracted or generated information.
 
 Use the following LaTeX template.
@@ -177,30 +204,3 @@ Sincerely, \\\\
 `,
 });
 
-const generatePersonalizedCoverLetterFlow = ai.defineFlow(
-  {
-    name: 'generatePersonalizedCoverLetterFlow',
-    inputSchema: GeneratePersonalizedCoverLetterInputSchema,
-    outputSchema: GeneratePersonalizedCoverLetterOutputSchema,
-  },
-  async input => {
-    const { profileData } = input;
-    const contactParts = [];
-    if (profileData.contactInfo.phone) {
-        contactParts.push(`${profileData.contactInfo.phone} \\\\`);
-    }
-    if (profileData.contactInfo.email) {
-        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
-    }
-    if (profileData.contactInfo.linkedin) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
-    }
-
-    const contactSection = contactParts.join('\n');
-    
-    const augmentedInput = { ...input, contactSection };
-
-    const {output} = await prompt(augmentedInput);
-    return output!;
-  }
-);
