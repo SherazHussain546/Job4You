@@ -120,7 +120,8 @@
   "auth": {
     "providers": [
       "google.com",
-      "anonymous"
+      "anonymous",
+      "password"
     ]
   },
   "firestore": {

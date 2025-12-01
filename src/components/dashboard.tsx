@@ -13,7 +13,6 @@ import {
   SidebarMenuButton,
   SidebarInset,
 } from '@/components/ui/sidebar';
-import { AppLogo } from '@/components/icons';
 import { Button } from './ui/button';
 import { useAuth, useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -24,7 +23,7 @@ import ResumeTailor from './resume-tailor';
 type Tab = 'profile' | 'tailor';
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<Tab>('tailor');
+  const [activeTab, setActiveTab] = useState<Tab>('profile');
   const { user } = useUser();
   const auth = useAuth();
 
