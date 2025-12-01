@@ -103,8 +103,8 @@ export default function AboutPage() {
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
               The Home of Scientific and Technical Writing
             </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-              Job4You was developed by SYNC TECH Solutions to make scientific writing simpler and collaboration seamless. Millions of users at research institutions and innovative companies worldwide love our platform because it helps them write smarter and achieve more, together.
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground text-center">
+              <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> was developed by SYNC TECH Solutions to make scientific writing simpler and collaboration seamless. Millions of users at research institutions and innovative companies worldwide love our platform because it helps them write smarter and achieve more, together.
             </p>
           </div>
         </section>
@@ -125,8 +125,8 @@ export default function AboutPage() {
                      <h2 className="font-headline text-3xl md:text-4xl font-bold">Great Ideas Deserve to be as Polished as They are Powerful</h2>
                      <div className="mt-6 space-y-4 text-muted-foreground">
                         <p>LaTeX has long been the gold standard for academics and researchers—a tool capable of producing beautifully formatted documents. But its power comes with a steep learning curve that can feel intimidating.</p>
-                        <p>We saw this challenge not as a barrier, but as an opportunity. In 2023, the team at <a href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="text-primary underline">SYNC TECH Solutions</a> set out to create a platform that harnessed the full potential of LaTeX while making it accessible to everyone. The result is Job4You—an online, collaborative editor where your focus can remain on your ideas, not on the code.</p>
-                        <p>Today, Job4You is trusted by a rapidly growing community for everything from CVs to groundbreaking scientific discoveries. We're here to support your work, every step of the way.</p>
+                        <p>We saw this challenge not as a barrier, but as an opportunity. In 2023, the team at <a href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="text-primary underline">SYNC TECH Solutions</a> set out to create a platform that harnessed the full potential of LaTeX while making it accessible to everyone. The result is <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span>—an online, collaborative editor where your focus can remain on your ideas, not on the code.</p>
+                        <p>Today, <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> is trusted by a rapidly growing community for everything from CVs to groundbreaking scientific discoveries. We're here to support your work, every step of the way.</p>
                      </div>
                 </div>
             </div>
@@ -169,7 +169,7 @@ export default function AboutPage() {
         <section className="py-20 text-center">
             <div className="container">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold">Join Millions of Innovators</h2>
-                <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">Discover why so many researchers, students, and professionals trust Job4You with their best work.</p>
+                <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">Discover why so many researchers, students, and professionals trust <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> with their best work.</p>
                 <div className="mt-8">
                     <Button size="lg" asChild>
                         <Link href="/login">Start Writing for Free</Link>
@@ -182,7 +182,7 @@ export default function AboutPage() {
 
       <footer className="py-6 border-t">
         <div className="container text-center text-muted-foreground">
-          &copy; {new Date().getFullYear()} Job4You by SYNC TECH Solutions. All
+          &copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All
           rights reserved.
         </div>
       </footer>

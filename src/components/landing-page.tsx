@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -51,7 +52,7 @@ export default function LandingPage() {
                 &#92;begin&#123;awesome_paper&#125;
             </code>
             <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter mt-4">
-              Write like a rocket scientist with Job4You
+              Write like a rocket scientist with <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
               The collaborative, online LaTeX editor that anyone can use.
@@ -155,7 +156,7 @@ export default function LandingPage() {
 
       <footer className="py-6 border-t">
         <div className="container flex flex-col md:flex-row items-center justify-between text-center md:text-left text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Job4You by SYNC TECH Solutions. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All rights reserved.</p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
           </div>
