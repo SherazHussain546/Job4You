@@ -90,6 +90,9 @@ The final output must be only the LaTeX code, starting with \\documentclass and 
 Job Description:
 {{{jobDescription}}}
 
+User Profile Data:
+{{{JSON.stringify profileData}}}
+
 Here is the LaTeX template to use. Fill in the placeholders based on the user's profile and the job description.
 
 \\documentclass[10pt, a4paper]{article}
@@ -146,11 +149,11 @@ Here is the LaTeX template to use. Fill in the placeholders based on the user's 
     [Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer] \\\\
     \\vspace{2pt}
     {{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} $|$ {{/if}} \\href{mailto:{{{profileData.contactInfo.email}}}}{ {{{profileData.contactInfo.email}}} }
-    {{#if profileData.contactInfo.linkedin}} $|$ \\href{{{{profileData.contactInfo.linkedin}}}}{LinkedIn}{{/if}}
-    {{#if profileData.contactInfo.github}} $|$ \\href{{{{profileData.contactInfo.github}}}}{GitHub}{{/if}}
-    {{#if profileData.contactInfo.portfolio}} $|$ \\href{{{{profileData.contactInfo.portfolio}}}}{Portfolio}{{/if}}
-    {{#if profileData.contactInfo.instagram}} $|$ \\href{{{{profileData.contactInfo.instagram}}}}{Instagram}{{/if}}
-    {{#if profileData.contactInfo.other}} $|$ \\href{{{{profileData.contactInfo.other}}}}{Other URL}{{/if}}
+    {{#if profileData.contactInfo.linkedin}} $|$ \\href{ {{{profileData.contactInfo.linkedin}}} }{LinkedIn}{{/if}}
+    {{#if profileData.contactInfo.github}} $|$ \\href{ {{{profileData.contactInfo.github}}} }{GitHub}{{/if}}
+    {{#if profileData.contactInfo.portfolio}} $|$ \\href{ {{{profileData.contactInfo.portfolio}}} }{Portfolio}{{/if}}
+    {{#if profileData.contactInfo.instagram}} $|$ \\href{ {{{profileData.contactInfo.instagram}}} }{Instagram}{{/if}}
+    {{#if profileData.contactInfo.other}} $|$ \\href{ {{{profileData.contactInfo.other}}} }{Other URL}{{/if}}
 \\end{center}
 
 % --------------------
@@ -169,50 +172,66 @@ Here is the LaTeX template to use. Fill in the placeholders based on the user's 
 % --------------------
 % AI: Select and categorize the user's most relevant skills for the job. You can create categories like 'Programming Languages', 'Frameworks & Libraries', 'Cloud & DevOps', etc.
 \\section*{TECHNICAL SKILLS}
-% Example: \\textbf{Programming Languages:} {{{profileData.skills}}} 
-% Categorize skills here
+% Example: \\textbf{Programming Languages:} {{#each profileData.skills}} {{{this}}} {{/each}} 
+% Categorize skills here based on relevance.
 
 % --------------------
 % 4. PROFESSIONAL EXPERIENCE
 % --------------------
+{{#if profileData.experience}}
 \\section*{PROFESSIONAL EXPERIENCE}
 {{#each profileData.experience}}
+{{#if this.title}}
 \\resitem{ {{{this.title}}} }{ {{{this.company}}} }{ {{{this.startDate}}} -- {{{this.endDate}}} }
 \\begin{itemize}
     \\item {{{this.responsibilities}}}
 \\end{itemize}
+{{/if}}
 {{/each}}
+{{/if}}
 
 % --------------------
 % 5. DEVELOPMENT PROJECTS
 % --------------------
+{{#if profileData.projects}}
 \\section*{DEVELOPMENT PROJECTS}
 {{#each profileData.projects}}
+{{#if this.name}}
 \\resitem{ {{{this.name}}} }{}{ {{{this.date}}} }
 \\begin{itemize}
     \\item {{{this.achievements}}}
 \\end{itemize}
+{{/if}}
 {{/each}}
+{{/if}}
 
 % --------------------
 % 6. EDUCATION & CERTIFICATES
 % --------------------
+{{#if profileData.education}}
 \\section*{EDUCATION}
 {{#each profileData.education}}
+{{#if this.qualification}}
 \\resitem{ {{{this.qualification}}} }{ {{{this.institute}}} }{ {{{this.startDate}}} -- {{{this.endDate}}} }
 {{#if this.achievements}}
 \\begin{itemize}
     \\item {{{this.achievements}}}
 \\end{itemize}
 {{/if}}
+{{/if}}
 {{/each}}
+{{/if}}
 
+{{#if profileData.certifications}}
 \\section*{CERTIFICATES \& TRAINING}
 \\begin{itemize}
 {{#each profileData.certifications}}
-    \\item \\textbf{ {{{this.name}}} }{{#if this.organization}} from \\textbf{ {{{this.organization}}} }{{/if}}: {{{this.achievements}}}{{#if this.skillsAchieved}} Skills: {{{this.skillsAchieved}}}{{/if}}
+{{#if this.name}}
+    \\item \\textbf{ {{{this.name}}} }{{#if this.organization}} from \\textbf{ {{{this.organization}}} }{{/if}}{{#if this.achievements}}: {{{this.achievements}}}{{/if}}{{#if this.skillsAchieved}} Skills: {{{this.skillsAchieved}}}{{/if}}
+{{/if}}
 {{/each}}
 \\end{itemize}
+{{/if}}
 
 \\end{document}
 `,
@@ -229,5 +248,3 @@ const tailorResumeToJobDescriptionFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    
