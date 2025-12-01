@@ -116,17 +116,14 @@ export default function HowItWorksPage() {
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">1</span>
                         <div>
-                          <CardTitle className="text-2xl">Sign Up & Create Your Profile</CardTitle>
-                          <p className="text-muted-foreground mt-1">This is your master document.</p>
+                          <CardTitle className="text-2xl">Sign Up for an Account</CardTitle>
+                          <p className="text-muted-foreground mt-1">Get started in seconds.</p>
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <p>
                         Begin by creating an account. You can sign up quickly using your Google account, a traditional email and password, or explore the app by signing in anonymously.
-                      </p>
-                      <p>
-                        Once you're in, navigate to the "Profile" tab. Here, you’ll fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents. Your profile is saved securely and can be updated at any time.
                       </p>
                     </CardContent>
                   </Card>
@@ -175,13 +172,33 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                     <div className="flex items-center justify-center pt-8 md:order-last">
-                       <ClipboardPaste className="w-24 h-24 text-primary/30" />
+                    <div className="flex items-center justify-center pt-8 md:order-last">
+                       <User className="w-24 h-24 text-primary/30" />
                     </div>
                   <Card>
                      <CardHeader>
                       <div className="flex items-center gap-4">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
+                        <div>
+                             <CardTitle className="text-2xl">Create Your Professional Profile</CardTitle>
+                             <p className="text-muted-foreground mt-1">This is your master document.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Once you're in, navigate to the "Profile" tab. Here, you’ll fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents. Your profile is saved securely and can be updated at any time.</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid gap-8 md:grid-cols-2 md:items-start">
+                     <div className="flex items-center justify-center pt-8">
+                       <ClipboardPaste className="w-24 h-24 text-primary/30" />
+                    </div>
+                  <Card>
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">3</span>
                         <div>
                              <CardTitle className="text-2xl">Provide the Job Description</CardTitle>
                              <p className="text-muted-foreground mt-1">Give the AI its target.</p>
@@ -198,7 +215,7 @@ export default function HowItWorksPage() {
                   <Card>
                      <CardHeader>
                       <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">3</span>
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
                         <div>
                              <CardTitle className="text-2xl">Generate Your Documents</CardTitle>
                              <p className="text-muted-foreground mt-1">Let the AI do the heavy lifting.</p>
@@ -210,19 +227,19 @@ export default function HowItWorksPage() {
                       <CodeSnippet code={resumeSnippet} />
                     </CardContent>
                   </Card>
-                   <div className="flex items-center justify-center pt-8">
+                   <div className="flex items-center justify-center pt-8 md:order-first">
                        <Bot className="w-24 h-24 text-primary/30" />
                   </div>
                 </div>
 
                  <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                     <div className="flex items-center justify-center pt-8 md:order-last">
+                     <div className="flex items-center justify-center pt-8">
                        <FileText className="w-24 h-24 text-primary/30" />
                     </div>
                   <Card>
                      <CardHeader>
                       <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">5</span>
                          <div>
                              <CardTitle className="text-2xl">Compile and Download Your PDF</CardTitle>
                              <p className="text-muted-foreground mt-1">Get your publication-ready files.</p>
@@ -264,7 +281,3 @@ export default function HowItWorksPage() {
     </div>
   );
 }
-
-    
-
-    
