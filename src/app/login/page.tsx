@@ -12,14 +12,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { GoogleIcon } from '@/components/icons';
 import { User, Loader2 } from 'lucide-react';
 import { useAuth, useUser } from '@/firebase';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
-import { Input } from './ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -40,9 +41,16 @@ type SignupData = z.infer<typeof signupSchema>;
 
 export default function LoginPage() {
   const auth = useAuth();
-  const { isUserLoading } = useUser();
+  const { user, isUserLoading } = useUser();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
 
   const loading = isUserLoading || isSigningIn;
 
@@ -116,13 +124,21 @@ export default function LoginPage() {
     }
   };
 
+  if (isUserLoading || user) {
+     return (
+      <div className="flex h-screen w-screen flex-col items-center justify-center gap-4 bg-background">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-        <CardTitle className="font-headline text-4xl">
-            <span className="font-body">Job</span><span className="font-headline text-primary">for</span><span className="font-body">You</span>
-          </CardTitle>
+        <h1 className="font-headline text-4xl">
+            <span className="font-body">Job</span><span className="text-primary">for</span><span className="font-body">You</span>
+        </h1>
           <CardDescription>Your AI-powered job application assistant</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
