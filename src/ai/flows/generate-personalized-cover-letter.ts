@@ -85,9 +85,6 @@ The final output must be only the LaTeX code, starting with \\documentclass and 
 Job Description:
 {{{jobDescription}}}
 
-User Profile Data:
-{{{JSON.stringify profileData}}}
-
 AI Actions:
 1.  Extract the Job Title, Company Name, Hiring Manager's Name, and the platform where the job was advertised from the job description.
     - If Hiring Manager is not found, use "Hiring Team".
