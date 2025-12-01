@@ -138,8 +138,11 @@ export default function LandingPage() {
       </main>
 
       <footer className="py-6 border-t">
-        <div className="container text-center text-muted-foreground">
-          &copy; {new Date().getFullYear()} Job4You by SYNC TECH Solutions. All rights reserved.
+        <div className="container flex flex-col md:flex-row items-center justify-between text-center md:text-left text-muted-foreground">
+          <p>&copy; {new Date().getFullYear()} Job4You by SYNC TECH Solutions. All rights reserved.</p>
+          <div className="flex gap-4 mt-4 md:mt-0">
+            <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
+          </div>
         </div>
       </footer>
     </div>
