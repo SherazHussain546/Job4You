@@ -9,7 +9,6 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Plus, Trash2 } from 'lucide-react';
 import type { UserProfile } from '@/lib/types';
-import { Separator } from './ui/separator';
 
 interface ExperienceFieldArrayFormProps {
   form: UseFormReturn<UserProfile>;
@@ -56,6 +55,34 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name={`experience.${index}.startDate`}
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Start Date</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., March 2024" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name={`experience.${index}.endDate`}
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>End Date</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., Present" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
             <FormField
               control={form.control}
               name={`experience.${index}.responsibilities`}
@@ -85,7 +112,7 @@ export default function ExperienceFieldArrayForm({ form }: ExperienceFieldArrayF
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => append({ title: '', company: '', responsibilities: '' })}
+          onClick={() => append({ title: '', company: '', startDate: '', endDate: '', responsibilities: '' })}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add experience

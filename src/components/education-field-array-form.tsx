@@ -55,6 +55,34 @@ export default function EducationFieldArrayForm({ form }: EducationFieldArrayFor
                 </FormItem>
               )}
             />
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name={`education.${index}.startDate`}
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Start Date</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., August 2020" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name={`education.${index}.endDate`}
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>End Date</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., May 2024" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
             <FormField
               control={form.control}
               name={`education.${index}.achievements`}
@@ -84,7 +112,7 @@ export default function EducationFieldArrayForm({ form }: EducationFieldArrayFor
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => append({ qualification: '', institute: '', achievements: '' })}
+          onClick={() => append({ qualification: '', institute: '', startDate: '', endDate: '', achievements: '' })}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add education

@@ -5,12 +5,16 @@ const optionalUrl = z.string().url('Must be a valid URL.').optional().or(z.liter
 export const experienceSchema = z.object({
   title: z.string().min(1, 'Job title is required.'),
   company: z.string().min(1, 'Company name is required.'),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   responsibilities: z.string().min(1, 'Responsibilities are required.'),
 });
 
 export const educationSchema = z.object({
   qualification: z.string().min(1, 'Qualification is required.'),
   institute: z.string().min(1, 'Institute name is required.'),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   achievements: z.string().optional(),
 });
 

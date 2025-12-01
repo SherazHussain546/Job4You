@@ -21,11 +21,15 @@ export const defaultProfile: UserProfile = {
   education: [{
     qualification: '',
     institute: '',
+    startDate: '',
+    endDate: '',
     achievements: '',
   }],
   experience: [{
     title: '',
     company: '',
+    startDate: '',
+    endDate: '',
     responsibilities: '',
   }],
   projects: [{

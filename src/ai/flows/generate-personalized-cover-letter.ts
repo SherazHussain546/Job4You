@@ -16,11 +16,15 @@ const GeneratePersonalizedCoverLetterInputSchema = z.object({
     education: z.array(z.object({
         qualification: z.string(),
         institute: z.string(),
+        startDate: z.string().optional(),
+        endDate: z.string().optional(),
         achievements: z.string().optional(),
     })).describe('List of educational experiences.'),
     experience: z.array(z.object({
         title: z.string(),
         company: z.string(),
+        startDate: z.string().optional(),
+        endDate: z.string().optional(),
         responsibilities: z.string(),
     })).describe('List of work experiences.'),
     projects: z.array(z.object({
@@ -87,13 +91,13 @@ Email: {{{profileData.contactInfo.email}}}
 
 Education:
 {{#each profileData.education}}
-- **{{{this.qualification}}}** from **{{{this.institute}}}**
+- **{{{this.qualification}}}** from **{{{this.institute}}}** ({{#if this.startDate}}{{{this.startDate}}}{{/if}}{{#if this.endDate}} - {{{this.endDate}}}{{/if}})
   {{#if this.achievements}} - Achievements: {{{this.achievements}}}{{/if}}
 {{/each}}
 
 Experience:
 {{#each profileData.experience}}
-- **{{{this.title}}}** at **{{{this.company}}}**
+- **{{{this.title}}}** at **{{{this.company}}}** ({{#if this.startDate}}{{{this.startDate}}}{{/if}}{{#if this.endDate}} - {{{this.endDate}}}{{/if}})
   - {{{this.responsibilities}}}
 {{/each}}
 

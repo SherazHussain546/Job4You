@@ -53,10 +53,14 @@ export default function ProfileEditor() {
                 ...defaultProfile.education[0],
                 ...edu,
                 achievements: edu.achievements || '',
+                startDate: edu.startDate || '',
+                endDate: edu.endDate || '',
             })) || [],
             experience: data.experience?.map((exp: any) => ({
                 ...defaultProfile.experience[0],
-                ...exp
+                ...exp,
+                startDate: exp.startDate || '',
+                endDate: exp.endDate || '',
             })) || [],
             projects: data.projects?.map((proj: any) => ({
                 ...defaultProfile.projects[0],

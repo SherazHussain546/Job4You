@@ -62,8 +62,16 @@ export default function ResumeTailor() {
           ...defaultProfile.contactInfo,
           ...(savedData.contactInfo || {}),
         },
-        education: savedData.education || [],
-        experience: savedData.experience || [],
+        education: savedData.education?.map((edu: any) => ({
+          ...edu,
+          startDate: edu.startDate || '',
+          endDate: edu.endDate || '',
+        })) || [],
+        experience: savedData.experience?.map((exp: any) => ({
+          ...exp,
+          startDate: exp.startDate || '',
+          endDate: exp.endDate || '',
+        })) || [],
         projects: savedData.projects || [],
         certifications: savedData.certifications?.map((cert: any) => ({
           ...cert,

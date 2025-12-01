@@ -19,11 +19,15 @@ const TailorResumeToJobDescriptionInputSchema = z.object({
     education: z.array(z.object({
         qualification: z.string(),
         institute: z.string(),
+        startDate: z.string().optional(),
+        endDate: z.string().optional(),
         achievements: z.string().optional(),
     })).describe('Array of education details.'),
     experience: z.array(z.object({
         title: z.string(),
         company: z.string(),
+        startDate: z.string().optional(),
+        endDate: z.string().optional(),
         responsibilities: z.string(),
     })).describe('Array of work experience details.'),
     projects: z.array(z.object({
@@ -94,13 +98,13 @@ Email: {{{profileData.contactInfo.email}}}
 
 Education:
 {{#each profileData.education}}
-\\textbf{{{{{this.qualification}}}}} at \\textbf{{{{{this.institute}}}}}
+\\textbf{{{{{this.qualification}}}}} at \\textbf{{{{{this.institute}}}}} {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
 {{#if this.achievements}}{{{this.achievements}}}{{/if}}
 {{/each}}
 
 Experience:
 {{#each profileData.experience}}
-\\textbf{{{{{this.title}}}}} at \\textbf{{{{{this.company}}}}}
+\\textbf{{{{{this.title}}}}} at \\textbf{{{{{this.company}}}}} {{#if this.startDate}}({{{this.startDate}}} - {{{this.endDate}}}){{/if}}
 {{{this.responsibilities}}}
 {{/each}}
 
