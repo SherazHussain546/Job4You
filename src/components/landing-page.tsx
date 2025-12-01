@@ -13,7 +13,6 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <AppLogo className="h-8 w-8" />
              <h1 className="text-2xl font-bold">
                 <span className="font-body">Job</span><span className="font-headline text-primary">for</span><span className="font-body">You</span>
             </h1>
