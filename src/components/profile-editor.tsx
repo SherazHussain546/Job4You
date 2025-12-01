@@ -92,12 +92,25 @@ export default function ProfileEditor() {
       toast({ title: 'Not Authenticated', description: 'You must be logged in to save your profile.', variant: 'destructive' });
       return;
     }
+
+    form.formState.isSubmitting = true;
     
-    const docRef = doc(firestore, 'users', user.uid, 'profile', 'data');
+    const profileDocRef = doc(firestore, 'users', user.uid, 'profile', 'data');
     const dataToSave = { ...data, id: user.uid };
+    
+    const marketingDocRef = doc(firestore, 'marketingSubscribers', user.uid);
+    const marketingData = {
+      name: data.contactInfo.name,
+      email: data.contactInfo.email,
+    };
 
     try {
-      await setDoc(docRef, dataToSave, { merge: true });
+      // Save the main user profile
+      await setDoc(profileDocRef, dataToSave, { merge: true });
+
+      // Save the marketing data
+      await setDoc(marketingDocRef, marketingData, { merge: true });
+
       toast({
         title: 'Success',
         description: 'Your profile has been saved.',
@@ -106,7 +119,7 @@ export default function ProfileEditor() {
        errorEmitter.emit(
         'permission-error',
         new FirestorePermissionError({
-          path: docRef.path,
+          path: profileDocRef.path, // We can report the primary failure path
           operation: 'write',
           requestResourceData: dataToSave,
         })
@@ -116,6 +129,8 @@ export default function ProfileEditor() {
         description: 'There was a problem saving your profile. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      form.formState.isSubmitting = false;
     }
   };
 

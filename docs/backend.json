@@ -98,6 +98,23 @@
         "skills",
         "contactInfo"
       ]
+    },
+    "MarketingSubscriber": {
+      "title": "Marketing Subscriber",
+      "description": "Represents a user who has subscribed to marketing communications.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The subscriber's full name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The subscriber's email address."
+        }
+      },
+      "required": ["name", "email"]
     }
   },
   "auth": {
@@ -122,6 +139,14 @@
               "description": "The unique identifier of the user."
             }
           ]
+        }
+      },
+       {
+        "path": "/marketingSubscribers/{subscriberId}",
+        "definition": {
+          "entityName": "MarketingSubscriber",
+          "schema": { "$ref": "#/backend/entities/MarketingSubscriber" },
+          "description": "Stores contact information for marketing purposes. This collection is write-only for authenticated users and should be read-only for administrative roles."
         }
       }
     ],

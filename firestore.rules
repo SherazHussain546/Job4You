@@ -121,5 +121,19 @@ service cloud.firestore {
       allow update: if isExistingOwner(userId) && hasImmutableOwnerId();
       allow delete: if isExistingOwner(userId);
     }
+
+    /**
+     * @description Manages marketing subscribers. Authenticated users can add or update
+     * their own information. Reading and listing are disabled for clients.
+     * @path /marketingSubscribers/{subscriberId}
+     * @allow (create) Any authenticated user can add themselves as a subscriber.
+     * @deny (read, list, delete) All client-side read and delete access is forbidden.
+     */
+    match /marketingSubscribers/{subscriberId} {
+      allow get: if false;
+      allow list: if false;
+      allow create, update: if isOwner(subscriberId);
+      allow delete: if false;
+    }
   }
 }
