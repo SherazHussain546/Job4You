@@ -16,8 +16,8 @@ import OutputDisplay from './output-display';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
 interface GenerationOutput {
-  latexCode: string;
-  coverLetter: string;
+  resumeLatex: string;
+  coverLetterLatex: string;
 }
 
 export default function ResumeTailor() {
@@ -90,8 +90,8 @@ export default function ResumeTailor() {
       ]);
       
       setOutput({
-          latexCode: resumeResult.latexCode,
-          coverLetter: coverLetterResult.coverLetter,
+          resumeLatex: resumeResult.latexCode,
+          coverLetterLatex: coverLetterResult.latexCode,
       });
 
     } catch (error) {
@@ -150,19 +150,19 @@ export default function ResumeTailor() {
             <div className='space-y-8'>
                 <OutputDisplay 
                     title="Tailored Resume (LaTeX)"
-                    content={output.latexCode}
+                    content={output.resumeLatex}
                     language="latex"
                     downloadExtension="tex"
                     downloadFilename="resume.tex"
                 />
                  <Card>
                     <CardHeader>
-                        <CardTitle>How to Create Your PDF Resume</CardTitle>
+                        <CardTitle>How to Create Your PDF Documents</CardTitle>
                         <CardDescription>If the Overleaf window opposite does not load, follow these steps.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
-                            <li>Copy the LaTeX code from the panel above.</li>
+                            <li>For each document, copy the LaTeX code from the panel above.</li>
                             <li>
                                 Go to{' '}
                                 <a href="https://www.overleaf.com/project" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
@@ -170,7 +170,7 @@ export default function ResumeTailor() {
                                 </a>{' '}
                                 and sign up or log in.
                             </li>
-                            <li>Create a "Blank Project" and give it a name.</li>
+                            <li>Create a "Blank Project" for your resume, then another for your cover letter.</li>
                             <li>Paste the code you copied into the editor (replacing any existing content in `main.tex`).</li>
                             <li>Click the "Recompile" button to see your PDF.</li>
                         </ol>
@@ -178,6 +178,13 @@ export default function ResumeTailor() {
                 </Card>
             </div>
             <div className='space-y-8'>
+                 <OutputDisplay 
+                    title="Personalized Cover Letter (LaTeX)"
+                    content={output.coverLetterLatex}
+                    language="latex"
+                    downloadExtension="tex"
+                    downloadFilename="cover-letter.tex"
+                />
                 <Card>
                     <CardHeader>
                         <CardTitle>Overleaf Editor</CardTitle>
@@ -193,14 +200,6 @@ export default function ResumeTailor() {
                         </div>
                     </CardContent>
                 </Card>
-                <OutputDisplay 
-                    title="Personalized Cover Letter"
-                    content={output.coverLetter}
-                    language="markdown"
-                    downloadExtension="md"
-                    downloadFilename="cover-letter.md"
-                    enablePrint
-                />
             </div>
         </div>
       )}
