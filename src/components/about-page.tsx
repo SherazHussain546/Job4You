@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -110,11 +111,11 @@ export default function AboutPage() {
             <div className="container grid md:grid-cols-2 gap-12 items-center">
                 <div className="relative aspect-video rounded-xl shadow-2xl">
                     <Image 
-                        src="https://picsum.photos/seed/story/1280/720"
-                        alt="Founders sketching ideas on a whiteboard"
+                        src="https://github.com/SherazHussain546/Job4You/blob/main/images/Logo2.png?raw=true"
+                        alt="Job4You Logo"
                         fill
-                        className="object-cover rounded-xl"
-                        data-ai-hint="team brainstorming"
+                        className="object-contain rounded-xl"
+                        data-ai-hint="logo"
                     />
                 </div>
                  <div>
