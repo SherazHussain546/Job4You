@@ -86,6 +86,7 @@ const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
 You must use the provided user profile data and tailor it to the given job description.
 Generate a professional summary, and select the most relevant skills, experiences, and projects.
 The final output must be only the LaTeX code, starting with \\documentclass and ending with \\end{document}.
+Conditionally render sections only if the corresponding data exists in the user's profile (e.g., if there are no projects, do not include the PROJECTS section).
 
 Job Description:
 {{{jobDescription}}}
@@ -93,14 +94,20 @@ Job Description:
 User Profile Data:
 {{{JSON.stringify profileData}}}
 
-Here is the LaTeX template to use. Fill in the placeholders based on the user's profile and the job description.
+% ATS-Optimized Resume Template: {{{profileData.contactInfo.name}}}
+% Designed for maximum parsing reliability by using simple document structure,
+% standard sectioning, and minimal custom formatting.
 
 \\documentclass[10pt, a4paper]{article}
 
 % --- PDFlatex Compatible Preamble Block ---
+% Use T1 font encoding and Times/Utopia-like font families for better PDF output
 \\usepackage[T1]{fontenc}
 \\usepackage{mathptmx} % Use Times Roman as the default font (pdflatex compatible)
+
+% Set tight margins typical for a one-page technical resume
 \\usepackage[a4paper, top=0.5in, bottom=0.5in, left=0.6in, right=0.6in]{geometry}
+
 \\usepackage{titlesec} % For custom section styling
 \\usepackage{enumitem} % For compact lists
 \\usepackage{hyperref} % For clickable links
@@ -124,8 +131,8 @@ Here is the LaTeX template to use. Fill in the placeholders based on the user's 
 
 % Redefine itemize environment for compact spacing
 \\setlist[itemize]{
-    noitemsep, 
-    leftmargin=*, 
+    noitemsep,
+    leftmargin=*,
     align=left,
     topsep=3pt,
     parsep=0pt,
@@ -149,31 +156,33 @@ Here is the LaTeX template to use. Fill in the placeholders based on the user's 
     [Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer] \\\\
     \\vspace{2pt}
     {{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} $|$ {{/if}} \\href{mailto:{{{profileData.contactInfo.email}}}}{ {{{profileData.contactInfo.email}}} }
-    {{#if profileData.contactInfo.linkedin}} $|$ \\href{ {{{profileData.contactInfo.linkedin}}} }{LinkedIn}{{/if}}
-    {{#if profileData.contactInfo.github}} $|$ \\href{ {{{profileData.contactInfo.github}}} }{GitHub}{{/if}}
-    {{#if profileData.contactInfo.portfolio}} $|$ \\href{ {{{profileData.contactInfo.portfolio}}} }{Portfolio}{{/if}}
-    {{#if profileData.contactInfo.instagram}} $|$ \\href{ {{{profileData.contactInfo.instagram}}} }{Instagram}{{/if}}
-    {{#if profileData.contactInfo.other}} $|$ \\href{ {{{profileData.contactInfo.other}}} }{Other URL}{{/if}}
+    {{#if profileData.contactInfo.linkedin}} $|$ \\href{https://{{{profileData.contactInfo.linkedin}}}}{LinkedIn}{{/if}}
+    {{#if profileData.contactInfo.github}} $|$ \\href{https://{{{profileData.contactInfo.github}}}}{GitHub}{{/if}}
+    {{#if profileData.contactInfo.portfolio}} $|$ \\href{https://{{{profileData.contactInfo.portfolio}}}}{Portfolio}{{/if}}
+    {{#if profileData.contactInfo.instagram}} $|$ \\href{https://{{{profileData.contactInfo.instagram}}}}{Instagram}{{/if}}
+    {{#if profileData.contactInfo.other}} $|$ \\href{https://{{{profileData.contactInfo.other}}}}{Other URL}{{/if}}
 \\end{center}
 
 % --------------------
 % 2. PROFESSIONAL SUMMARY
 % --------------------
-% AI: Generate a concise, powerful professional summary (3-4 bullet points) that highlights the user's most relevant qualifications from their profile data in the context of the job description.
 \\section*{PROFESSIONAL SUMMARY}
 \\begin{itemize}
-    % \\item [Generated Summary Point 1]
-    % \\item [Generated Summary Point 2]
-    % \\item [Generated Summary Point 3]
+    % AI: Generate 3-4 bullet points for the summary.
+    \\item [Generated Summary Point 1]
+    \\item [Generated Summary Point 2]
+    \\item [Generated Summary Point 3]
 \\end{itemize}
 
 % --------------------
 % 3. TECHNICAL SKILLS
 % --------------------
-% AI: Select and categorize the user's most relevant skills for the job. You can create categories like 'Programming Languages', 'Frameworks & Libraries', 'Cloud & DevOps', etc.
 \\section*{TECHNICAL SKILLS}
-% Example: \\textbf{Programming Languages:} {{#each profileData.skills}} {{{this}}} {{/each}} 
-% Categorize skills here based on relevance.
+% AI: Select and categorize the user's most relevant skills.
+\\textbf{Programming Languages:} [List Languages] \\\\
+\\textbf{Frameworks \& Libraries:} [List Frameworks] \\\\
+\\textbf{Cloud \& DevOps:} [List DevOps Tools] \\\\
+\\textbf{Databases:} [List Databases]
 
 % --------------------
 % 4. PROFESSIONAL EXPERIENCE
