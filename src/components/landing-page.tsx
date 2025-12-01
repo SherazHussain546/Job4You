@@ -20,6 +20,9 @@ export default function LandingPage() {
           </Link>
            <nav className="hidden items-center gap-2 md:flex">
             <Button variant="ghost" asChild>
+                <Link href="/how-it-works">How It Works</Link>
+            </Button>
+            <Button variant="ghost" asChild>
                 <Link href="/about">About Us</Link>
             </Button>
             <Button asChild>
@@ -34,6 +37,7 @@ export default function LandingPage() {
             </SheetTrigger>
             <SheetContent side="right">
               <div className="grid gap-4 py-4">
+                 <Link href="/how-it-works" className="text-lg font-medium">How It Works</Link>
                  <Link href="/about" className="text-lg font-medium">About Us</Link>
                  <Button asChild>
                    <Link href="/login">Get Started</Link>
@@ -158,6 +162,7 @@ export default function LandingPage() {
         <div className="container flex flex-col md:flex-row items-center justify-between text-center md:text-left text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All rights reserved.</p>
           <div className="flex gap-4 mt-4 md:mt-0">
+            <Link href="/how-it-works" className="hover:text-primary transition-colors">How It Works</Link>
             <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
           </div>
         </div>

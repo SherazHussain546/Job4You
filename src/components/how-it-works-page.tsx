@@ -1,0 +1,221 @@
+'use client';
+
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import {
+  User,
+  ClipboardPaste,
+  Bot,
+  FileText,
+  Menu,
+} from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+
+const CodeSnippet = ({ code }: { code: string }) => (
+    <pre className="bg-muted text-muted-foreground rounded-md p-4 text-xs overflow-x-auto">
+        <code>{code}</code>
+    </pre>
+);
+
+export default function HowItWorksPage() {
+
+  const resumeSnippet = `\\documentclass[10pt, a4paper]{article}
+\\usepackage[T1]{fontenc}
+\\usepackage{mathptmx}
+\\usepackage[a4paper, top=0.5in, bottom=0.5in, left=0.6in, right=0.6in]{geometry}
+
+\\begin{document}
+
+\\begin{center}
+    {\\Huge \\textbf{ John Doe }} \\\\
+    Full-Stack Software Engineer & AI/Cloud Developer \\\\
+    \\vspace{2pt}
+    (123) 456-7890 $|$ \\href{mailto:john.doe@example.com}{john.doe@example.com} $|$ \\href{https://linkedin.com/in/johndoe}{LinkedIn}
+\\end{center}
+
+\\section*{PROFESSIONAL SUMMARY}
+\\begin{itemize}
+    \\item Results-driven Software Engineer with expertise in full-stack development...
+\\end{itemize}
+
+% ... and so on
+
+\\end{document}
+`;
+
+  return (
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold">
+              <span className="font-body">Job</span>
+              <span className="font-headline text-primary">for</span>
+              <span className="font-body">You</span>
+            </h1>
+          </Link>
+          <nav className="hidden items-center gap-2 md:flex">
+             <Button variant="ghost" asChild>
+                <Link href="/how-it-works">How It Works</Link>
+            </Button>
+             <Button variant="ghost" asChild>
+                <Link href="/about">About Us</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/login">Get Started</Link>
+            </Button>
+          </nav>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <div className="grid gap-4 py-4">
+                 <Link href="/how-it-works" className="text-lg font-medium">How It Works</Link>
+                 <Link href="/about" className="text-lg font-medium">About Us</Link>
+                 <Button asChild>
+                   <Link href="/login">Get Started</Link>
+                 </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </header>
+
+      <main className="flex-1">
+        <section className="py-20 md:py-32">
+          <div className="container text-center">
+             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
+                &#92;guide&#123;workflow&#125;
+            </code>
+            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
+              From Profile to Professionally Polished Documents
+            </h2>
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground text-center">
+                Our AI-powered workflow is designed to be simple, fast, and effective. Follow these steps to create perfectly tailored job application materials in minutes.
+            </p>
+          </div>
+        </section>
+
+        <section className="py-20 md:py-32 bg-secondary/30">
+          <div className="container">
+            <div className="mx-auto grid max-w-5xl items-center gap-y-16 gap-x-12">
+              <div className="space-y-16">
+                
+                <div className="grid gap-4 md:grid-cols-2 md:items-start">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">1</span>
+                        <div>
+                            <CardTitle className="text-2xl">Create Your Professional Profile</CardTitle>
+                             <p className="text-muted-foreground mt-1">This is your master document.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p>Navigate to the "Profile" tab in your dashboard. Fill out your contact information, work experience, education, projects, and skills. The more detail you provide, the better the AI can tailor your documents.</p>
+                       <div className="flex items-center gap-2 p-4 rounded-md bg-background/50 border">
+                           <User className="h-6 w-6 text-primary" />
+                           <p className="font-medium">Your profile is saved securely and can be updated at any time.</p>
+                       </div>
+                    </CardContent>
+                  </Card>
+                   <div className="flex items-center justify-center pt-8">
+                       <User className="w-24 h-24 text-primary/30" />
+                  </div>
+                </div>
+
+                <div className="grid gap-8 md:grid-cols-2 md:items-start">
+                     <div className="flex items-center justify-center pt-8 md:order-last">
+                       <ClipboardPaste className="w-24 h-24 text-primary/30" />
+                    </div>
+                  <Card>
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">2</span>
+                        <div>
+                             <CardTitle className="text-2xl">Provide the Job Description</CardTitle>
+                             <p className="text-muted-foreground mt-1">Give the AI its target.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Go to the "AI Tailor" tab. Find a job you're interested in and copy the entire job description. Paste it into the text area provided. This context is crucial for the AI to understand what the employer is looking for.</p>
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                <div className="grid gap-8 md:grid-cols-2 md:items-start">
+                  <Card>
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">3</span>
+                        <div>
+                             <CardTitle className="text-2xl">Generate Your Documents</CardTitle>
+                             <p className="text-muted-foreground mt-1">Let the AI do the heavy lifting.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Click the "Generate Application Kit" button. Our AI will analyze your profile against the job description and create a tailored resume and cover letter. The output will be in LaTeX, the gold standard for professional document formatting.</p>
+                      <CodeSnippet code={resumeSnippet} />
+                    </CardContent>
+                  </Card>
+                   <div className="flex items-center justify-center pt-8">
+                       <Bot className="w-24 h-24 text-primary/30" />
+                  </div>
+                </div>
+
+                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
+                     <div className="flex items-center justify-center pt-8 md:order-last">
+                       <FileText className="w-24 h-24 text-primary/30" />
+                    </div>
+                  <Card>
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">4</span>
+                         <div>
+                             <CardTitle className="text-2xl">Compile and Download Your PDF</CardTitle>
+                             <p className="text-muted-foreground mt-1">Get your publication-ready files.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p>Copy the generated LaTeX code for each document. Use the embedded Overleaf editor on the page or go to Overleaf.com, create a new blank project, paste the code, and click "Recompile." You'll have a perfectly formatted, professional PDF ready to submit.</p>
+                        <p className="text-sm text-muted-foreground">The Overleaf editor provides an easy way to see a live preview of your document and download the final PDF.</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 text-center">
+            <div className="container">
+                <h2 className="font-headline text-3xl md:text-4xl font-bold">Ready to Land Your Dream Job?</h2>
+                <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">Put our AI to the test and see how easy it is to create application materials that stand out.</p>
+                <div className="mt-8">
+                    <Button size="lg" asChild>
+                        <Link href="/login">Start Building for Free</Link>
+                    </Button>
+                </div>
+            </div>
+        </section>
+
+      </main>
+
+      <footer className="py-6 border-t">
+        <div className="container text-center text-muted-foreground">
+          &copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All
+          rights reserved.
+        </div>
+      </footer>
+    </div>
+  );
+}

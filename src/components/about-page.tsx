@@ -69,6 +69,9 @@ export default function AboutPage() {
           </Link>
           <nav className="hidden items-center gap-2 md:flex">
              <Button variant="ghost" asChild>
+                <Link href="/how-it-works">How It Works</Link>
+            </Button>
+             <Button variant="ghost" asChild>
                 <Link href="/about">About Us</Link>
             </Button>
             <Button asChild>
@@ -83,6 +86,7 @@ export default function AboutPage() {
             </SheetTrigger>
             <SheetContent side="right">
               <div className="grid gap-4 py-4">
+                 <Link href="/how-it-works" className="text-lg font-medium">How It Works</Link>
                  <Link href="/about" className="text-lg font-medium">About Us</Link>
                  <Button asChild>
                    <Link href="/login">Get Started</Link>
