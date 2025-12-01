@@ -77,38 +77,42 @@ const prompt = ai.definePrompt({
   name: 'generatePersonalizedCoverLetterPrompt',
   input: {schema: GeneratePersonalizedCoverLetterInputSchema},
   output: {schema: GeneratePersonalizedCoverLetterOutputSchema},
-  prompt: `You are an expert career coach. Your goal is to write a compelling, professional cover letter in LaTeX format.
+  prompt: `You are an expert career coach. Your task is to generate a compelling, professional cover letter in LaTeX format.
 You must use the provided user profile data and tailor it to the given job description.
 The final output must be only the LaTeX code, starting with \\documentclass and ending with \\end{document}.
 
 Job Description:
 {{{jobDescription}}}
 
-Here is the user's profile:
-- Name: {{{profileData.contactInfo.name}}}
-- Email: {{{profileData.contactInfo.email}}}
-- Phone: {{{profileData.contactInfo.phone}}}
-- LinkedIn: {{{profileData.contactInfo.linkedin}}}
-- Experience: Highlight relevant roles from {{{profileData.experience}}}
+User Profile Data:
+- Contact: {{{profileData.contactInfo.name}}}, {{{profileData.contactInfo.email}}}, {{{profileData.contactInfo.phone}}}, LinkedIn: {{{profileData.contactInfo.linkedin}}}
+- Experience: Highlight relevant achievements from {{{profileData.experience}}}
 - Skills: Select from {{{profileData.skills}}}
+- Projects: Draw from {{{profileData.projects}}}
 
-Use the following LaTeX template. Fill in the placeholders dynamically.
 AI Actions:
-1.  Extract the hiring manager's name and company name from the job description. If not found, use "Hiring Manager" and the company name.
-2.  Write a strong opening paragraph that grabs attention.
-3.  In the body paragraphs, connect the user's skills and experience directly to the requirements in the job description. Use 2-3 paragraphs.
-4.  Write a confident closing paragraph that reiterates interest and calls to action.
-5.  Ensure all placeholders like [Your Name], [Hiring Manager Name], etc., are replaced with actual data.
+1.  Extract the Job Title, Company Name, Hiring Manager's Name, and the platform where the job was advertised from the job description.
+    - If Hiring Manager is not found, use "Hiring Team".
+    - If platform is not found, omit that part.
+2.  Generate a compelling opening paragraph introducing the user and stating the role they're applying for.
+3.  Write 2-3 body paragraphs connecting the user's skills and experience (from their profile) directly to the job requirements. Use quantifiable achievements where possible.
+4.  Write a closing paragraph that expresses enthusiasm for the company and includes a strong call to action.
+5.  Replace all placeholders like [Job Title] with the extracted or generated information.
 
-\\documentclass[10pt,a4paper]{letter}
+Use the following LaTeX template.
+
+\\documentclass[10pt, a4paper]{article}
+
+% --- PDFlatex Compatible Preamble Block ---
 \\usepackage[T1]{fontenc}
-\\usepackage{mathptmx}
-\\usepackage[a4paper, top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\\usepackage{mathptmx} % Use Times Roman as the default font (pdflatex compatible)
+\\usepackage[a4paper, top=1.0in, bottom=1.0in, left=1.0in, right=1.0in]{geometry}
 \\usepackage{hyperref}
 
+% --- Customization ---
 \\pagestyle{empty}
 \\setlength{\\parindent}{0pt}
-\\setlength{\\parskip}{1.5ex}
+\\setlength{\\parskip}{1em}
 
 \\hypersetup{
     colorlinks=true,
@@ -117,46 +121,64 @@ AI Actions:
     urlcolor=black,
 }
 
-\\signature{\\textbf{ {{{profileData.contactInfo.name}}} }}
-\\address{
-    \\textbf{ {{{profileData.contactInfo.name}}} } \\\\
-    {{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} \\\\ {{/if}}
-    \\href{mailto:{{{profileData.contactInfo.email}}}}{ {{{profileData.contactInfo.email}}} }
-    {{#if profileData.contactInfo.linkedin}} \\\\ \\href{{{{profileData.contactInfo.linkedin}}}}{LinkedIn} {{/if}}
-}
-
 \\begin{document}
 
-\\begin{letter}{
-    % AI: Extract hiring manager's name and company name from job description
-    [Hiring Manager Name] \\\\
-    [Company Name] \\\\
-    [Company Address]
-}
+% --------------------
+% 1. SENDER CONTACT INFORMATION
+% --------------------
+\\raggedright
+\\textbf{ {{{profileData.contactInfo.name}}} } \\\\
+{{#if profileData.contactInfo.phone}} {{{profileData.contactInfo.phone}}} \\\\ {{/if}}
+\\href{mailto:{{{profileData.contactInfo.email}}}}{ {{{profileData.contactInfo.email}}} } \\\\
+{{#if profileData.contactInfo.linkedin}} \\href{{{{profileData.contactInfo.linkedin}}}}{LinkedIn Profile} \\\\ {{/if}}
 
-\\opening{Dear [Mr./Ms./Mx. Hiring Manager Name],}
+\\vspace{10pt}
 
-% AI: Write a compelling opening paragraph introducing the user and stating the role they're applying for.
-% Reference where the job was seen if possible.
-[Opening Paragraph: State your purpose and express enthusiasm.]
+% --------------------
+% 2. DATE AND RECIPIENT INFORMATION
+% --------------------
+\\today \\\\
 
-% AI: Write 2-3 body paragraphs.
-% Paragraph 1: Connect the user's most relevant skills from their profile to the job description's key requirements.
-[Body Paragraph 1: Highlight relevant skills and how they match the job.]
+\\vspace{10pt}
 
-% Paragraph 2: Use a specific example from the user's experience (work or projects) to demonstrate their qualifications. Quantify achievements if possible.
-[Body Paragraph 2: Provide a concrete example of past success.]
+% AI: Extract from Job Description. Use "Hiring Team" if name not found.
+\\textbf{[Hiring Manager Name]} \\\\
+\\textbf{[Hiring Manager Title]} \\\\
+\\textbf{[Company Name]} \\\\
 
-% Paragraph 3 (Optional): Discuss passion for the company or industry.
-[Body Paragraph 3: Show genuine interest in the company.]
+\\vspace{10pt}
 
+% AI: Extract Job Title from Job Description. Generate a relevant subtitle based on user's skills.
+\\textbf{Subject: Application for [Job Title] -- [Generated Subtitle, e.g., Full-Stack Software Engineer]}
 
-% AI: Write a strong closing paragraph. Reiterate interest, express confidence, and call to action (e.g., "I am eager to discuss...").
-[Closing Paragraph: Reiterate your interest and propose next steps.]
+\\vspace{10pt}
 
-\\closing{Sincerely,}
+% --------------------
+% 3. LETTER BODY
+% --------------------
+% AI: Address the hiring manager or team.
+Dear [Mr./Ms./Mx. Last Name or Hiring Team],
 
-\\end{letter}
+% AI: Write a compelling opening paragraph. Mention the specific role and where it was advertised.
+% Express genuine interest and briefly introduce yourself.
+I am writing to express my enthusiastic interest in the **[Job Title]** position at **[Company Name]**, as advertised on [Platform]. As a [Your Description, e.g., recent First-Class Honors graduate in Computing] with a strong foundation in [Your Key Areas, e.g., Full-Stack development, AI/ML, and DevSecOps], I am confident that my technical skills and proactive approach align perfectly with your team's requirements.
+
+% AI: Write a body paragraph connecting your experience to the job. Use a specific, powerful example.
+% Use quantifiable data from the user's profile if available.
+My background spans complex, end-to-end development, specializing in modern frameworks such as [Your Frameworks, e.g., Angular, React.js] and scalable cloud services like [Your Cloud Skills, e.g., AWS, Kubernetes]. In my project work, I consistently focused on developing practical, high-impact solutions. For example, [Select a strong project or experience from the user's profile and describe it, e.g., the Market Genius platform I architected...]. This demonstrates my ability to transition from concept to deployment in a complex domain.
+
+% AI: Write another body paragraph showing you understand business impact or are a cultural fit.
+Furthermore, my development experience is directly complemented by [Mention a relevant achievement or quality, e.g., quantifiable business achievements]. I believe that combining engineering excellence with a strong understanding of commercial impact is crucial for a development role at **[Company Name]**.
+
+% AI: Write a paragraph showing genuine interest in the specific company.
+I am particularly excited about [Mention a specific company product, project, or value you researched] and see a direct opportunity to leverage my expertise in [Mention 1-2 key skills from your profile, e.g., Generative AI] to contribute to this area. I am ready to bring my energy, commitment to excellence, and collaborative spirit to your team.
+
+Thank you for your time and consideration. I have attached my resume for your review and look forward to the opportunity to discuss how my competencies can drive success at [Company Name].
+
+\\vspace{10pt}
+
+Sincerely, \\\\
+{{{profileData.contactInfo.name}}}
 
 \\end{document}
 `,
