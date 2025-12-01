@@ -100,9 +100,9 @@ export default function AboutPage() {
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
                 &#92;know&#123;about_us&#125;
             </code>
-            <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter mt-4">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
               The Home of Scientific and Technical Writing
-            </h1>
+            </h2>
             <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
               Job4You was developed by SYNC TECH Solutions to make scientific writing simpler and collaboration seamless. Millions of users at research institutions and innovative companies worldwide love our platform because it helps them write smarter and achieve more, together.
             </p>
