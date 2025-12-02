@@ -1,127 +1,55 @@
-![Job4You Logo](images/Logo2.png)
-# Job4You  
-AI-powered ATS-Optimized Resume, Cover Letter & Email Generator
+# ResumeCraft AI
 
-**Job4You** is a simple Python/Colab script that uses GPT-4 and scikit-learn to turn your profile + any job description into:
+Welcome to **ResumeCraft AI**—the web application that transforms your professional profile into a perfectly tailored, ATS-optimized resume and cover letter using the power of Generative AI.
 
-- An ATS-optimized **resume**  
-- A tailored **cover letter**  
-- A professional **initial application email**  
-- A polite **follow-up email**  
+This project was bootstrapped with [Firebase App Hosting](https://firebase.google.com/docs/app-hosting).
 
-All you have to do is drop in your details, your OpenAI API key, paste the job description, run, and copy-&-paste your materials!
+![Job4You Screenshot](https://github.com/SherazHussain546/Job4You/blob/main/images/screenshot.png?raw=true)
 
----
+## ✨ Core Features
 
-## 🚀 Features
+-   **Secure Authentication**: Sign in with Google, email, or explore anonymously.
+-   **Intuitive Profile Editor**: Easily manage your education, experience, projects, certifications, and skills in a clean dashboard.
+-   **AI-Powered Tailoring**: Paste any job description, and our AI will analyze your profile to generate a custom-tailored resume and cover letter in professional LaTeX format.
+-   **Instant PDF Generation**: Use the embedded Overleaf editor to compile your documents into polished, downloadable PDFs without leaving the app.
+-   **Modern Tech Stack**: Built with Next.js, React, Tailwind CSS, and powered by Genkit for AI and Firebase for the backend.
 
-- **ATS scoring** (pre- & post-optimization) via keyword overlap  
-- **Keyword extraction** from job descriptions to suggest missing skills  
-- **“Strict” resume** version that forces extracted keywords verbatim for ≥ 90% ATS match  
-- **Humanized** resume & cover letter in plain-text, Arial-11pt style  
-- **Automatic role/company detection** for emails  
+## 🚀 Getting Started
 
----
+This is a [Next.js](https://nextjs.org/) project. To get it running locally, follow these steps.
 
-## 📋 Getting Started
+### Prerequisites
 
-### 1. Clone or download this repo
+-   Node.js (v18 or later)
+-   npm or yarn
 
-```bash
-git clone https://github.com/SherazHussain546/Job4You.git
-cd Job4You
-```
-2. Install dependencies
+### Installation & Setup
 
-In Colab: skip—most libs are preinstalled.
-```bash
-pip install --upgrade openai scikit-learn
-```
-3. Configure your API key
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/SherazHussain546/Job4You.git
+    cd Job4You
+    ```
 
-    Get your key at https://platform.openai.com/account/api-keys
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-    In the script/notebook, replace:
-```bash
-client = OpenAI(api_key="YOUR_CHATGPT_API_KEY")
-```
-with your key.
+3.  **Set up environment variables:**
+    Create a `.env` file in the root of the project and add your Firebase project configuration keys.
 
-    🔒 Keep it secret! Don’t commit it publicly.
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
 
-4. Fill in your profile
+Open [http://localhost:9002](http://localhost:9002) in your browser to see the application.
 
-Replace the user_data block:
-```bash
-user_data = """
-Name: YOUR FULL NAME
-Email: YOUR EMAIL
-Phone: YOUR PHONE
-Location: YOUR LOCATION
-LinkedIn: YOUR LINKEDIN URL
-Website: YOUR PORTFOLIO URL
+## 📄 License
 
-Skills:
-- …
-
-Experience:
-- …
-
-Projects:
-- …
-
-Education:
-- …
-
-Certifications:
-- …
-"""
-```
-5. Paste your job description
-
-Replace:
-```bash
-job_description = """
-PASTE YOUR JOB DESCRIPTION HERE
-"""
-```
-▶️ Usage
-
-    Run the script or open the notebook in Colab.
-
-    The tool will:
-
-        Extract top keywords from the JD
-
-        Suggest extra skills to include
-
-        Generate your resume, optimized resume, cover letter, application email, and follow-up email
-
-        Print all materials with ATS scores
-
-    Copy & paste each section into your preferred editor or application.
-
-📑 Example Workflow
-```bash
-# Local
-python job4you.py
-
-# Colab
-# 1. Upload this notebook
-# 2. Fill in your details & API key
-# 3. Paste JD
-# 4. Run all cells
-```
-⚙️ Configuration Options
-
-    Model: Change model="gpt-4" to any GPT-4/3.5 model.
-
-    Max tokens: Tweak max_tokens= in generate_with_gpt().
-
-    Keyword count: Adjust top_n= in extract_job_keywords().
-
-📄 License
-
-This project is open-source under the MIT License. Feel free to fork and improve!
-
-Happy job hunting with Job4You!
+This project is open-source under the MIT License. Feel free to fork, contribute, and improve!
