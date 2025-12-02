@@ -52,22 +52,22 @@ export default function Dashboard() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => setActiveTab('tailor')}
-                isActive={activeTab === 'tailor'}
-                tooltip={{ children: 'AI Tailor' }}
-              >
-                <Bot />
-                <span>AI Tailor</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
                 onClick={() => setActiveTab('profile')}
                 isActive={activeTab === 'profile'}
                 tooltip={{ children: 'Profile' }}
               >
                 <User />
                 <span>Profile</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setActiveTab('tailor')}
+                isActive={activeTab === 'tailor'}
+                tooltip={{ children: 'AI Tailor' }}
+              >
+                <Bot />
+                <span>AI Tailor</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
