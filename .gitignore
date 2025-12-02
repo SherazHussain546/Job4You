@@ -1,35 +1,22 @@
-
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Dependencies
+# dependencies
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
-# Testing
+# testing
 /coverage
 
-# Next.js build output
-/.next
-/out
+# next.js
+/.next/
+/out/
 
-# Production
+# production
 /build
 
-# Vercel
-.vercel
-
-# Turborepo
-.turbo
-
-# dotenv
-.env
-.env*.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Misc
+# misc
 .DS_Store
 *.pem
 
@@ -37,12 +24,16 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
-# Local History for Visual Studio Code
-.history/
+# local env files
+.env*.local
 
-# Lockfiles
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Generated images
+Job4You_*.png
