@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: 'Write like a rocket scientist with JobforYou—the collaborative, online LaTeX editor that anyone can use. Purpose-built for scientific and technical writing.',
   keywords: ['LaTeX editor', 'online LaTeX', 'collaborative writing', 'scientific writing', 'technical writing', 'research papers', 'JobforYou', 'SYNC TECH Solutions'],
   authors: [{ name: 'SYNC TECH Solutions', url: 'https://synctech.ie' }],
+  icons: {
+    icon: '/favicon.ico',
+  },
   openGraph: {
     title: 'JobforYou | The Online LaTeX Editor for Technical Writing',
     description: 'The collaborative, online LaTeX editor that makes it easy to write, edit, and share your scientific and technical documents.',
