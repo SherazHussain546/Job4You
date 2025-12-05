@@ -37,7 +37,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Select,
@@ -346,27 +345,40 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
               Connect directly with companies and referrers. Find your next opportunity or hire top talent from our community.
             </p>
             <div className="mt-8">
-              <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" onClick={handlePostJobClick} disabled={isUserLoading}>
-                    {isUserLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-                    Post a Job or Referral
+               {isUserLoading ? (
+                 <Button size="lg" disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>Create a New Job Post</DialogTitle>
-                    <DialogDescription>
-                      Fill out the details below. Your post will be visible to the community after admin verification.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <ScrollArea className="max-h-[80vh] p-0">
-                    <div className="py-4 pr-6">
-                      <JobPostForm onFinished={() => setIsFormOpen(false)} />
-                    </div>
-                  </ScrollArea>
-                </DialogContent>
-              </Dialog>
+               ) : user ? (
+                 <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+                    <DialogTrigger asChild>
+                    <Button size="lg" onClick={() => setIsFormOpen(true)}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Post a Job or Referral
+                    </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Create a New Job Post</DialogTitle>
+                        <DialogDescription>
+                        Fill out the details below. Your post will be visible to the community after admin verification.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <ScrollArea className="max-h-[80vh] p-0">
+                        <div className="py-4 pr-6">
+                        <JobPostForm onFinished={() => setIsFormOpen(false)} />
+                        </div>
+                    </ScrollArea>
+                    </DialogContent>
+                </Dialog>
+               ) : (
+                <Button size="lg" asChild>
+                    <Link href="/login?redirect=/community">
+                        Join the Conversation to Post a Job
+                    </Link>
+                </Button>
+               )}
             </div>
           </div>
         </section>
@@ -448,3 +460,5 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
     </>
   );
 }
+
+    
