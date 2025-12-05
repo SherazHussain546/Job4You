@@ -52,6 +52,13 @@ service cloud.firestore {
     }
 
     /**
+     * Checks if the authenticated user is the designated admin.
+     */
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'sherazhussainofficial1@gmail.com';
+    }
+
+    /**
      * Ensures an operation is performed by the document owner and that the
      * document already exists. Crucial for secure update and delete operations.
      * @param userId The user ID to verify ownership against.
@@ -145,9 +152,8 @@ service cloud.firestore {
      * Admin roles (not defined here) would be responsible for changing the status.
      */
     match /jobPosts/{jobId} {
-      // Anyone can read an approved job post or list of approved job posts.
-      // The client-side query is responsible for filtering by status.
-      allow get, list: if true;
+      allow get: if true;
+      allow list: if isSignedIn() || isAdmin();
 
       /**
        * @description Allows an authenticated user to create a new job post.
@@ -161,16 +167,19 @@ service cloud.firestore {
                       && request.resource.data.status == 'pending'
                       && request.resource.data.createdAt == request.time;
       
-      // The user who created the post can update it, but only if it's still 'pending'.
-      // They cannot change the posterId, createdAt, or status fields.
-      allow update: if isOwner(resource.data.posterId) 
+      /**
+       * @description Allows post owners to update their own pending posts, or an admin to update any post's status.
+       */
+      allow update: if (isOwner(resource.data.posterId) 
                       && resource.data.status == 'pending'
                       && request.resource.data.posterId == resource.data.posterId
                       && request.resource.data.createdAt == resource.data.createdAt
-                      && request.resource.data.status == resource.data.status;
+                      && request.resource.data.status == resource.data.status)
+                    || (isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']));
                       
       // The user who created the post can delete it, but only if it's still 'pending'.
-      allow delete: if isOwner(resource.data.posterId) && resource.data.status == 'pending';
+      // An admin can delete any post.
+      allow delete: if isOwner(resource.data.posterId) && resource.data.status == 'pending' || isAdmin();
     }
   }
 }

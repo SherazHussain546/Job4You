@@ -19,17 +19,20 @@ import {
 import { Button } from './ui/button';
 import { useAuth, useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { LogOut, User, Bot, Globe } from 'lucide-react';
+import { LogOut, User, Bot, Globe, Shield } from 'lucide-react';
 import ProfileEditor from './profile-editor';
 import ResumeTailor from './resume-tailor';
 import CommunityView from './community-view';
+import AdminView from './admin-view';
 
-type Tab = 'profile' | 'tailor' | 'community';
+type Tab = 'profile' | 'tailor' | 'community' | 'admin';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('profile');
   const { user } = useUser();
   const auth = useAuth();
+  
+  const isAdmin = user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   const getInitials = (name?: string | null) => {
     if (!name) return 'U';
@@ -83,6 +86,18 @@ export default function Dashboard() {
                   <span>Community</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
+            {isAdmin && (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => setActiveTab('admin')}
+                  isActive={activeTab === 'admin'}
+                  tooltip={{ children: 'Admin Panel' }}
+                >
+                  <Shield />
+                  <span>Admin</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
@@ -109,6 +124,7 @@ export default function Dashboard() {
             {activeTab === 'profile' && <ProfileEditor />}
             {activeTab === 'tailor' && <ResumeTailor />}
             {activeTab === 'community' && <CommunityView />}
+            {activeTab === 'admin' && isAdmin && <AdminView />}
         </main>
       </SidebarInset>
     </SidebarProvider>
