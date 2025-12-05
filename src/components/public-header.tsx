@@ -94,7 +94,7 @@ export function PublicHeader() {
       {/* Floating Bottom Nav for Mobile */}
       <div className="md:hidden fixed bottom-4 left-0 right-0 z-50 flex justify-center">
         <TooltipProvider>
-          <nav className="flex h-16 items-center justify-around gap-2 rounded-full bg-primary/70 p-2 shadow-lg backdrop-blur-sm">
+          <nav className="flex h-16 items-center justify-around gap-2 rounded-full bg-primary p-2 shadow-lg">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -104,8 +104,8 @@ export function PublicHeader() {
                     <Link
                       href={item.href}
                       className={cn(
-                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-white/80 transition-colors hover:bg-white/10',
-                        isActive && 'bg-white/20 text-white'
+                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10',
+                        isActive && 'bg-primary-foreground/20 text-primary-foreground'
                       )}
                     >
                       <Icon className="h-6 w-6" />
@@ -123,8 +123,8 @@ export function PublicHeader() {
                 <Link
                   href={MobileAuthHref}
                   className={cn(
-                    'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-white/80 transition-colors hover:bg-white/10',
-                    pathname === MobileAuthHref && 'bg-white/20 text-white'
+                    'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10',
+                    pathname === MobileAuthHref && 'bg-primary-foreground/20 text-primary-foreground'
                   )}
                 >
                   <MobileAuthIcon />
