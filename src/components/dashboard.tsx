@@ -47,12 +47,11 @@ export default function Dashboard() {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2">
-            
+          <Link href="/" className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-sidebar-foreground">
                 <span className="font-body">Job</span><span className="font-headline text-primary">for</span><span className="font-body">You</span>
             </h1>
-          </div>
+          </Link>
         </SidebarHeader>
         <SidebarContent className="p-2">
           <SidebarMenu>
@@ -118,7 +117,7 @@ export default function Dashboard() {
       </Sidebar>
       <SidebarInset>
          <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-            <SidebarTrigger className="md:hidden" />
+            <SidebarTrigger />
         </header>
         <main className="h-full p-4 md:p-6 lg:p-8">
             {activeTab === 'profile' && <ProfileEditor />}
