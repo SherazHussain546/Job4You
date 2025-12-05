@@ -55,6 +55,7 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { useState, useMemo } from 'react';
 import type { JobPostFormData } from '@/lib/types';
+import { ScrollArea } from './ui/scroll-area';
 
 
 const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
@@ -406,9 +407,11 @@ export default function CommunityPage() {
                       Fill out the details below. Your post will be visible to the community after admin verification.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="py-4">
-                    <JobPostForm onFinished={() => setIsFormOpen(false)} />
-                  </div>
+                  <ScrollArea className="max-h-[80vh] p-0">
+                    <div className="py-4 pr-6">
+                      <JobPostForm onFinished={() => setIsFormOpen(false)} />
+                    </div>
+                  </ScrollArea>
                 </DialogContent>
               </Dialog>
             </div>
