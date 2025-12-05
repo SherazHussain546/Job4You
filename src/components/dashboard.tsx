@@ -25,7 +25,7 @@ import ResumeTailor from './resume-tailor';
 import CommunityView from './community-view';
 import AdminView from './admin-view';
 
-type Tab = 'profile' | 'tailor' | 'jobs' | 'admin';
+type Tab = 'profile' | 'tailor' | 'jobs' | 'admin' | 'community';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('profile');
@@ -85,6 +85,16 @@ export default function Dashboard() {
                   <span>Jobs</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
+             <SidebarMenuItem>
+                <SidebarMenuButton
+                    onClick={() => setActiveTab('community')}
+                    isActive={activeTab === 'community'}
+                    tooltip={{ children: 'Community' }}
+                >
+                  <Users />
+                  <span>Community</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
             {isAdmin && (
               <SidebarMenuItem>
                 <SidebarMenuButton
@@ -123,6 +133,7 @@ export default function Dashboard() {
             {activeTab === 'profile' && <ProfileEditor />}
             {activeTab === 'tailor' && <ResumeTailor />}
             {activeTab === 'jobs' && <CommunityView showHeader={false} />}
+            {activeTab === 'community' && <CommunityView showListings={false} />}
             {activeTab === 'admin' && isAdmin && <AdminView />}
         </main>
       </SidebarInset>

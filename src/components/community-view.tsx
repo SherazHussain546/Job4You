@@ -303,7 +303,7 @@ const JobCard = ({ job }: { job: JobPost }) => (
   </Card>
 );
 
-export default function CommunityView() {
+export default function CommunityView({ showHeader = true, showListings = true }: { showHeader?: boolean; showListings?: boolean }) {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
@@ -340,131 +340,135 @@ export default function CommunityView() {
 
   return (
     <div className="container mx-auto px-4">
-      <section className="w-full py-8 md:py-12">
-        <div className="text-center">
-          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
-            &#92;chapter&#123;job_board&#125;
-          </code>
-          <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
-            Community Job Board
-          </h2>
-          <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
-            Connect directly with companies and referrers. This board is built on trust—a place for our community to share and discover genuine opportunities. Find your next role or hire top talent from a network of skilled professionals.
-          </p>
-          <div className="mt-8">
-             {isUserLoading ? (
-               <Button size="lg" disabled>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Loading...
-                </Button>
-             ) : user ? (
-               <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                  <DialogTrigger asChild>
-                  <Button size="lg" onClick={() => setIsFormOpen(true)}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Post a Job or Referral
-                  </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-2xl">
-                  <DialogHeader>
-                      <DialogTitle>Create a New Job Post</DialogTitle>
-                      <DialogDescription>
-                      Fill out the details below. Your post will be visible to the community after admin verification.
-                      </DialogDescription>
-                  </DialogHeader>
-                  <ScrollArea className="max-h-[80vh] p-0">
-                      <div className="py-4 pr-6">
-                      <JobPostForm onFinished={() => setIsFormOpen(false)} />
-                      </div>
-                  </ScrollArea>
-                  </DialogContent>
-              </Dialog>
-             ) : (
-              <Button size="lg" asChild>
-                  <Link href="/login?redirect=/jobs">
-                      Join the Conversation to Post a Job
-                  </Link>
-              </Button>
-             )}
-          </div>
-        </div>
-      </section>
-
-      <section id="job-listings" className={'w-full'}>
-        <div className="container mx-auto">
-           <div className="relative mb-8 text-center">
-            <h2 className="font-headline text-3xl md:text-4xl font-bold">
-                Open Opportunities
+      {showHeader && (
+        <section className="w-full py-8 md:py-12">
+            <div className="text-center">
+            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
+                &#92;chapter&#123;job_board&#125;
+            </code>
+            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
+                Community Job Board
             </h2>
-            <p className="mt-2 text-muted-foreground">
-                Browse the latest jobs and referrals from the Job4You community.
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
+                Connect directly with companies and referrers. This board is built on trust—a place for our community to share and discover genuine opportunities. Find your next role or hire top talent from a network of skilled professionals.
             </p>
-          </div>
-          
-           {user && (
-            <div className="mb-8 flex justify-center">
-              <div className="w-full max-w-xs">
-                <Label htmlFor="category-filter">Filter by Category</Label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger id="category-filter" className="w-full">
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {jobCategories.map(cat => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="mt-8">
+                {isUserLoading ? (
+                <Button size="lg" disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
+                    </Button>
+                ) : user ? (
+                <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+                    <DialogTrigger asChild>
+                    <Button size="lg" onClick={() => setIsFormOpen(true)}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Post a Job or Referral
+                    </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Create a New Job Post</DialogTitle>
+                        <DialogDescription>
+                        Fill out the details below. Your post will be visible to the community after admin verification.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <ScrollArea className="max-h-[80vh] p-0">
+                        <div className="py-4 pr-6">
+                        <JobPostForm onFinished={() => setIsFormOpen(false)} />
+                        </div>
+                    </ScrollArea>
+                    </DialogContent>
+                </Dialog>
+                ) : (
+                <Button size="lg" asChild>
+                    <Link href="/login?redirect=/jobs">
+                        Join the Conversation to Post a Job
+                    </Link>
+                </Button>
+                )}
             </div>
-          )}
+            </div>
+        </section>
+      )}
 
-          {isLoading ? (
-            <div className="flex h-40 items-center justify-center">
-              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      {showListings && (
+        <section id="job-listings" className={'w-full'}>
+            <div className="container mx-auto">
+            <div className="relative mb-8 text-center">
+                <h2 className="font-headline text-3xl md:text-4xl font-bold">
+                    Open Opportunities
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                    Browse the latest jobs and referrals from the Job4You community.
+                </p>
             </div>
-          ) : user ? (
-            filteredJobPosts && filteredJobPosts.length > 0 ? (
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {filteredJobPosts.map(job => (
-                    <JobCard key={job.id} job={job} />
-                ))}
+            
+            {user && (
+                <div className="mb-8 flex justify-center">
+                <div className="w-full max-w-xs">
+                    <Label htmlFor="category-filter">Filter by Category</Label>
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger id="category-filter" className="w-full">
+                        <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {jobCategories.map(cat => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
+                    </SelectContent>
+                    </Select>
                 </div>
+                </div>
+            )}
+
+            {isLoading ? (
+                <div className="flex h-40 items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                </div>
+            ) : user ? (
+                filteredJobPosts && filteredJobPosts.length > 0 ? (
+                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    {filteredJobPosts.map(job => (
+                        <JobCard key={job.id} job={job} />
+                    ))}
+                    </div>
+                ) : (
+                    <Card className="text-center py-12">
+                    <CardHeader>
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                        <Briefcase className="h-8 w-8 text-muted-foreground" />
+                        </div>
+                        <CardTitle className="mt-4">No Open Jobs Here Yet</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground">
+                            {selectedCategory === 'All Categories' 
+                                ? 'There are no approved job posts right now. Why not be the first to post one?' 
+                                : `Jobs for the "${selectedCategory}" category will appear here soon. Check back later!`}
+                        </p>
+                    </CardContent>
+                    </Card>
+                )
             ) : (
-                <Card className="text-center py-12">
+                <Card className="py-12 text-center">
                 <CardHeader>
                     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
                     <Briefcase className="h-8 w-8 text-muted-foreground" />
                     </div>
-                    <CardTitle className="mt-4">No Open Jobs Here Yet</CardTitle>
+                    <CardTitle className="mt-4">Access Restricted</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground">
-                        {selectedCategory === 'All Categories' 
-                            ? 'There are no approved job posts right now. Why not be the first to post one?' 
-                            : `Jobs for the "${selectedCategory}" category will appear here soon. Check back later!`}
-                    </p>
+                    <p className="mb-4 text-muted-foreground">Please sign up or log in to view job opportunities from the community.</p>
+                    <Button asChild>
+                    <Link href="/login?redirect=/jobs">Login / Sign Up</Link>
+                    </Button>
                 </CardContent>
                 </Card>
-            )
-          ) : (
-            <Card className="py-12 text-center">
-              <CardHeader>
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                  <Briefcase className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <CardTitle className="mt-4">Access Restricted</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4 text-muted-foreground">Please sign up or log in to view job opportunities from the community.</p>
-                <Button asChild>
-                  <Link href="/login?redirect=/jobs">Login / Sign Up</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </section>
+            )}
+            </div>
+        </section>
+      )}
     </div>
   );
 }

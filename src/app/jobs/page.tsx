@@ -10,7 +10,7 @@ export default function JobsPage() {
       <PublicHeader />
 
       <main className="flex-1">
-        <CommunityView />
+        <CommunityView showHeader={false} />
       </main>
 
       <footer className="py-6 border-t">
