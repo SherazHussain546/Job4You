@@ -26,7 +26,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
 import { useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import type { JobPost } from '@/lib/types';
 import { defaultJobPost } from '@/lib/types';
-import { jobPostFormSchema } from '@/lib/validators';
+import { jobPostFormSchema, baseJobPostSchema } from '@/lib/validators';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -54,7 +54,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { useState, useMemo } from 'react';
-import { jobPostSchema } from '@/lib/validators';
 import type { JobPostFormData } from '@/lib/types';
 
 
@@ -158,7 +157,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                    {(jobPostFormSchema.shape.category.options).map(cat => (
+                    {(baseJobPostSchema.shape.category.options).map(cat => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                     ))}
                     </SelectContent>
@@ -180,7 +179,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                     {(jobPostFormSchema.shape.jobType.options).map(type => (
+                     {(baseJobPostSchema.shape.jobType.options).map(type => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
                     ))}
                     </SelectContent>
