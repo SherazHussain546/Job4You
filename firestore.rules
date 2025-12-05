@@ -146,11 +146,10 @@ service cloud.firestore {
     /**
      * @description Manages job postings on the community board.
      * @path /jobPosts/{jobId}
-     * @principle Any user can read the job posts. Authenticated users can create 
-     * job posts, but they are initially in a 'pending' state. Posts are only publicly 
-     * readable (`list`, `get`) if their status is 'approved'. Only the owner can 
-     * update or delete their own pending posts. Admin roles would be responsible for 
-     * changing the status.
+     * @principle Any signed-in user can read the job posts. Authenticated users can create 
+     * job posts, but they are initially in a 'pending' state. Client-side logic filters
+     * for 'approved' posts. Only the owner can update or delete their own pending posts. 
+     * Admin roles are responsible for changing the status.
      */
     match /jobPosts/{jobId} {
       allow read: if isSignedIn();
