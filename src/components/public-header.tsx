@@ -93,7 +93,7 @@ export function PublicHeader() {
       {/* Floating Bottom Nav for Mobile */}
       <div className="md:hidden fixed bottom-4 left-0 right-0 z-50 flex justify-center">
         <TooltipProvider>
-          <nav className="flex h-16 items-center justify-around gap-2 rounded-full bg-primary p-2 shadow-lg">
+          <nav className="flex h-16 items-center justify-around gap-2 rounded-full bg-primary/70 p-2 shadow-lg backdrop-blur-sm">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
