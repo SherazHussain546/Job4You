@@ -144,7 +144,7 @@ service cloud.firestore {
     }
     
     /**
-     * @description Manages job postings on the community board.
+     * @description Manages job postings on the community job board.
      * @path /jobPosts/{jobId}
      * @principle Any signed-in user can read the job posts. Authenticated users can create 
      * job posts, but they are initially in a 'pending' state. Client-side logic filters
@@ -153,31 +153,16 @@ service cloud.firestore {
      */
     match /jobPosts/{jobId} {
       allow read: if isSignedIn();
-
-      /**
-       * @description Allows an authenticated user to create a new job post.
-       * @condition - The user must be signed in.
-       *            - The incoming data must be valid (posterId matches creator's UID).
-       *            - The initial status must be 'pending'.
-       *            - `createdAt` must be set to the server timestamp.
-       */
       allow create: if isSignedIn() 
                       && request.resource.data.posterId == request.auth.uid
                       && request.resource.data.status == 'pending'
                       && request.resource.data.createdAt == request.time;
-      
-      /**
-       * @description Allows post owners to update their own pending posts, or an admin to update any post's status.
-       */
       allow update: if (isOwner(resource.data.posterId) 
                       && resource.data.status == 'pending'
                       && request.resource.data.posterId == resource.data.posterId
                       && request.resource.data.createdAt == resource.data.createdAt
                       && request.resource.data.status == resource.data.status)
                     || (isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']));
-                      
-      // The user who created the post can delete it, but only if it's still 'pending'.
-      // An admin can delete any post.
       allow delete: if isOwner(resource.data.posterId) && resource.data.status == 'pending' || isAdmin();
     }
   }
