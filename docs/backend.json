@@ -1,5 +1,82 @@
 {
   "entities": {
+    "JobPost": {
+      "title": "Job Post",
+      "description": "Represents a job posting on the community board.",
+      "type": "object",
+      "properties": {
+        "jobTitle": {
+          "type": "string",
+          "description": "The title of the job."
+        },
+        "companyName": {
+            "type": "string",
+            "description": "The name of the company hiring."
+        },
+        "jobDescription": {
+          "type": "string",
+          "description": "A detailed description of the job, responsibilities, and qualifications."
+        },
+        "category": {
+            "type": "string",
+            "description": "The category of the job.",
+            "enum": ["Tech", "Pharmacy", "Engineering", "Design", "Marketing", "Other"]
+        },
+        "jobType": {
+            "type": "string",
+            "description": "The type of employment.",
+            "enum": ["Full-time", "Part-time", "Contract", "Freelance", "Internship"]
+        },
+        "applyLink": {
+          "type": "string",
+          "format": "uri",
+          "description": "An optional URL to an external application page."
+        },
+        "applyEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "An optional email address for candidates to send applications."
+        },
+        "postedBy": {
+          "type": "string",
+          "description": "The name of the user who created the job post."
+        },
+        "posterId": {
+          "type": "string",
+          "description": "The UID of the user who created the job post."
+        },
+        "posterEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "The email of the user who created the post."
+        },
+        "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the job post was created."
+        },
+        "status": {
+          "type": "string",
+          "description": "The verification status of the job post.",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        }
+      },
+      "required": [
+        "jobTitle",
+        "jobDescription",
+        "category",
+        "jobType",
+        "postedBy",
+        "posterId",
+        "posterEmail",
+        "createdAt",
+        "status"
+      ]
+    },
     "UserProfile": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "UserProfile",
@@ -142,12 +219,20 @@
           ]
         }
       },
-       {
+      {
         "path": "/marketingSubscribers/{subscriberId}",
         "definition": {
           "entityName": "MarketingSubscriber",
           "schema": { "$ref": "#/backend/entities/MarketingSubscriber" },
           "description": "Stores contact information for marketing purposes. This collection is write-only for authenticated users and should be read-only for administrative roles."
+        }
+      },
+      {
+        "path": "/jobPosts/{jobId}",
+        "definition": {
+            "entityName": "JobPost",
+            "schema": { "$ref": "#/backend/entities/JobPost" },
+            "description": "Stores job postings for the community job board. Authenticated users can create posts, but posts are only publicly readable after admin approval ('approved' status)."
         }
       }
     ],

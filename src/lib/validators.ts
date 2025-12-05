@@ -50,3 +50,22 @@ export const profileSchema = z.object({
   certifications: z.array(certificationSchema),
   skills: z.array(z.string().min(1, "Skill entry can't be empty.")).min(3, 'At least three skills are required.'),
 });
+
+
+export const jobPostSchema = z.object({
+    jobTitle: z.string().min(3, 'Job title must be at least 3 characters.'),
+    companyName: z.string().optional(),
+    jobDescription: z.string().min(20, 'Description must be at least 20 characters.'),
+    category: z.enum(['Tech', 'Pharmacy', 'Engineering', 'Design', 'Marketing', 'Other']),
+    jobType: z.enum(['Full-time', 'Part-time', 'Contract', 'Freelance', 'Internship']),
+    applyLink: z.string().url('Please enter a valid URL.').optional().or(z.literal('')),
+    applyEmail: z.string().email('Please enter a valid email.').optional().or(z.literal('')),
+    postedBy: z.string(),
+    posterId: z.string(),
+    posterEmail: z.string().email(),
+    createdAt: z.any(), // Firestore serverTimestamp will be used here
+    status: z.enum(['pending', 'approved', 'rejected']),
+}).refine(data => data.applyLink || data.applyEmail, {
+    message: "Either an application link or an email is required.",
+    path: ["applyLink"], // Or "applyEmail", so the error appears on one of the fields
+});

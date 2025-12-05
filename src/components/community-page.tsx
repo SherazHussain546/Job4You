@@ -1,43 +1,337 @@
 'use client';
 
-import Link from 'next/link';
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  orderBy,
+} from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import {
-  Users,
-  MessageSquare,
-  Calendar,
-  Award,
   Menu,
+  Plus,
+  Loader2,
+  Briefcase,
+  Building,
+  Mail,
+  ExternalLink,
+  ShieldCheck,
+  Clock,
 } from 'lucide-react';
-import Image from 'next/image';
+import Link from 'next/link';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { useAuth, useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
+import type { JobPost } from '@/lib/types';
+import { defaultJobPost } from '@/lib/types';
+import { jobPostSchema } from '@/lib/validators';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
+import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Badge } from './ui/badge';
+import { formatDistanceToNow } from 'date-fns';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
+import { useState } from 'react';
+
+type JobPostFormData = Omit<JobPost, 'id' | 'postedBy' | 'posterId' | 'posterEmail' | 'createdAt' | 'status'>;
+
+const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
+  const { user } = useUser();
+  const firestore = useFirestore();
+  const { toast } = useToast();
+
+  const form = useForm<JobPostFormData>({
+    resolver: zodResolver(jobPostSchema.omit({ postedBy: true, posterId: true, posterEmail: true, createdAt: true, status: true })),
+    defaultValues: defaultJobPost,
+  });
+
+  const onSubmit = async (data: JobPostFormData) => {
+    if (!user) {
+      toast({
+        title: 'Authentication Error',
+        description: 'You must be logged in to post a job.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const newJobPost = {
+      ...data,
+      postedBy: user.displayName || 'Anonymous',
+      posterId: user.uid,
+      posterEmail: user.email || '',
+      createdAt: serverTimestamp(),
+      status: 'pending' as const,
+    };
+    
+    const collectionRef = collection(firestore, 'jobPosts');
+
+    try {
+      await addDoc(collectionRef, newJobPost);
+      toast({
+        title: 'Job Post Submitted!',
+        description: 'Your job post has been submitted for verification. It will be live once approved.',
+      });
+      form.reset();
+      onFinished();
+    } catch (error) {
+       errorEmitter.emit(
+        'permission-error',
+        new FirestorePermissionError({
+          path: collectionRef.path,
+          operation: 'create',
+          requestResourceData: newJobPost,
+        })
+      );
+      toast({
+        title: 'Error',
+        description: 'Could not submit your job post. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="jobTitle"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Job Title</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., Senior Software Engineer" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="companyName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Company Name (Optional)</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., SYNC TECH Solutions" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a job category" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                    {jobPostSchema.shape.category.options.map(cat => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+            <FormField
+            control={form.control}
+            name="jobType"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Job Type</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select an employment type" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                     {jobPostSchema.shape.jobType.options.map(type => (
+                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+        </div>
+        <FormField
+          control={form.control}
+          name="jobDescription"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Job Description</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Describe the role, responsibilities, and qualifications..." {...field} className="min-h-[150px]" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div>
+            <p className="text-sm font-medium mb-2">Application Method</p>
+            <p className="text-xs text-muted-foreground mb-4">Provide at least one method for candidates to apply.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                control={form.control}
+                name="applyLink"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Application Link (Optional)</FormLabel>
+                    <FormControl>
+                        <Input placeholder="https://your-company.com/apply" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="applyEmail"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Application Email (Optional)</FormLabel>
+                    <FormControl>
+                        <Input placeholder="careers@your-company.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
+             {form.formState.errors.applyLink && (
+                <p className="text-sm font-medium text-destructive mt-2">{form.formState.errors.applyLink.message}</p>
+            )}
+        </div>
+
+        <div className="flex justify-end gap-2">
+            <Button type="button" variant="ghost" onClick={onFinished}>Cancel</Button>
+            <Button type="submit" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Submit for Verification
+            </Button>
+        </div>
+      </form>
+    </Form>
+  );
+};
+
+const JobCard = ({ job }: { job: JobPost }) => (
+  <Card>
+    <CardHeader>
+      <CardTitle className="text-xl">{job.jobTitle}</CardTitle>
+      <CardDescription className="flex items-center gap-2 pt-1">
+        {job.companyName && (
+          <>
+            <Building className="h-4 w-4" />
+            <span>{job.companyName}</span>
+          </>
+        )}
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{job.jobDescription}</p>
+      <div className="flex flex-wrap gap-2 mb-4">
+        <Badge variant="secondary">{job.jobType}</Badge>
+        <Badge variant="secondary">{job.category}</Badge>
+      </div>
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <Clock className="h-4 w-4" />
+          <span>
+            Posted{' '}
+            {job.createdAt?.seconds
+              ? formatDistanceToNow(new Date(job.createdAt.seconds * 1000), { addSuffix: true })
+              : 'just now'}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Mail className="h-4 w-4" />
+          <span>{job.postedBy}</span>
+        </div>
+      </div>
+    </CardContent>
+    <div className="flex items-center p-6 pt-0">
+        {job.applyLink ? (
+            <Button asChild className="w-full">
+                <a href={job.applyLink} target="_blank" rel="noopener noreferrer">
+                Apply Now <ExternalLink className="ml-2 h-4 w-4" />
+                </a>
+            </Button>
+        ) : job.applyEmail ? (
+            <Button asChild className="w-full">
+                <a href={`mailto:${job.applyEmail}`}>
+                Apply via Email <Mail className="ml-2 h-4 w-4" />
+                </a>
+            </Button>
+        ) : null}
+    </div>
+  </Card>
+);
 
 export default function CommunityPage() {
-  const forumCategories = [
-    { icon: MessageSquare, title: 'General Discussion', description: 'Talk about anything and everything related to your field.' },
-    { icon: MessageSquare, title: 'LaTeX & Formatting Help', description: 'Stuck on a tricky table? Ask for help from the pros.' },
-    { icon: MessageSquare, title: 'AI Feature Requests', description: 'Have a great idea for a new AI feature? Share it here.' },
-    { icon: MessageSquare, title: 'Career Advice', description: 'Share tips on job hunting, interviews, and career growth.' },
-  ];
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+  const firestore = useFirestore();
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const events = [
-    { date: 'JUL 15', title: 'AMA with an AI Researcher', description: 'Join us for a live Q&A session with a leading expert in generative AI.' },
-    { date: 'AUG 01', title: 'Workshop: Advanced LaTeX Techniques', description: 'Learn how to create complex layouts and custom commands.' },
-    { date: 'AUG 20', title: 'Community Hangout', description: 'Meet other members, share your work, and get feedback.' },
-  ];
+  const jobPostsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(
+      collection(firestore, 'jobPosts'),
+      where('status', '==', 'approved'),
+      orderBy('createdAt', 'desc')
+    );
+  }, [firestore]);
 
-  const spotlights = [
-      { name: 'Dr. Evelyn Reed', role: 'Astrophysicist', achievement: 'Published groundbreaking research on exoplanets using our platform.', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d' },
-      { name: 'John Carter', role: 'PhD Candidate', achievement: 'Completed his dissertation on quantum computing with a little help from our AI tools.', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026705d' },
-      { name: 'Maria Garcia', role: 'Software Engineer', achievement: 'Landed a dream job at a top tech company with a resume tailored by Job4You.', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026706d' },
-  ];
+  const { data: jobPosts, isLoading: isLoadingJobs } = useCollection<JobPost>(jobPostsQuery);
+  
+  const handlePostJobClick = () => {
+      if (!user) {
+          router.push('/login?redirect=/community');
+      } else {
+          setIsFormOpen(true);
+      }
+  }
 
+  const isLoading = isUserLoading || isLoadingJobs;
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2">
             <h1 className="text-2xl font-bold">
@@ -82,97 +376,87 @@ export default function CommunityPage() {
       </header>
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="py-20 md:py-32">
+        <section className="py-20 md:py-24">
           <div className="container px-4 text-center">
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
-                &#92;chapter&#123;community&#125;
+                &#92;chapter&#123;job_board&#125;
             </code>
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
-              Welcome to the <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> Community
+              Community Job Board
             </h2>
             <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground text-center">
-              Connect with fellow researchers, writers, and professionals. Share knowledge, get help, and be inspired by the work of others.
+              Connect directly with companies and referrers. Find your next opportunity or hire top talent from our community.
             </p>
-             <div className="mt-8">
-                <Button size="lg">Join the Discussion</Button>
-            </div>
-          </div>
-        </section>
-        
-        {/* Forums Section */}
-        <section id="forums" className="py-20 md:py-32 bg-secondary/30">
-          <div className="container px-4">
-            <div className="text-center">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold">
-                Community Forums
-              </h2>
-              <p className="mt-2 text-muted-foreground">
-                A place for every question and conversation.
-              </p>
-            </div>
-            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {forumCategories.map((category) => {
-                const Icon = category.icon;
-                return (
-                  <Card key={category.title} className="flex flex-col">
-                    <CardHeader className="items-center text-center">
-                      <div className="rounded-full bg-primary/10 p-4 text-primary">
-                        <Icon className="h-8 w-8" />
-                      </div>
-                      <CardTitle>{category.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center text-muted-foreground flex-grow">
-                      <p>{category.description}</p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+            <div className="mt-8">
+              <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+                <DialogTrigger asChild>
+                    <Button size="lg" onClick={handlePostJobClick} disabled={isUserLoading}>
+                        {isUserLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Plus className="mr-2 h-4 w-4" />}
+                        Post a Job or Referral
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Create a New Job Post</DialogTitle>
+                    <DialogDescription>
+                      Fill out the details below. Your post will be visible to the community after admin verification.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <JobPostForm onFinished={() => setIsFormOpen(false)} />
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </section>
 
-        {/* Events and Spotlights Section */}
-        <section className="py-20 md:py-32">
-          <div className="container grid lg:grid-cols-2 gap-16 items-start px-4">
-            <div>
-              <h2 className="font-headline text-3xl font-bold mb-8">Upcoming Events</h2>
-              <div className="space-y-6">
-                {events.map((event) => (
-                    <div key={event.title} className="flex items-start gap-6">
-                        <div className="text-center">
-                            <div className="text-lg font-bold text-primary">{event.date.split(' ')[0]}</div>
-                            <div className="text-xl font-extrabold">{event.date.split(' ')[1]}</div>
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-bold">{event.title}</h3>
-                            <p className="text-muted-foreground mt-1">{event.description}</p>
-                             <Button variant="link" className="p-0 h-auto mt-2">Learn More</Button>
-                        </div>
-                    </div>
+        <section id="job-listings" className="py-20 md:py-24 bg-secondary/30">
+          <div className="container px-4">
+            <div className="text-center mb-12">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold">
+                Open Opportunities
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                Browse the latest jobs and referrals from the Job4You community.
+              </p>
+            </div>
+            {isLoading ? (
+              <div className="flex justify-center items-center h-40">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              </div>
+            ) : jobPosts && jobPosts.length > 0 ? (
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {jobPosts.map(job => (
+                  <JobCard key={job.id} job={job} />
                 ))}
               </div>
-            </div>
-             <div>
-              <h2 className="font-headline text-3xl font-bold mb-8">Member Spotlights</h2>
-              <div className="space-y-8">
-                 {spotlights.map((spotlight) => (
-                    <Card key={spotlight.name}>
-                        <CardContent className="p-6 flex items-start gap-4">
-                            <Avatar className="h-16 w-16">
-                                <AvatarImage src={spotlight.avatar} alt={spotlight.name} />
-                                <AvatarFallback>{spotlight.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <h3 className="font-bold text-lg">{spotlight.name}</h3>
-                                <p className="font-medium text-primary">{spotlight.role}</p>
-                                <p className="text-muted-foreground mt-2 text-sm">"{spotlight.achievement}"</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                 ))}
-              </div>
-            </div>
+            ) : (
+              <Card className="text-center py-12">
+                <CardHeader>
+                    <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center">
+                        <Briefcase className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <CardTitle className="mt-4">No Open Jobs Yet</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Check back soon for new opportunities, or be the first to post one!</p>
+                </CardContent>
+              </Card>
+            )}
+             {!user && !isUserLoading && (
+                 <Card className="mt-12 text-center py-8 bg-primary/10 border-primary/20">
+                    <CardHeader>
+                        <CardTitle>Join the Community to Apply</CardTitle>
+                        <CardDescription>Sign up or log in to view full job details and apply.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Button asChild>
+                            <Link href="/login?redirect=/community">Login / Sign Up</Link>
+                        </Button>
+                    </CardContent>
+                 </Card>
+             )}
           </div>
         </section>
       </main>

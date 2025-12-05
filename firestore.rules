@@ -135,5 +135,43 @@ service cloud.firestore {
       allow create, update: if isOwner(subscriberId);
       allow delete: if false;
     }
+    
+    /**
+     * @description Manages job postings on the community board.
+     * @path /jobPosts/{jobId}
+     * @principle Authenticated users can create job posts, but they are initially in a
+     * 'pending' state. Posts are only publicly readable (`list`, `get`) if their
+     * status is 'approved'. Only the owner can update or delete their own pending posts.
+     * Admin roles (not defined here) would be responsible for changing the status.
+     */
+    match /jobPosts/{jobId} {
+      // Anyone can read a job post *if* it has been approved.
+      allow get: if resource.data.status == 'approved';
+      // Any authenticated user can see the list of approved jobs.
+      allow list: if isSignedIn() && request.query.get('where')[2] == 'approved';
+
+      /**
+       * @description Allows an authenticated user to create a new job post.
+       * @condition - The user must be signed in.
+       *            - The incoming data must be valid (posterId matches creator's UID).
+       *            - The initial status must be 'pending'.
+       *            - `createdAt` must be set to the server timestamp.
+       */
+      allow create: if isSignedIn() 
+                      && request.resource.data.posterId == request.auth.uid
+                      && request.resource.data.status == 'pending'
+                      && request.resource.data.createdAt == request.time;
+      
+      // The user who created the post can update it, but only if it's still 'pending'.
+      // They cannot change the posterId, createdAt, or status fields.
+      allow update: if isOwner(resource.data.posterId) 
+                      && resource.data.status == 'pending'
+                      && request.resource.data.posterId == resource.data.posterId
+                      && request.resource.data.createdAt == resource.data.createdAt
+                      && request.resource.data.status == resource.data.status;
+                      
+      // The user who created the post can delete it, but only if it's still 'pending'.
+      allow delete: if isOwner(resource.data.posterId) && resource.data.status == 'pending';
+    }
   }
 }
