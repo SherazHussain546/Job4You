@@ -126,6 +126,11 @@ const AdminJobCard = ({ job, onUpdateStatus, onDelete }: { job: JobPost; onUpdat
               <EyeOff className="mr-2 h-4 w-4" /> Unpublish
             </Button>
         )}
+        {job.status === 'rejected' && (
+           <Button size="sm" onClick={() => onUpdateStatus(job.id, 'approved')}>
+              <CheckCircle className="mr-2 h-4 w-4" /> Approve
+            </Button>
+        )}
         {job.status !== 'pending' && (
              <AlertDialog>
               <AlertDialogTrigger asChild>
