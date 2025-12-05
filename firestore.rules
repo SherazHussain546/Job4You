@@ -152,8 +152,7 @@ service cloud.firestore {
      * Admin roles (not defined here) would be responsible for changing the status.
      */
     match /jobPosts/{jobId} {
-      allow get: if true;
-      allow list: if true;
+      allow read: if isSignedIn();
 
       /**
        * @description Allows an authenticated user to create a new job post.
