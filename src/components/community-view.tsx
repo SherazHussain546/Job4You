@@ -396,7 +396,10 @@ export default function CommunityView({ showHeader = true, showListings = true }
         <section id="job-listings" className={'w-full'}>
             <div className="container mx-auto">
             <div className="relative mb-8 text-center">
-                <h2 className="font-headline text-3xl md:text-4xl font-bold">
+                 <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
+                    &#92;jobforyou&#123;happy_hunting&#125;
+                </code>
+                <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">
                     Open Opportunities
                 </h2>
                 <p className="mt-2 text-muted-foreground">
