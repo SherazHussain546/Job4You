@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -5,7 +6,6 @@ import {
   addDoc,
   serverTimestamp,
   query,
-  where,
   orderBy,
 } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
@@ -52,7 +52,7 @@ import { Badge } from './ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 type JobPostFormData = Omit<JobPost, 'id' | 'postedBy' | 'posterId' | 'posterEmail' | 'createdAt' | 'status'>;
 
@@ -312,12 +312,15 @@ export default function CommunityPage() {
     if (!firestore) return null;
     return query(
       collection(firestore, 'jobPosts'),
-      where('status', '==', 'approved'),
       orderBy('createdAt', 'desc')
     );
   }, [firestore]);
 
-  const { data: jobPosts, isLoading: isLoadingJobs, error } = useCollection<JobPost>(jobPostsQuery);
+  const { data: allJobPosts, isLoading: isLoadingJobs, error } = useCollection<JobPost>(jobPostsQuery);
+
+  const approvedJobPosts = useMemo(() => {
+    return allJobPosts?.filter(post => post.status === 'approved') || [];
+  }, [allJobPosts]);
   
   const handlePostJobClick = () => {
       if (!user) {
@@ -425,9 +428,9 @@ export default function CommunityPage() {
               <div className="flex justify-center items-center h-40">
                   <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
-            ) : jobPosts && jobPosts.length > 0 ? (
+            ) : approvedJobPosts.length > 0 ? (
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {jobPosts.map(job => (
+                {approvedJobPosts.map(job => (
                   <JobCard key={job.id} job={job} />
                 ))}
               </div>
