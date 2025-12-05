@@ -124,8 +124,10 @@ export default function LandingPage() {
       </main>
 
       <footer className="py-6 border-t">
-        <div className="container flex flex-col md:flex-row items-center justify-between text-center md:text-left text-muted-foreground px-4">
-          <p>&copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All rights reserved.</p>
+        <div className="container flex flex-col md:flex-row items-center justify-between px-4">
+          <div className="text-center md:text-left text-muted-foreground">
+            <p>&copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All rights reserved.</p>
+          </div>
           <div className="flex gap-4 mt-4 md:mt-0">
             <Link href="/how-it-works" className="hover:text-primary transition-colors">How It Works</Link>
             <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
