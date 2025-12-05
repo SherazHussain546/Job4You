@@ -1,6 +1,8 @@
+
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { signOut } from 'firebase/auth';
 import {
   SidebarProvider,
@@ -17,7 +19,7 @@ import {
 import { Button } from './ui/button';
 import { useAuth, useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { LogOut, User, Bot } from 'lucide-react';
+import { LogOut, User, Bot, Globe } from 'lucide-react';
 import ProfileEditor from './profile-editor';
 import ResumeTailor from './resume-tailor';
 
@@ -69,6 +71,14 @@ export default function Dashboard() {
                 <Bot />
                 <span>AI Tailor</span>
               </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip={{ children: 'Community' }}>
+                  <Link href="/community">
+                    <Globe />
+                    <span>Community</span>
+                  </Link>
+                </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>

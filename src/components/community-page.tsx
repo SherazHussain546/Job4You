@@ -136,7 +136,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
           name="companyName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company Name (Optional)</FormLabel>
+              <FormLabel>Company Name</FormLabel>
               <FormControl>
                 <Input placeholder="e.g., SYNC TECH Solutions" {...field} value={field.value ?? ''} />
               </FormControl>
