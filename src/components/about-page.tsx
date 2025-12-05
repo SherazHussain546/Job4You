@@ -74,6 +74,9 @@ export default function AboutPage() {
              <Button variant="ghost" asChild>
                 <Link href="/about">About Us</Link>
             </Button>
+             <Button variant="ghost" asChild>
+                <Link href="/community">Community</Link>
+            </Button>
             <Button asChild>
               <Link href="/login">Get Started</Link>
             </Button>
@@ -89,6 +92,7 @@ export default function AboutPage() {
               <div className="grid gap-4 py-4">
                  <Link href="/how-it-works" className="text-lg font-medium">How It Works</Link>
                  <Link href="/about" className="text-lg font-medium">About Us</Link>
+                 <Link href="/community" className="text-lg font-medium">Community</Link>
                  <Button asChild>
                    <Link href="/login">Get Started</Link>
                  </Button>
