@@ -147,10 +147,9 @@ service cloud.firestore {
     /**
      * @description Manages job postings on the community job board.
      * @path /jobPosts/{jobId}
-     * @principle Any signed-in user can read the job posts. Authenticated users can create 
-     * job posts, but they are initially in a 'pending' state. Client-side logic filters
-     * for 'approved' posts. Only the owner can update or delete their own pending posts. 
-     * Admin roles are responsible for changing the status.
+     * @principle Any signed-in user can read job posts. This is safe because client-side
+     * logic filters for 'approved' posts only. Creating posts is restricted to signed-in
+     * users, and posts must start in a 'pending' state.
      */
     match /jobPosts/{jobId} {
       allow read: if isSignedIn();
@@ -164,7 +163,7 @@ service cloud.firestore {
                       && request.resource.data.createdAt == resource.data.createdAt
                       && request.resource.data.status == resource.data.status)
                     || (isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']));
-      allow delete: if isOwner(resource.data.posterId) && resource.data.status == 'pending' || isAdmin();
+      allow delete: if (isOwner(resource.data.posterId) && resource.data.status == 'pending') || isAdmin();
     }
   }
 }

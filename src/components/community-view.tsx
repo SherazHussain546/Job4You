@@ -181,7 +181,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     <SelectContent>
                      {(baseJobPostSchema.shape.jobType.options).map(type => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
-                    ))}
+                     ))}
                     </SelectContent>
                 </Select>
                 <FormMessage />
@@ -311,22 +311,21 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
 
   const jobPostsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    let baseQuery = query(collection(firestore, 'jobPosts'), where('status', '==', 'approved'), orderBy('createdAt', 'desc'));
-    
-    if (user && selectedCategory !== 'All Categories') {
-        baseQuery = query(collection(firestore, 'jobPosts'), where('status', '==', 'approved'), where('category', '==', selectedCategory), orderBy('createdAt', 'desc'));
-    } else if (!user) {
-        // For non-logged-in users, we just need a query that runs against the rules.
-        // The results won't be shown anyway.
-        baseQuery = query(collection(firestore, 'jobPosts'), where('status', '==', 'approved'), orderBy('createdAt', 'desc'));
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'jobPosts'), where('status', '==', 'approved'));
+  }, [firestore, user]);
+
+  const { data: allApprovedPosts, isLoading: isLoadingJobs } = useCollection<JobPost>(jobPostsQuery);
+
+  const filteredJobPosts = useMemo(() => {
+    if (!allApprovedPosts) return [];
+    const sorted = allApprovedPosts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    if (selectedCategory === 'All Categories') {
+      return sorted;
     }
+    return sorted.filter(post => post.category === selectedCategory);
+  }, [allApprovedPosts, selectedCategory]);
 
-    return baseQuery;
-  }, [firestore, user, selectedCategory]);
-
-
-  const { data: approvedJobPosts, isLoading: isLoadingJobs } = useCollection<JobPost>(jobPostsQuery);
   
   const handlePostJobClick = () => {
       if (!user) {
@@ -340,10 +339,10 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
   const isLoading = isUserLoading || isLoadingJobs;
 
   return (
-    <>
+    <div className="container mx-auto px-4">
       {showHeader && (
         <section className="w-full py-8 md:py-12">
-          <div className="container mx-auto px-4 text-center">
+          <div className="text-center">
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
               &#92;chapter&#123;job_board&#125;
             </code>
@@ -393,8 +392,8 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
         </section>
       )}
 
-      <section id="job-listings" className={showHeader ? 'w-full bg-secondary/30 py-8 md:py-12' : 'w-full'}>
-        <div className="container mx-auto px-4">
+      <section id="job-listings" className={showHeader ? 'w-full bg-secondary/30 -mx-4 px-4 py-8 md:py-12' : 'w-full'}>
+        <div className="container mx-auto">
            <div className="relative mb-8 text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold">
                 Open Opportunities
@@ -452,9 +451,9 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
             </div>
           ) : user ? (
-            approvedJobPosts && approvedJobPosts.length > 0 ? (
+            filteredJobPosts && filteredJobPosts.length > 0 ? (
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {approvedJobPosts.map(job => (
+                {filteredJobPosts.map(job => (
                     <JobCard key={job.id} job={job} />
                 ))}
                 </div>
@@ -493,8 +492,10 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
           )}
         </div>
       </section>
-    </>
+    </div>
   );
 }
+
+    
 
     
