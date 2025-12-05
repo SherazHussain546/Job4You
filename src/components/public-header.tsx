@@ -91,9 +91,9 @@ export function PublicHeader() {
       </header>
 
       {/* Floating Bottom Nav for Mobile */}
-      <TooltipProvider>
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-sm">
-          <div className="container mx-auto flex h-16 max-w-md items-center justify-around px-2">
+      <div className="md:hidden fixed bottom-4 left-0 right-0 z-50 flex justify-center">
+        <TooltipProvider>
+          <nav className="flex h-16 items-center justify-around gap-2 rounded-full bg-primary p-2 shadow-lg">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -103,8 +103,8 @@ export function PublicHeader() {
                     <Link
                       href={item.href}
                       className={cn(
-                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent',
-                        isActive && 'text-primary'
+                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10',
+                        isActive && 'bg-primary-foreground/20 text-primary-foreground'
                       )}
                     >
                       <Icon className="h-6 w-6" />
@@ -122,8 +122,8 @@ export function PublicHeader() {
                 <Link
                   href={MobileAuthHref}
                   className={cn(
-                    'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent',
-                    pathname === MobileAuthHref && 'text-primary'
+                    'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10',
+                    pathname === MobileAuthHref && 'bg-primary-foreground/20 text-primary-foreground'
                   )}
                 >
                   <MobileAuthIcon />
@@ -138,9 +138,9 @@ export function PublicHeader() {
                 </p>
               </TooltipContent>
             </Tooltip>
-          </div>
-        </nav>
-      </TooltipProvider>
+          </nav>
+        </TooltipProvider>
+      </div>
     </>
   );
 }
