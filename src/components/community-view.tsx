@@ -329,7 +329,7 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
   
   const handlePostJobClick = () => {
       if (!user) {
-          router.push('/login?redirect=/community');
+          router.push('/login?redirect=/jobs');
       } else {
           setIsFormOpen(true);
       }
@@ -382,7 +382,7 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
                 </Dialog>
                ) : (
                 <Button size="lg" asChild>
-                    <Link href="/login?redirect=/community">
+                    <Link href="/login?redirect=/jobs">
                         Join the Conversation to Post a Job
                     </Link>
                 </Button>
@@ -485,7 +485,7 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
               <CardContent>
                 <p className="mb-4 text-muted-foreground">Please sign up or log in to view job opportunities from the community.</p>
                 <Button asChild>
-                  <Link href="/login?redirect=/community">Login / Sign Up</Link>
+                  <Link href="/login?redirect=/jobs">Login / Sign Up</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -495,7 +495,3 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
     </div>
   );
 }
-
-    
-
-    

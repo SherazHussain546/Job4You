@@ -1,6 +1,8 @@
 'use client';
 
+import CommunityView from '@/components/community-view';
 import { PublicHeader } from '@/components/public-header';
+
 
 export default function JobsPage() {
   return (
@@ -8,16 +10,7 @@ export default function JobsPage() {
       <PublicHeader />
 
       <main className="flex-1">
-        <section className="py-20 md:py-32">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tighter mt-4">
-              Jobs
-            </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-              Coming soon!
-            </p>
-          </div>
-        </section>
+        <CommunityView />
       </main>
 
       <footer className="py-6 border-t">

@@ -95,7 +95,7 @@ export function PublicHeader() {
       </header>
 
       {/* Floating Bottom Nav for Mobile */}
-      <div className="md:hidden fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
+      <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4 md:hidden">
         <TooltipProvider>
           <nav className="flex h-16 w-full max-w-sm items-center justify-around gap-1 rounded-full bg-primary p-2 shadow-lg">
             {navItems.map((item) => {
