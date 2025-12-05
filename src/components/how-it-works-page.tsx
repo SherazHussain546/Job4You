@@ -19,7 +19,7 @@ import {
   Lightbulb,
   MousePointerClick,
 } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
 import { GoogleIcon } from './icons';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback } from './ui/avatar';
@@ -117,6 +117,7 @@ export default function HowItWorksPage() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
+              <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
               <div className="grid gap-4 py-4">
                  <Link href="/how-it-works" className="text-lg font-medium">How It Works</Link>
                  <Link href="/about" className="text-lg font-medium">About Us</Link>
@@ -150,22 +151,6 @@ export default function HowItWorksPage() {
               <div className="space-y-16">
                 
                 <div className="grid gap-4 md:grid-cols-2 md:items-center">
-                  <div>
-                    <CardHeader>
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">1</span>
-                        <div>
-                          <CardTitle className="text-2xl">Sign Up for an Account</CardTitle>
-                          <p className="text-muted-foreground mt-1">Get started in seconds.</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p>
-                        Begin by creating an account. You can sign up quickly using your Google account, a traditional email and password, or explore the app by signing in anonymously.
-                      </p>
-                    </CardContent>
-                  </div>
                    <div className="flex items-center justify-center p-8">
                        <Card className="w-full max-w-sm">
                             <CardHeader className="items-center">
@@ -207,6 +192,22 @@ export default function HowItWorksPage() {
                                 </div>
                            </CardContent>
                        </Card>
+                  </div>
+                  <div>
+                    <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">1</span>
+                        <div>
+                          <CardTitle className="text-2xl">Sign Up for an Account</CardTitle>
+                          <p className="text-muted-foreground mt-1">Get started in seconds.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p>
+                        Begin by creating an account. You can sign up quickly using your Google account, a traditional email and password, or explore the app by signing in anonymously.
+                      </p>
+                    </CardContent>
                   </div>
                 </div>
 
@@ -281,20 +282,6 @@ export default function HowItWorksPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">
-                  <div>
-                     <CardHeader>
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">3</span>
-                        <div>
-                             <CardTitle className="text-2xl">Provide the Job Description</CardTitle>
-                             <p className="text-muted-foreground mt-1">Give the AI its target.</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p>Go to the "AI Tailor" tab. Find a job you're interested in and copy the entire job description. Paste it into the text area provided. This context is crucial for the AI to understand what the employer is looking for.</p>
-                    </CardContent>
-                  </div>
                     <div className="flex items-center justify-center p-4">
                       <Card className="w-full max-w-sm">
                           <CardHeader>
@@ -310,6 +297,20 @@ export default function HowItWorksPage() {
                           </CardContent>
                       </Card>
                     </div>
+                  <div>
+                     <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">3</span>
+                        <div>
+                             <CardTitle className="text-2xl">Provide the Job Description</CardTitle>
+                             <p className="text-muted-foreground mt-1">Give the AI its target.</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Go to the "AI Tailor" tab. Find a job you're interested in and copy the entire job description. Paste it into the text area provided. This context is crucial for the AI to understand what the employer is looking for.</p>
+                    </CardContent>
+                  </div>
                 </div>
                 
                 <div className="grid gap-8 md:grid-cols-2 md:items-start">

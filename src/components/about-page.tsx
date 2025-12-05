@@ -14,7 +14,7 @@ import {
   Menu,
 } from 'lucide-react';
 import Image from 'next/image';
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
 
 export default function AboutPage() {
   const values = [
@@ -59,7 +59,7 @@ export default function AboutPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4">
+        <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2">
             <h1 className="text-2xl font-bold">
               <span className="font-body">Job</span>
@@ -85,6 +85,7 @@ export default function AboutPage() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
+              <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
               <div className="grid gap-4 py-4">
                  <Link href="/how-it-works" className="text-lg font-medium">How It Works</Link>
                  <Link href="/about" className="text-lg font-medium">About Us</Link>
