@@ -9,7 +9,7 @@ import {
   orderBy,
 } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from './ui/card';
 import {
   Menu,
   Plus,
@@ -18,12 +18,11 @@ import {
   Building,
   Mail,
   ExternalLink,
-  ShieldCheck,
   Clock,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
-import { useAuth, useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import type { JobPost } from '@/lib/types';
 import { defaultJobPost } from '@/lib/types';
 import { jobPostSchema } from '@/lib/validators';
@@ -63,7 +62,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
   const { toast } = useToast();
 
   const form = useForm<JobPostFormData>({
-    resolver: zodResolver(jobPostSchema.omit({ postedBy: true, posterId: true, posterEmail: true, createdAt: true, status: true })),
+    resolver: zodResolver(jobPostSchema.omit({ id: true, postedBy: true, posterId: true, posterEmail: true, createdAt: true, status: true })),
     defaultValues: defaultJobPost,
   });
 
@@ -88,29 +87,30 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
     
     const collectionRef = collection(firestore, 'jobPosts');
 
-    try {
-      await addDoc(collectionRef, newJobPost);
-      toast({
-        title: 'Job Post Submitted!',
-        description: 'Your job post has been submitted for verification. It will be live once approved.',
-      });
-      form.reset();
-      onFinished();
-    } catch (error) {
-       errorEmitter.emit(
-        'permission-error',
-        new FirestorePermissionError({
-          path: collectionRef.path,
-          operation: 'create',
-          requestResourceData: newJobPost,
+    addDoc(collectionRef, newJobPost)
+        .then(() => {
+            toast({
+                title: 'Job Post Submitted!',
+                description: 'Your job post has been submitted for verification. It will be live once approved.',
+            });
+            form.reset();
+            onFinished();
         })
-      );
-      toast({
-        title: 'Error',
-        description: 'Could not submit your job post. Please try again.',
-        variant: 'destructive',
-      });
-    }
+        .catch((error) => {
+            errorEmitter.emit(
+                'permission-error',
+                new FirestorePermissionError({
+                path: collectionRef.path,
+                operation: 'create',
+                requestResourceData: newJobPost,
+                })
+            );
+            toast({
+                title: 'Error',
+                description: 'Could not submit your job post. Please try again.',
+                variant: 'destructive',
+            });
+        });
   };
 
   return (
@@ -136,7 +136,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
             <FormItem>
               <FormLabel>Company Name (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., SYNC TECH Solutions" {...field} />
+                <Input placeholder="e.g., SYNC TECH Solutions" {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -156,7 +156,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                    {jobPostSchema.shape.category.options.map(cat => (
+                    {(jobPostSchema.shape.category.options).map(cat => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                     ))}
                     </SelectContent>
@@ -178,7 +178,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                     {jobPostSchema.shape.jobType.options.map(type => (
+                     {(jobPostSchema.shape.jobType.options).map(type => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
                     ))}
                     </SelectContent>
@@ -212,7 +212,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     <FormItem>
                     <FormLabel>Application Link (Optional)</FormLabel>
                     <FormControl>
-                        <Input placeholder="https://your-company.com/apply" {...field} />
+                        <Input placeholder="https://your-company.com/apply" {...field} value={field.value ?? ''}/>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -225,7 +225,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     <FormItem>
                     <FormLabel>Application Email (Optional)</FormLabel>
                     <FormControl>
-                        <Input placeholder="careers@your-company.com" {...field} />
+                        <Input placeholder="careers@your-company.com" {...field} value={field.value ?? ''}/>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -250,7 +250,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
 };
 
 const JobCard = ({ job }: { job: JobPost }) => (
-  <Card>
+  <Card className="flex flex-col">
     <CardHeader>
       <CardTitle className="text-xl">{job.jobTitle}</CardTitle>
       <CardDescription className="flex items-center gap-2 pt-1">
@@ -262,13 +262,13 @@ const JobCard = ({ job }: { job: JobPost }) => (
         )}
       </CardDescription>
     </CardHeader>
-    <CardContent>
+    <CardContent className="flex-grow">
       <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{job.jobDescription}</p>
       <div className="flex flex-wrap gap-2 mb-4">
         <Badge variant="secondary">{job.jobType}</Badge>
         <Badge variant="secondary">{job.category}</Badge>
       </div>
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
+       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4" />
           <span>
@@ -284,7 +284,7 @@ const JobCard = ({ job }: { job: JobPost }) => (
         </div>
       </div>
     </CardContent>
-    <div className="flex items-center p-6 pt-0">
+    <CardFooter>
         {job.applyLink ? (
             <Button asChild className="w-full">
                 <a href={job.applyLink} target="_blank" rel="noopener noreferrer">
@@ -298,7 +298,7 @@ const JobCard = ({ job }: { job: JobPost }) => (
                 </a>
             </Button>
         ) : null}
-    </div>
+    </CardFooter>
   </Card>
 );
 
@@ -317,7 +317,7 @@ export default function CommunityPage() {
     );
   }, [firestore]);
 
-  const { data: jobPosts, isLoading: isLoadingJobs } = useCollection<JobPost>(jobPostsQuery);
+  const { data: jobPosts, isLoading: isLoadingJobs, error } = useCollection<JobPost>(jobPostsQuery);
   
   const handlePostJobClick = () => {
       if (!user) {
@@ -445,10 +445,10 @@ export default function CommunityPage() {
               </Card>
             )}
              {!user && !isUserLoading && (
-                 <Card className="mt-12 text-center py-8 bg-primary/10 border-primary/20">
+                 <Card className="mt-12 text-center py-8 bg-card border-border">
                     <CardHeader>
                         <CardTitle>Join the Community to Apply</CardTitle>
-                        <CardDescription>Sign up or log in to view full job details and apply.</CardDescription>
+                        <CardDescription>Sign up or log in to create job posts and apply directly.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Button asChild>
