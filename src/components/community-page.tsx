@@ -55,8 +55,8 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { useState, useMemo } from 'react';
 import { jobPostSchema } from '@/lib/validators';
+import type { JobPostFormData } from '@/lib/types';
 
-type JobPostFormData = Omit<JobPost, 'id' | 'postedBy' | 'posterId' | 'posterEmail' | 'createdAt' | 'status'>;
 
 const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
   const { user } = useUser();
@@ -158,7 +158,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                    {(jobPostSchema.shape.category.options).map(cat => (
+                    {(jobPostFormSchema.shape.category.options).map(cat => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                     ))}
                     </SelectContent>
@@ -180,7 +180,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                     </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                     {(jobPostSchema.shape.jobType.options).map(type => (
+                     {(jobPostFormSchema.shape.jobType.options).map(type => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
                     ))}
                     </SelectContent>
@@ -475,5 +475,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    

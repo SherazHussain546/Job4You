@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 const optionalUrl = z.string().url('Must be a valid URL.').optional().or(z.literal(''));
@@ -51,8 +52,8 @@ export const profileSchema = z.object({
   skills: z.array(z.string().min(1, "Skill entry can't be empty.")).min(3, 'At least three skills are required.'),
 });
 
-
-export const jobPostSchema = z.object({
+// Base schema for a job post without refinement
+const baseJobPostSchema = z.object({
     jobTitle: z.string().min(3, 'Job title must be at least 3 characters.'),
     companyName: z.string().optional(),
     jobDescription: z.string().min(20, 'Description must be at least 20 characters.'),
@@ -65,18 +66,22 @@ export const jobPostSchema = z.object({
     posterEmail: z.string().email(),
     createdAt: z.any(), // Firestore serverTimestamp will be used here
     status: z.enum(['pending', 'approved', 'rejected']),
-}).refine(data => data.applyLink || data.applyEmail, {
+});
+
+// Schema for the full job post object, including the refinement for application method
+export const jobPostSchema = baseJobPostSchema.refine(data => data.applyLink || data.applyEmail, {
     message: "Either an application link or an email is required.",
     path: ["applyLink"], // Or "applyEmail", so the error appears on one of the fields
 });
 
-export const jobPostFormSchema = jobPostSchema.omit({
-    id: true,
+// Schema for the job post form, omitting fields that are not part of the form
+export const jobPostFormSchema = baseJobPostSchema.omit({
     postedBy: true,
     posterId: true,
     posterEmail: true,
     createdAt: true,
     status: true,
+}).refine(data => data.applyLink || data.applyEmail, {
+    message: "Either an application link or an email is required.",
+    path: ["applyLink"],
 });
-
-    
