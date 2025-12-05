@@ -312,18 +312,21 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
 
   const jobPostsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    const baseQuery = query(collection(firestore, 'jobPosts'), orderBy('createdAt', 'desc'));
-    if (selectedCategory !== 'All Categories') {
-        return query(baseQuery, where('category', '==', selectedCategory));
+    let baseQuery = query(collection(firestore, 'jobPosts'), where('status', '==', 'approved'), orderBy('createdAt', 'desc'));
+    
+    if (user && selectedCategory !== 'All Categories') {
+        baseQuery = query(collection(firestore, 'jobPosts'), where('status', '==', 'approved'), where('category', '==', selectedCategory), orderBy('createdAt', 'desc'));
+    } else if (!user) {
+        // For non-logged-in users, we just need a query that runs against the rules.
+        // The results won't be shown anyway.
+        baseQuery = query(collection(firestore, 'jobPosts'), where('status', '==', 'approved'), orderBy('createdAt', 'desc'));
     }
+
     return baseQuery;
-  }, [firestore, selectedCategory]);
+  }, [firestore, user, selectedCategory]);
 
-  const { data: allJobPosts, isLoading: isLoadingJobs, error } = useCollection<JobPost>(jobPostsQuery);
 
-  const approvedJobPosts = useMemo(() => {
-    return allJobPosts?.filter(post => post.status === 'approved') || [];
-  }, [allJobPosts]);
+  const { data: approvedJobPosts, isLoading: isLoadingJobs } = useCollection<JobPost>(jobPostsQuery);
   
   const handlePostJobClick = () => {
       if (!user) {
@@ -339,7 +342,7 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
   return (
     <>
       {showHeader && (
-        <section className="py-8 md:py-12 w-full">
+        <section className="w-full py-8 md:py-12">
           <div className="container mx-auto px-4 text-center">
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
               &#92;chapter&#123;job_board&#125;
@@ -347,7 +350,7 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
               Community Job Board
             </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground text-center">
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
               Connect directly with companies and referrers. Find your next opportunity or hire top talent from our community.
             </p>
             <div className="mt-8">
@@ -390,9 +393,9 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
         </section>
       )}
 
-      <section id="job-listings" className={showHeader ? 'py-8 md:py-12 bg-secondary/30 w-full' : 'w-full'}>
+      <section id="job-listings" className={showHeader ? 'w-full bg-secondary/30 py-8 md:py-12' : 'w-full'}>
         <div className="container mx-auto px-4">
-           <div className="relative text-center mb-8">
+           <div className="relative mb-8 text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold">
                 Open Opportunities
             </h2>
@@ -445,11 +448,11 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
           )}
 
           {isLoading ? (
-            <div className="flex justify-center items-center h-40">
+            <div className="flex h-40 items-center justify-center">
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
             </div>
           ) : user ? (
-            approvedJobPosts.length > 0 ? (
+            approvedJobPosts && approvedJobPosts.length > 0 ? (
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {approvedJobPosts.map(job => (
                     <JobCard key={job.id} job={job} />
@@ -458,26 +461,30 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
             ) : (
                 <Card className="text-center py-12">
                 <CardHeader>
-                    <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center">
-                    <Briefcase className="w-8 h-8 text-muted-foreground" />
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                    <Briefcase className="h-8 w-8 text-muted-foreground" />
                     </div>
-                    <CardTitle className="mt-4">No Open Jobs Yet</CardTitle>
+                    <CardTitle className="mt-4">No Open Jobs Here Yet</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground">{selectedCategory === 'All Categories' ? 'Check back soon for new opportunities, or be the first to post one!' : `There are no open jobs in the "${selectedCategory}" category right now.`}</p>
+                    <p className="text-muted-foreground">
+                        {selectedCategory === 'All Categories' 
+                            ? 'There are no approved job posts right now. Why not be the first to post one?' 
+                            : `Jobs for the "${selectedCategory}" category will appear here soon. Check back later!`}
+                    </p>
                 </CardContent>
                 </Card>
             )
           ) : (
-            <Card className="text-center py-12">
+            <Card className="py-12 text-center">
               <CardHeader>
-                <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center">
-                  <Briefcase className="w-8 h-8 text-muted-foreground" />
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                  <Briefcase className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <CardTitle className="mt-4">Access Restricted</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground mb-4">Please sign up or log in to view job opportunities from the community.</p>
+                <p className="mb-4 text-muted-foreground">Please sign up or log in to view job opportunities from the community.</p>
                 <Button asChild>
                   <Link href="/login?redirect=/community">Login / Sign Up</Link>
                 </Button>
@@ -489,3 +496,5 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
     </>
   );
 }
+
+    

@@ -1,3 +1,4 @@
+
 /**
  * Core Philosophy: This ruleset enforces a strict user-ownership model. All user-generated
  * content is stored in a hierarchical structure under a top-level `/users` collection.
@@ -167,3 +168,5 @@ service cloud.firestore {
     }
   }
 }
+
+    
