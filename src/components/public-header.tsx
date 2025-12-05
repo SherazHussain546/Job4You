@@ -104,8 +104,8 @@ export function PublicHeader() {
                     <Link
                       href={item.href}
                       className={cn(
-                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10',
-                        isActive && 'bg-primary-foreground/20 text-primary-foreground'
+                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-black/10',
+                        isActive && 'bg-black/20 text-primary-foreground'
                       )}
                     >
                       <Icon className="h-6 w-6" />
@@ -123,8 +123,8 @@ export function PublicHeader() {
                 <Link
                   href={MobileAuthHref}
                   className={cn(
-                    'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10',
-                    pathname === MobileAuthHref && 'bg-primary-foreground/20 text-primary-foreground'
+                    'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-black/10',
+                    pathname === MobileAuthHref && 'bg-black/20 text-primary-foreground'
                   )}
                 >
                   <MobileAuthIcon />
