@@ -123,7 +123,7 @@ export default function Dashboard() {
         <main className="h-full p-4 md:p-6 lg:p-8">
             {activeTab === 'profile' && <ProfileEditor />}
             {activeTab === 'tailor' && <ResumeTailor />}
-            {activeTab === 'community' && <CommunityView />}
+            {activeTab === 'community' && <CommunityView showHeader={false} />}
             {activeTab === 'admin' && isAdmin && <AdminView />}
         </main>
       </SidebarInset>

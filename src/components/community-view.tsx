@@ -301,7 +301,7 @@ const JobCard = ({ job }: { job: JobPost }) => (
   </Card>
 );
 
-export default function CommunityView() {
+export default function CommunityView({ showHeader = true }: { showHeader?: boolean }) {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
@@ -333,10 +333,11 @@ export default function CommunityView() {
 
   return (
     <>
+      {showHeader && (
         <section className="py-8 md:py-12">
           <div className="container px-4 text-center">
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
-                &#92;chapter&#123;job_board&#125;
+              &#92;chapter&#123;job_board&#125;
             </code>
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
               Community Job Board
@@ -347,10 +348,10 @@ export default function CommunityView() {
             <div className="mt-8">
               <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
                 <DialogTrigger asChild>
-                    <Button size="lg" onClick={handlePostJobClick} disabled={isUserLoading}>
-                        {isUserLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Plus className="mr-2 h-4 w-4" />}
-                        Post a Job or Referral
-                    </Button>
+                  <Button size="lg" onClick={handlePostJobClick} disabled={isUserLoading}>
+                    {isUserLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+                    Post a Job or Referral
+                  </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-2xl">
                   <DialogHeader>
@@ -369,56 +370,81 @@ export default function CommunityView() {
             </div>
           </div>
         </section>
+      )}
 
-        <section id="job-listings" className="py-8 md:py-12 bg-secondary/30">
-          <div className="container px-4">
-            <div className="text-center mb-12">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold">
-                Open Opportunities
-              </h2>
-              <p className="mt-2 text-muted-foreground">
-                Browse the latest jobs and referrals from the Job4You community.
-              </p>
+      <section id="job-listings" className={showHeader ? 'py-8 md:py-12 bg-secondary/30' : ''}>
+        <div className="container px-4">
+          <div className="flex justify-between items-center text-center mb-12">
+            <div>
+                <h2 className="font-headline text-3xl md:text-4xl font-bold">
+                    Open Opportunities
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                    Browse the latest jobs and referrals from the Job4You community.
+                </p>
             </div>
-            {isLoading ? (
-              <div className="flex justify-center items-center h-40">
-                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
-              </div>
-            ) : approvedJobPosts.length > 0 ? (
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {approvedJobPosts.map(job => (
-                  <JobCard key={job.id} job={job} />
-                ))}
-              </div>
-            ) : (
-              <Card className="text-center py-12">
-                <CardHeader>
-                    <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center">
-                        <Briefcase className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <CardTitle className="mt-4">No Open Jobs Yet</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">Check back soon for new opportunities, or be the first to post one!</p>
-                </CardContent>
-              </Card>
+            {!showHeader && (
+                 <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+                    <DialogTrigger asChild>
+                    <Button onClick={handlePostJobClick} disabled={isUserLoading}>
+                        {isUserLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+                        Post a Job
+                    </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Create a New Job Post</DialogTitle>
+                        <DialogDescription>
+                        Fill out the details below. Your post will be visible to the community after admin verification.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <ScrollArea className="max-h-[80vh] p-0">
+                        <div className="py-4 pr-6">
+                        <JobPostForm onFinished={() => setIsFormOpen(false)} />
+                        </div>
+                    </ScrollArea>
+                    </DialogContent>
+                </Dialog>
             )}
-             {!user && !isUserLoading && (
-                 <Card className="mt-12 text-center py-8 bg-card border-border">
-                    <CardHeader>
-                        <CardTitle>Join the Community to Apply</CardTitle>
-                        <CardDescription>Sign up or log in to create job posts and apply directly.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button asChild>
-                            <Link href="/login?redirect=/community">Login / Sign Up</Link>
-                        </Button>
-                    </CardContent>
-                 </Card>
-             )}
           </div>
-        </section>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            </div>
+          ) : approvedJobPosts.length > 0 ? (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {approvedJobPosts.map(job => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+          ) : (
+            <Card className="text-center py-12">
+              <CardHeader>
+                <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center">
+                  <Briefcase className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <CardTitle className="mt-4">No Open Jobs Yet</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Check back soon for new opportunities, or be the first to post one!</p>
+              </CardContent>
+            </Card>
+          )}
+          {!user && !isUserLoading && showHeader && (
+            <Card className="mt-12 text-center py-8 bg-card border-border">
+              <CardHeader>
+                <CardTitle>Join the Community to Apply</CardTitle>
+                <CardDescription>Sign up or log in to create job posts and apply directly.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild>
+                  <Link href="/login?redirect=/community">Login / Sign Up</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </section>
     </>
   );
 }
-
