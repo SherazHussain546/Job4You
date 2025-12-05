@@ -57,7 +57,7 @@ export const baseJobPostSchema = z.object({
     jobTitle: z.string().min(3, 'Job title must be at least 3 characters.'),
     companyName: z.string().min(1, 'Company name is required.'),
     jobDescription: z.string().min(20, 'Description must be at least 20 characters.'),
-    category: z.enum(['Tech', 'Pharmacy', 'Engineering', 'Design', 'Marketing', 'Other']),
+    category: z.enum(['Tech', 'Pharmacy', 'Engineering', 'Design', 'Marketing', 'Retail', 'Other']),
     jobType: z.enum(['Full-time', 'Part-time', 'Contract', 'Freelance', 'Internship', 'Referral']),
     applyLink: z.string().url('Please enter a valid URL.').optional().or(z.literal('')),
     applyEmail: z.string().email('Please enter a valid email.').optional().or(z.literal('')),

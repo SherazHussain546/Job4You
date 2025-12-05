@@ -7,6 +7,7 @@ import {
   serverTimestamp,
   query,
   orderBy,
+  where,
 } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from './ui/card';
@@ -53,6 +54,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import { useState, useMemo } from 'react';
 import type { JobPostFormData } from '@/lib/types';
 import { ScrollArea } from './ui/scroll-area';
+import { Label } from './ui/label';
 
 
 const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
@@ -306,14 +308,16 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
   const router = useRouter();
   const firestore = useFirestore();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All Categories');
 
   const jobPostsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(
-      collection(firestore, 'jobPosts'),
-      orderBy('createdAt', 'desc')
-    );
-  }, [firestore]);
+    const baseQuery = query(collection(firestore, 'jobPosts'), orderBy('createdAt', 'desc'));
+    if (selectedCategory !== 'All Categories') {
+        return query(baseQuery, where('category', '==', selectedCategory));
+    }
+    return baseQuery;
+  }, [firestore, selectedCategory]);
 
   const { data: allJobPosts, isLoading: isLoadingJobs, error } = useCollection<JobPost>(jobPostsQuery);
 
@@ -328,7 +332,8 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
           setIsFormOpen(true);
       }
   }
-
+  
+  const jobCategories = ["All Categories", ...baseJobPostSchema.shape.category.options];
   const isLoading = isUserLoading || isLoadingJobs;
 
   return (
@@ -387,7 +392,7 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
 
       <section id="job-listings" className={showHeader ? 'py-8 md:py-12 bg-secondary/30 w-full' : 'w-full'}>
         <div className="container mx-auto px-4">
-          <div className="relative text-center mb-12">
+           <div className="relative text-center mb-8">
             <h2 className="font-headline text-3xl md:text-4xl font-bold">
                 Open Opportunities
             </h2>
@@ -420,6 +425,25 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
                 </div>
             )}
           </div>
+          
+           {user && (
+            <div className="mb-8 flex justify-center">
+              <div className="w-full max-w-xs">
+                <Label htmlFor="category-filter">Filter by Category</Label>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger id="category-filter" className="w-full">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {jobCategories.map(cat => (
+                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="flex justify-center items-center h-40">
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -440,7 +464,7 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
                     <CardTitle className="mt-4">No Open Jobs Yet</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground">Check back soon for new opportunities, or be the first to post one!</p>
+                    <p className="text-muted-foreground">{selectedCategory === 'All Categories' ? 'Check back soon for new opportunities, or be the first to post one!' : `There are no open jobs in the "${selectedCategory}" category right now.`}</p>
                 </CardContent>
                 </Card>
             )

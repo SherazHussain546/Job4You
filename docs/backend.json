@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "JobPost": {
@@ -20,7 +21,7 @@
         "category": {
             "type": "string",
             "description": "The category of the job.",
-            "enum": ["Tech", "Pharmacy", "Engineering", "Design", "Marketing", "Other"]
+            "enum": ["Tech", "Pharmacy", "Engineering", "Design", "Marketing", "Retail", "Other"]
         },
         "jobType": {
             "type": "string",
