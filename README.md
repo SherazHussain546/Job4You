@@ -41,7 +41,16 @@ This is a [Next.js](https://nextjs.org/) project. To get it running locally, fol
 3.  **Set up environment variables:**
     Create a `.env` file in the root of the project and add your Firebase project configuration keys.
 
-4.  **Run the development server:**
+4.  **Create Firestore Index (Required for Job Board):**
+    For the community job board to work, you need to create a composite index in Firestore. When you run the app and visit the community page, you will see an error in your browser's developer console containing a link to create the index.
+    
+    a. Run the app (`npm run dev`).
+    b. Open the developer console.
+    c. Find the error message starting with `FirebaseError: ... The query requires an index.`
+    d. Click the link provided in the error message. It will take you directly to the Firebase console to create the required index.
+    e. Click "Create Index." The creation process may take a few minutes.
+
+5.  **Run the development server:**
     ```bash
     npm run dev
     # or

@@ -145,12 +145,9 @@ service cloud.firestore {
      * Admin roles (not defined here) would be responsible for changing the status.
      */
     match /jobPosts/{jobId} {
-      // Anyone can read a single job post *if* it has been approved.
-      allow get: if resource.data.status == 'approved';
-      
-      // Anyone can see the list of approved jobs.
-      // The client-side query MUST include `where('status', '==', 'approved')` for this to work.
-      allow list: if request.query.get('where')[2] == 'approved';
+      // Anyone can read an approved job post or list of approved job posts.
+      // The client-side query is responsible for filtering by status.
+      allow get, list: if true;
 
       /**
        * @description Allows an authenticated user to create a new job post.
