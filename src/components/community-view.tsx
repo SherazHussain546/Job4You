@@ -424,32 +424,36 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
             <div className="flex justify-center items-center h-40">
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
             </div>
-          ) : approvedJobPosts.length > 0 ? (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {approvedJobPosts.map(job => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
+          ) : user ? (
+            approvedJobPosts.length > 0 ? (
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {approvedJobPosts.map(job => (
+                    <JobCard key={job.id} job={job} />
+                ))}
+                </div>
+            ) : (
+                <Card className="text-center py-12">
+                <CardHeader>
+                    <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center">
+                    <Briefcase className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <CardTitle className="mt-4">No Open Jobs Yet</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground">Check back soon for new opportunities, or be the first to post one!</p>
+                </CardContent>
+                </Card>
+            )
           ) : (
             <Card className="text-center py-12">
               <CardHeader>
                 <div className="mx-auto bg-muted rounded-full w-16 h-16 flex items-center justify-center">
                   <Briefcase className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <CardTitle className="mt-4">No Open Jobs Yet</CardTitle>
+                <CardTitle className="mt-4">Access Restricted</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">Check back soon for new opportunities, or be the first to post one!</p>
-              </CardContent>
-            </Card>
-          )}
-          {!user && !isUserLoading && showHeader && (
-            <Card className="mt-12 text-center py-8 bg-card border-border">
-              <CardHeader>
-                <CardTitle>Join the Community to Apply</CardTitle>
-                <CardDescription>Sign up or log in to create job posts and apply directly.</CardDescription>
-              </CardHeader>
-              <CardContent>
+                <p className="text-muted-foreground mb-4">Please sign up or log in to view job opportunities from the community.</p>
                 <Button asChild>
                   <Link href="/login?redirect=/community">Login / Sign Up</Link>
                 </Button>
@@ -461,7 +465,3 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
     </>
   );
 }
-
-    
-
-    
