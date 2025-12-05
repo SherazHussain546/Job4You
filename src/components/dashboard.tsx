@@ -22,8 +22,9 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { LogOut, User, Bot, Globe } from 'lucide-react';
 import ProfileEditor from './profile-editor';
 import ResumeTailor from './resume-tailor';
+import CommunityView from './community-view';
 
-type Tab = 'profile' | 'tailor';
+type Tab = 'profile' | 'tailor' | 'community';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('profile');
@@ -73,11 +74,13 @@ export default function Dashboard() {
               </SidebarMenuButton>
             </SidebarMenuItem>
              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip={{ children: 'Community' }}>
-                  <Link href="/community">
-                    <Globe />
-                    <span>Community</span>
-                  </Link>
+                <SidebarMenuButton
+                    onClick={() => setActiveTab('community')}
+                    isActive={activeTab === 'community'}
+                    tooltip={{ children: 'Community' }}
+                >
+                  <Globe />
+                  <span>Community</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -105,6 +108,7 @@ export default function Dashboard() {
         <main className="h-full p-4 md:p-6 lg:p-8">
             {activeTab === 'profile' && <ProfileEditor />}
             {activeTab === 'tailor' && <ResumeTailor />}
+            {activeTab === 'community' && <CommunityView />}
         </main>
       </SidebarInset>
     </SidebarProvider>

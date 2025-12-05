@@ -7,12 +7,10 @@ import {
   serverTimestamp,
   query,
   orderBy,
-  where,
 } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from './ui/card';
 import {
-  Menu,
   Plus,
   Loader2,
   Briefcase,
@@ -22,7 +20,6 @@ import {
   Clock,
 } from 'lucide-react';
 import Link from 'next/link';
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
 import { useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import type { JobPost } from '@/lib/types';
 import { defaultJobPost } from '@/lib/types';
@@ -304,7 +301,7 @@ const JobCard = ({ job }: { job: JobPost }) => (
   </Card>
 );
 
-export default function CommunityPage() {
+export default function CommunityView() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
@@ -335,53 +332,8 @@ export default function CommunityPage() {
   const isLoading = isUserLoading || isLoadingJobs;
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">
-              <span className="font-body">Job</span>
-              <span className="font-headline text-primary">for</span>
-              <span className="font-body">You</span>
-            </h1>
-          </Link>
-          <nav className="hidden items-center gap-2 md:flex">
-             <Button variant="ghost" asChild>
-                <Link href="/how-it-works">How It Works</Link>
-            </Button>
-             <Button variant="ghost" asChild>
-                <Link href="/about">About Us</Link>
-            </Button>
-             <Button variant="ghost" asChild>
-                <Link href="/community">Community</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/login">Get Started</Link>
-            </Button>
-          </nav>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden">
-                <Menu />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
-              <div className="grid gap-4 py-4">
-                 <Link href="/how-it-works" className="text-lg font-medium">How It Works</Link>
-                 <Link href="/about" className="text-lg font-medium">About Us</Link>
-                 <Link href="/community" className="text-lg font-medium">Community</Link>
-                 <Button asChild>
-                   <Link href="/login">Get Started</Link>
-                 </Button>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </header>
-
-      <main className="flex-1">
-        <section className="py-20 md:py-24">
+    <>
+        <section className="py-8 md:py-12">
           <div className="container px-4 text-center">
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
                 &#92;chapter&#123;job_board&#125;
@@ -418,7 +370,7 @@ export default function CommunityPage() {
           </div>
         </section>
 
-        <section id="job-listings" className="py-20 md:py-24 bg-secondary/30">
+        <section id="job-listings" className="py-8 md:py-12 bg-secondary/30">
           <div className="container px-4">
             <div className="text-center mb-12">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">
@@ -466,14 +418,7 @@ export default function CommunityPage() {
              )}
           </div>
         </section>
-      </main>
-
-      <footer className="py-6 border-t">
-        <div className="container px-4 text-center text-muted-foreground">
-          &copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All
-          rights reserved.
-        </div>
-      </footer>
-    </div>
+    </>
   );
 }
+
