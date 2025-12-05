@@ -119,13 +119,11 @@ export default function Dashboard() {
          <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <SidebarTrigger />
         </header>
-        <main className="h-full p-4 md:p-6 lg:p-8">
-            <div className="container mx-auto px-4">
-                {activeTab === 'profile' && <ProfileEditor />}
-                {activeTab === 'tailor' && <ResumeTailor />}
-                {activeTab === 'community' && <CommunityView showHeader={false} />}
-                {activeTab === 'admin' && isAdmin && <AdminView />}
-            </div>
+        <main className="container mx-auto h-full p-4 md:p-6 lg:p-8">
+            {activeTab === 'profile' && <ProfileEditor />}
+            {activeTab === 'tailor' && <ResumeTailor />}
+            {activeTab === 'community' && <CommunityView showHeader={false} />}
+            {activeTab === 'admin' && isAdmin && <AdminView />}
         </main>
       </SidebarInset>
     </SidebarProvider>

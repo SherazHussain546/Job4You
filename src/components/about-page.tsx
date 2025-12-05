@@ -59,7 +59,7 @@ export default function AboutPage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <PublicHeader />
 
-      <main className="flex-1">
+      <main className="flex-1 container mx-auto">
         {/* About Us Section */}
         <section className="py-20 md:py-32">
           <div className="container px-4 text-center">
