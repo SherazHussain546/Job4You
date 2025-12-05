@@ -22,6 +22,7 @@ import {
   Building,
   Mail,
   ExternalLink,
+  EyeOff,
 } from 'lucide-react';
 import { useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import type { JobPost } from '@/lib/types';
@@ -56,7 +57,7 @@ const statusBadgeVariant: { [key: string]: "default" | "secondary" | "destructiv
   rejected: 'destructive',
 }
 
-const AdminJobCard = ({ job, onUpdateStatus, onDelete }: { job: JobPost; onUpdateStatus: (id: string, status: 'approved' | 'rejected') => void; onDelete: (id: string) => void; }) => {
+const AdminJobCard = ({ job, onUpdateStatus, onDelete }: { job: JobPost; onUpdateStatus: (id: string, status: 'approved' | 'rejected' | 'pending') => void; onDelete: (id: string) => void; }) => {
   return (
     <Card className={`flex flex-col ${statusStyles[job.status]}`}>
       <CardHeader>
@@ -120,6 +121,11 @@ const AdminJobCard = ({ job, onUpdateStatus, onDelete }: { job: JobPost; onUpdat
             </Button>
           </>
         )}
+        {job.status === 'approved' && (
+           <Button size="sm" variant="outline" onClick={() => onUpdateStatus(job.id, 'pending')}>
+              <EyeOff className="mr-2 h-4 w-4" /> Unpublish
+            </Button>
+        )}
         {job.status !== 'pending' && (
              <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -157,13 +163,13 @@ export default function AdminView() {
 
   const { data: jobPosts, isLoading: isLoadingJobs } = useCollection<JobPost>(jobPostsQuery);
 
-  const handleUpdateStatus = async (id: string, status: 'approved' | 'rejected') => {
+  const handleUpdateStatus = async (id: string, status: 'approved' | 'rejected' | 'pending') => {
     const docRef = doc(firestore, 'jobPosts', id);
     try {
       await updateDoc(docRef, { status });
       toast({
-        title: `Job post ${status}`,
-        description: 'The job post status has been updated.',
+        title: `Job post status updated`,
+        description: `The job post has been set to ${status}.`,
       });
     } catch (error) {
       errorEmitter.emit(
