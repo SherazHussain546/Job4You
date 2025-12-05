@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Loader2, Home, BookOpenCheck, Info, Briefcase, LayoutDashboard, LogIn } from 'lucide-react';
+import { Menu, Loader2, Home, BookOpenCheck, Info, Users, LayoutDashboard, LogIn, Briefcase } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -14,7 +14,7 @@ const navItems = [
   { href: '/', icon: Home, label: 'Home' },
   { href: '/how-it-works', icon: BookOpenCheck, label: 'How It Works' },
   { href: '/about', icon: Info, label: 'About' },
-  { href: '/jobs', icon: Briefcase, label: 'Jobs' },
+  { href: '/community', icon: Users, label: 'Community' },
 ];
 
 export function PublicHeader() {
@@ -84,6 +84,9 @@ export function PublicHeader() {
               <Link href="/about">About Us</Link>
             </Button>
             <Button variant="ghost" asChild>
+              <Link href="/community">Community</Link>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link href="/jobs">Jobs</Link>
             </Button>
             <AuthButton />
@@ -118,6 +121,23 @@ export function PublicHeader() {
                 </Tooltip>
               );
             })}
+             <Tooltip>
+                <TooltipTrigger asChild>
+                    <Link
+                    href="/jobs"
+                    className={cn(
+                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground transition-colors hover:bg-black/10',
+                        pathname === "/jobs" && 'bg-black/20 text-primary-foreground'
+                    )}
+                    >
+                    <Briefcase className="h-6 w-6" />
+                    <span className="sr-only">Jobs</span>
+                    </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Jobs</p>
+                </TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
