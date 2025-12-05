@@ -89,9 +89,9 @@ export default function HowItWorksPage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
        <PublicHeader />
 
-      <main className="flex-1 container mx-auto">
+      <main className="flex-1">
         <section className="py-20 md:py-32">
-          <div className="container px-4 text-center md:px-6">
+          <div className="container mx-auto px-4 text-center md:px-6">
              <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-base font-semibold text-primary">
                 &#92;guide&#123;workflow&#125;
             </code>
@@ -104,8 +104,8 @@ export default function HowItWorksPage() {
           </div>
         </section>
 
-        <section className="py-20 md:py-32 bg-secondary/30">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-20 md:py-32 bg-secondary/30">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="mx-auto grid max-w-5xl items-center gap-y-16 gap-x-12">
               <div className="space-y-16">
                 
@@ -356,7 +356,7 @@ export default function HowItWorksPage() {
         </section>
 
         <section className="py-20 text-center">
-            <div className="container px-4 md:px-6">
+            <div className="container mx-auto px-4 md:px-6">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold">Ready to Land Your Dream Job?</h2>
                 <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">Put our AI to the test and see how easy it is to create application materials that stand out.</p>
                 <div className="mt-8">
@@ -370,7 +370,7 @@ export default function HowItWorksPage() {
       </main>
 
       <footer className="py-6 border-t">
-        <div className="container px-4 text-center text-muted-foreground md:px-6">
+        <div className="container mx-auto px-4 text-center text-muted-foreground md:px-6">
           &copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All
           rights reserved.
         </div>

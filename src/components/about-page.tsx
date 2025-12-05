@@ -59,10 +59,10 @@ export default function AboutPage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <PublicHeader />
 
-      <main className="flex-1 container mx-auto">
+      <main className="flex-1">
         {/* About Us Section */}
         <section className="py-20 md:py-32">
-          <div className="container px-4 text-center">
+          <div className="container mx-auto px-4 text-center">
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
                 &#92;know&#123;about_us&#125;
             </code>
@@ -76,8 +76,8 @@ export default function AboutPage() {
         </section>
         
         {/* Our Story Section */}
-        <section className="py-20 md:py-32 bg-secondary/30">
-            <div className="container grid md:grid-cols-2 gap-12 items-center px-4">
+        <section className="w-full py-20 md:py-32 bg-secondary/30">
+            <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center px-4">
                 <div className="relative mx-auto w-full max-w-sm aspect-square">
                     <Image 
                         src="https://github.com/SherazHussain546/Job4You/blob/main/images/Logo2.png?raw=true"
@@ -101,7 +101,7 @@ export default function AboutPage() {
 
         {/* Our Values Section */}
         <section id="values" className="py-20 md:py-32">
-          <div className="container px-4">
+          <div className="container mx-auto px-4">
             <div className="text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">
                 We Aim to Be...
@@ -133,7 +133,7 @@ export default function AboutPage() {
 
         {/* CTA Section */}
         <section className="py-20 text-center">
-            <div className="container px-4">
+            <div className="container mx-auto px-4">
                 <h2 className="font-headline text-3xl md:text-4xl font-bold">Join Millions of Innovators</h2>
                 <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">Discover why so many researchers, students, and professionals trust <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> with their best work.</p>
                 <div className="mt-8">
@@ -147,7 +147,7 @@ export default function AboutPage() {
       </main>
 
       <footer className="py-6 border-t">
-        <div className="container px-4 text-center text-muted-foreground">
+        <div className="container mx-auto px-4 text-center text-muted-foreground">
           &copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All
           rights reserved.
         </div>

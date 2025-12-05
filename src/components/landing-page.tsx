@@ -13,10 +13,10 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <PublicHeader />
 
-      <main className="flex-1 container mx-auto">
+      <main className="flex-1">
         {/* Hero Section */}
         <section className="py-20 md:py-32">
-          <div className="container px-4 text-center">
+          <div className="container mx-auto px-4 text-center">
              <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
                 &#92;begin&#123;awesome_paper&#125;
             </code>
@@ -35,8 +35,8 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-20 md:py-32 bg-secondary/30">
-          <div className="container px-4">
+        <section id="features" className="w-full py-20 md:py-32 bg-secondary/30">
+          <div className="container mx-auto px-4">
             <div className="text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">The Right Tool for Your Job</h2>
                <p className="mt-2 text-muted-foreground">Purpose-built for scientific and technical writing. Powered by <a href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="text-primary underline">SYNC TECH Solutions</a>.</p>
@@ -81,7 +81,7 @@ export default function LandingPage() {
 
         {/* How it works */}
         <section className="py-20 md:py-32">
-            <div className="container grid md:grid-cols-2 gap-12 items-center px-4">
+            <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center px-4">
                 <div>
                      <h2 className="font-headline text-3xl md:text-4xl font-bold">From Idea to Publication in Minutes</h2>
                      <p className="mt-2 text-muted-foreground">A streamlined workflow for technical authors.</p>
@@ -124,7 +124,7 @@ export default function LandingPage() {
       </main>
 
       <footer className="py-6 border-t">
-        <div className="container flex flex-col md:flex-row items-center justify-between px-4">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-4">
           <div className="text-center md:text-left text-muted-foreground">
             <p>&copy; {new Date().getFullYear()} <span className="font-body">Job</span><span className="text-primary font-headline">for</span><span className="font-body">You</span> by SYNC TECH Solutions. All rights reserved.</p>
           </div>
