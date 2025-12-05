@@ -37,6 +37,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Select,
@@ -460,5 +461,7 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
     </>
   );
 }
+
+    
 
     
