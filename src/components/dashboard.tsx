@@ -120,10 +120,12 @@ export default function Dashboard() {
             <SidebarTrigger />
         </header>
         <main className="h-full p-4 md:p-6 lg:p-8">
-            {activeTab === 'profile' && <ProfileEditor />}
-            {activeTab === 'tailor' && <ResumeTailor />}
-            {activeTab === 'community' && <CommunityView showHeader={false} />}
-            {activeTab === 'admin' && isAdmin && <AdminView />}
+            <div className="container mx-auto px-4">
+                {activeTab === 'profile' && <ProfileEditor />}
+                {activeTab === 'tailor' && <ResumeTailor />}
+                {activeTab === 'community' && <CommunityView showHeader={false} />}
+                {activeTab === 'admin' && isAdmin && <AdminView />}
+            </div>
         </main>
       </SidebarInset>
     </SidebarProvider>
