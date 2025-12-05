@@ -334,8 +334,8 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
   return (
     <>
       {showHeader && (
-        <section className="py-8 md:py-12">
-          <div className="container px-4 text-center">
+        <section className="py-8 md:py-12 w-full">
+          <div className="container mx-auto px-4 text-center">
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
               &#92;chapter&#123;job_board&#125;
             </code>
@@ -385,39 +385,39 @@ export default function CommunityView({ showHeader = true }: { showHeader?: bool
         </section>
       )}
 
-      <section id="job-listings" className={showHeader ? 'py-8 md:py-12 bg-secondary/30' : ''}>
-        <div className="container px-4">
-          <div className="flex justify-between items-center text-center mb-12">
-            <div>
-                <h2 className="font-headline text-3xl md:text-4xl font-bold">
-                    Open Opportunities
-                </h2>
-                <p className="mt-2 text-muted-foreground">
-                    Browse the latest jobs and referrals from the Job4You community.
-                </p>
-            </div>
+      <section id="job-listings" className={showHeader ? 'py-8 md:py-12 bg-secondary/30 w-full' : 'w-full'}>
+        <div className="container mx-auto px-4">
+          <div className="relative text-center mb-12">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold">
+                Open Opportunities
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+                Browse the latest jobs and referrals from the Job4You community.
+            </p>
             {!showHeader && (
-                 <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                    <DialogTrigger asChild>
-                    <Button onClick={handlePostJobClick} disabled={isUserLoading}>
-                        {isUserLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-                        Post a Job
-                    </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-2xl">
-                    <DialogHeader>
-                        <DialogTitle>Create a New Job Post</DialogTitle>
-                        <DialogDescription>
-                        Fill out the details below. Your post will be visible to the community after admin verification.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <ScrollArea className="max-h-[80vh] p-0">
-                        <div className="py-4 pr-6">
-                        <JobPostForm onFinished={() => setIsFormOpen(false)} />
-                        </div>
-                    </ScrollArea>
-                    </DialogContent>
-                </Dialog>
+                <div className="absolute top-0 right-0">
+                    <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+                        <DialogTrigger asChild>
+                        <Button onClick={handlePostJobClick} disabled={isUserLoading}>
+                            {isUserLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+                            Post a Job
+                        </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-2xl">
+                        <DialogHeader>
+                            <DialogTitle>Create a New Job Post</DialogTitle>
+                            <DialogDescription>
+                            Fill out the details below. Your post will be visible to the community after admin verification.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <ScrollArea className="max-h-[80vh] p-0">
+                            <div className="py-4 pr-6">
+                            <JobPostForm onFinished={() => setIsFormOpen(false)} />
+                            </div>
+                        </ScrollArea>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             )}
           </div>
           {isLoading ? (
