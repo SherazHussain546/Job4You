@@ -69,3 +69,14 @@ export const jobPostSchema = z.object({
     message: "Either an application link or an email is required.",
     path: ["applyLink"], // Or "applyEmail", so the error appears on one of the fields
 });
+
+export const jobPostFormSchema = jobPostSchema.omit({
+    id: true,
+    postedBy: true,
+    posterId: true,
+    posterEmail: true,
+    createdAt: true,
+    status: true,
+});
+
+    

@@ -7,6 +7,7 @@ import {
   serverTimestamp,
   query,
   orderBy,
+  where,
 } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from './ui/card';
@@ -25,7 +26,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
 import { useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import type { JobPost } from '@/lib/types';
 import { defaultJobPost } from '@/lib/types';
-import { jobPostSchema } from '@/lib/validators';
+import { jobPostFormSchema } from '@/lib/validators';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -53,6 +54,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { useState, useMemo } from 'react';
+import { jobPostSchema } from '@/lib/validators';
 
 type JobPostFormData = Omit<JobPost, 'id' | 'postedBy' | 'posterId' | 'posterEmail' | 'createdAt' | 'status'>;
 
@@ -62,7 +64,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
   const { toast } = useToast();
 
   const form = useForm<JobPostFormData>({
-    resolver: zodResolver(jobPostSchema.omit({ id: true, postedBy: true, posterId: true, posterEmail: true, createdAt: true, status: true })),
+    resolver: zodResolver(jobPostFormSchema),
     defaultValues: defaultJobPost,
   });
 
@@ -473,3 +475,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
