@@ -1,11 +1,10 @@
-
 'use client';
 
 import CommunityView from '@/components/community-view';
 import { PublicHeader } from '@/components/public-header';
 
 
-export default function Community() {
+export default function JobsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <PublicHeader />

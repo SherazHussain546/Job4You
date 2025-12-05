@@ -19,7 +19,7 @@ import {
 import { Button } from './ui/button';
 import { useAuth, useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { LogOut, User, Bot, Globe, Shield } from 'lucide-react';
+import { LogOut, User, Bot, Briefcase, Shield } from 'lucide-react';
 import ProfileEditor from './profile-editor';
 import ResumeTailor from './resume-tailor';
 import CommunityView from './community-view';
@@ -79,10 +79,10 @@ export default function Dashboard() {
                 <SidebarMenuButton
                     onClick={() => setActiveTab('community')}
                     isActive={activeTab === 'community'}
-                    tooltip={{ children: 'Community' }}
+                    tooltip={{ children: 'Jobs' }}
                 >
-                  <Globe />
-                  <span>Community</span>
+                  <Briefcase />
+                  <span>Jobs</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
             {isAdmin && (

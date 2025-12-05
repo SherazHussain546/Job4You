@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Loader2, Home, BookOpenCheck, Info, Globe, LayoutDashboard, LogIn } from 'lucide-react';
+import { Menu, Loader2, Home, BookOpenCheck, Info, Briefcase, LayoutDashboard, LogIn } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -14,7 +14,7 @@ const navItems = [
   { href: '/', icon: Home, label: 'Home' },
   { href: '/how-it-works', icon: BookOpenCheck, label: 'How It Works' },
   { href: '/about', icon: Info, label: 'About' },
-  { href: '/community', icon: Globe, label: 'Community' },
+  { href: '/jobs', icon: Briefcase, label: 'Jobs' },
 ];
 
 export function PublicHeader() {
@@ -84,7 +84,7 @@ export function PublicHeader() {
               <Link href="/about">About Us</Link>
             </Button>
             <Button variant="ghost" asChild>
-              <Link href="/community">Community</Link>
+              <Link href="/jobs">Jobs</Link>
             </Button>
             <AuthButton />
           </nav>
@@ -104,7 +104,7 @@ export function PublicHeader() {
                     <Link
                       href={item.href}
                       className={cn(
-                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-black/10',
+                        'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground transition-colors hover:bg-black/10',
                         isActive && 'bg-black/20 text-primary-foreground'
                       )}
                     >
@@ -123,7 +123,7 @@ export function PublicHeader() {
                 <Link
                   href={MobileAuthHref}
                   className={cn(
-                    'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground/80 transition-colors hover:bg-black/10',
+                    'flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full p-2 text-primary-foreground transition-colors hover:bg-black/10',
                     pathname === MobileAuthHref && 'bg-black/20 text-primary-foreground'
                   )}
                 >
