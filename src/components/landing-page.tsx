@@ -3,8 +3,8 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { FileText, Bot, Users } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from './ui/card';
+import { FileText, Bot, Users, Briefcase } from 'lucide-react';
 import Image from 'next/image';
 import { PublicHeader } from './public-header';
 
@@ -119,6 +119,53 @@ export default function LandingPage() {
                     />
                 </div>
             </div>
+        </section>
+
+        {/* Community Section */}
+        <section className="w-full py-20 md:py-32 bg-secondary/30">
+          <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center px-4">
+              <div className="relative mx-auto w-full max-w-2xl">
+                 <Card>
+                    <CardHeader>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <CardTitle className="text-xl">Senior Software Engineer</CardTitle>
+                                <CardDescription className="flex items-center gap-2 pt-1">SYNC TECH Solutions</CardDescription>
+                            </div>
+                            <div className="text-sm text-muted-foreground">Dublin, Ireland</div>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground line-clamp-3">
+                            We are seeking an experienced Senior Software Engineer to join our dynamic team. The ideal candidate will have a passion for technology and a drive to build scalable, high-quality software solutions. You will work on a variety of projects, from backend services to frontend interfaces, and collaborate with cross-functional teams to deliver exceptional products.
+                        </p>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                            <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">Full-time</div>
+                            <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">Tech</div>
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button className="w-full">
+                            Apply Now
+                        </Button>
+                    </CardFooter>
+                </Card>
+              </div>
+              <div>
+                  <div className="rounded-full bg-primary/10 p-3 text-primary w-fit mb-4">
+                      <Briefcase className="h-8 w-8" />
+                  </div>
+                  <h2 className="font-headline text-3xl md:text-4xl font-bold">Discover Your Next Opportunity</h2>
+                  <p className="mt-4 text-lg text-muted-foreground">
+                      Go beyond resume building. Our community-driven job board is a trusted space where you can find exclusive opportunities, jobs, and referrals shared by fellow professionals. Every listing is AI-validated and admin-approved to ensure quality and legitimacy.
+                  </p>
+                  <div className="mt-8">
+                      <Button size="lg" asChild>
+                          <Link href="/jobs">Explore Open Roles</Link>
+                      </Button>
+                  </div>
+              </div>
+          </div>
         </section>
 
       </main>
