@@ -87,7 +87,7 @@ export function PublicHeader() {
               <Link href="/community">Community</Link>
             </Button>
             <Button variant="ghost" asChild>
-              <Link href="/jobs">Jobs</Link>
+              <Link href="/jobs">Job Opportunities</Link>
             </Button>
             <AuthButton />
           </nav>
@@ -131,11 +131,11 @@ export function PublicHeader() {
                     )}
                     >
                     <Briefcase className="h-6 w-6" />
-                    <span className="sr-only">Jobs</span>
+                    <span className="sr-only">Job Opportunities</span>
                     </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Jobs</p>
+                    <p>Job Opportunities</p>
                 </TooltipContent>
             </Tooltip>
             <Tooltip>

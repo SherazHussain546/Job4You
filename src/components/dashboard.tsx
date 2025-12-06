@@ -79,10 +79,10 @@ export default function Dashboard() {
                 <SidebarMenuButton
                     onClick={() => setActiveTab('jobs')}
                     isActive={activeTab === 'jobs'}
-                    tooltip={{ children: 'Jobs' }}
+                    tooltip={{ children: 'Job Opportunities' }}
                 >
                   <Briefcase />
-                  <span>Jobs</span>
+                  <span>Job Opportunities</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
              <SidebarMenuItem>
@@ -133,7 +133,7 @@ export default function Dashboard() {
             {activeTab === 'profile' && <ProfileEditor />}
             {activeTab === 'tailor' && <ResumeTailor />}
             {activeTab === 'jobs' && <CommunityView showHeader={false} />}
-            {activeTab === 'community' && <CommunityView showListings={false} />}
+            {activeTab === 'community' && <CommunityView showListings={false} showPostButton={true} showHeader={true} />}
             {activeTab === 'admin' && isAdmin && <AdminView />}
         </main>
       </SidebarInset>
