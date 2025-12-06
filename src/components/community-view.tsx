@@ -292,7 +292,7 @@ const JobCard = ({ job }: { job: JobPost }) => (
       </CardDescription>
     </CardHeader>
     <CardContent className="flex-grow">
-      <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{job.jobDescription}</p>
+      <p className="text-sm text-muted-foreground mb-4">{job.jobDescription}</p>
       <div className="flex flex-wrap gap-2 mb-4">
         <Badge variant="secondary">{job.jobType}</Badge>
         <Badge variant="secondary">{job.category}</Badge>
