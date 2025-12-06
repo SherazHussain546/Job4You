@@ -3,7 +3,6 @@
 import {
   signInWithPopup,
   GoogleAuthProvider,
-  signInAnonymously as firebaseSignInAnonymously,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
@@ -11,7 +10,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GoogleIcon } from '@/components/icons';
-import { User, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useAuth, useUser } from '@/firebase';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -116,15 +115,6 @@ export default function LoginPage() {
     }
   };
 
-  const signInAnonymously = async () => {
-    setIsSigningIn(true);
-    try {
-      await firebaseSignInAnonymously(auth);
-    } catch (error) {
-      handleAuthError(error);
-    }
-  };
-
   if (isUserLoading || user) {
      return (
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-4 bg-background">
@@ -221,10 +211,6 @@ export default function LoginPage() {
             <Button variant="outline" onClick={signInWithGoogle} disabled={loading}>
                 <GoogleIcon className="mr-2 h-4 w-4" />
                 Sign in with Google
-            </Button>
-            <Button variant="secondary" onClick={signInAnonymously} disabled={loading}>
-                <User className="mr-2 h-4 w-4" />
-                Sign in Anonymously
             </Button>
         </CardContent>
       </Card>
