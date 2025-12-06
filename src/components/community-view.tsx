@@ -55,6 +55,7 @@ import { useState, useMemo } from 'react';
 import type { JobPostFormData } from '@/lib/types';
 import { ScrollArea } from './ui/scroll-area';
 import { Label } from './ui/label';
+import { validateJobDescription } from '@/ai/flows/validate-job-description';
 
 
 const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
@@ -75,6 +76,31 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
         variant: 'destructive',
       });
       return;
+    }
+
+    form.control.register('jobDescription');
+    const { jobDescription } = form.getValues();
+
+    try {
+        const validationResult = await validateJobDescription({ jobDescription });
+        if (!validationResult.isValid) {
+            toast({
+                title: 'Invalid Job Description',
+                description: validationResult.reason || 'The content was flagged as inappropriate or not a valid job post.',
+                variant: 'destructive',
+            });
+            form.formState.isSubmitting = false;
+            return;
+        }
+    } catch (error) {
+        console.error('AI validation failed:', error);
+        toast({
+            title: 'Validation Error',
+            description: 'Could not validate the job description. Please try again.',
+            variant: 'destructive',
+        });
+        form.formState.isSubmitting = false;
+        return;
     }
 
     const newJobPost = {
@@ -303,7 +329,7 @@ const JobCard = ({ job }: { job: JobPost }) => (
   </Card>
 );
 
-export default function CommunityView({ showHeader = true, showListings = true }: { showHeader?: boolean; showListings?: boolean }) {
+export default function CommunityView({ showHeader = true, showListings = true, showPostButton = true }: { showHeader?: boolean; showListings?: boolean; showPostButton?: boolean }) {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
@@ -352,48 +378,50 @@ export default function CommunityView({ showHeader = true, showListings = true }
             <p className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground">
                 Connect directly with companies and referrers. This board is built on trust—a place for our community to share and discover genuine opportunities. Find your next role or hire top talent from a network of skilled professionals.
             </p>
-            <div className="mt-8">
-                {isUserLoading ? (
-                <Button size="lg" disabled>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading...
-                    </Button>
-                ) : user ? (
-                <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                    <DialogTrigger asChild>
-                    <Button size="lg" onClick={() => setIsFormOpen(true)}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Post a Job or Referral
-                    </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-2xl">
-                    <DialogHeader>
-                        <DialogTitle>Create a New Job Post</DialogTitle>
-                        <DialogDescription>
-                        Fill out the details below. Your post will be visible to the community after admin verification.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <ScrollArea className="max-h-[80vh] p-0">
-                        <div className="py-4 pr-6">
-                        <JobPostForm onFinished={() => setIsFormOpen(false)} />
-                        </div>
-                    </ScrollArea>
-                    </DialogContent>
-                </Dialog>
-                ) : (
-                <Button size="lg" asChild>
-                    <Link href="/login?redirect=/jobs">
-                        Join the Conversation to Post a Job
-                    </Link>
-                </Button>
-                )}
-            </div>
+            {showPostButton && (
+              <div className="mt-8">
+                  {isUserLoading ? (
+                  <Button size="lg" disabled>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Loading...
+                      </Button>
+                  ) : user ? (
+                  <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+                      <DialogTrigger asChild>
+                      <Button size="lg" onClick={() => setIsFormOpen(true)}>
+                          <Plus className="mr-2 h-4 w-4" />
+                          Post a Job or Referral
+                      </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-2xl">
+                      <DialogHeader>
+                          <DialogTitle>Create a New Job Post</DialogTitle>
+                          <DialogDescription>
+                          Fill out the details below. Your post will be visible to the community after admin verification.
+                          </DialogDescription>
+                      </DialogHeader>
+                      <ScrollArea className="max-h-[80vh] p-0">
+                          <div className="py-4 pr-6">
+                          <JobPostForm onFinished={() => setIsFormOpen(false)} />
+                          </div>
+                      </ScrollArea>
+                      </DialogContent>
+                  </Dialog>
+                  ) : (
+                  <Button size="lg" asChild>
+                      <Link href="/login?redirect=/community">
+                          Join the Conversation to Post a Job
+                      </Link>
+                  </Button>
+                  )}
+              </div>
+            )}
             </div>
         </section>
       )}
 
       {showListings && (
-        <section id="job-listings" className={'w-full'}>
+        <section id="job-listings" className={'w-full py-8 md:py-12 bg-secondary/30 -mx-4 px-4'}>
             <div className="container mx-auto">
             <div className="relative mb-8 text-center">
                  <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
