@@ -393,7 +393,7 @@ export default function CommunityView({ showHeader = true, showListings = true, 
         <section className="w-full py-8 md:py-12">
             <div className="text-center">
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-primary">
-                &#92;chapter&#123;job_board&#125;
+                &#92;job4you&#123;join_our_community&#125;
             </code>
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter mt-4">
                 Community Job Board
