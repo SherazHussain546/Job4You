@@ -90,7 +90,6 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
                 description: validationResult.reason || 'The content was flagged as inappropriate or not a valid job post.',
                 variant: 'destructive',
             });
-            form.formState.isSubmitting = false;
             return;
         }
         if (validationResult.decision === 'spam') {
