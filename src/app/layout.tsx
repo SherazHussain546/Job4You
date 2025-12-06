@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import GoogleAnalytics from '@/components/google-analytics';
 import Script from 'next/script';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://job4you.app'), // Replace with your actual domain
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
     siteName: 'JobforYou',
     images: [
       {
-        url: '/og-image.png', // Replace with a real OG image path in /public
+        url: 'https://picsum.photos/seed/og-image/1200/630', 
         width: 1200,
         height: 630,
         alt: 'A preview of the JobforYou AI resume builder and community job board.',
@@ -56,7 +57,7 @@ export const metadata: Metadata = {
     title: 'JobforYou | AI-Powered Resumes & Community Job Board',
     description:
       'Generate tailored resumes, find exclusive job opportunities, and connect with a professional community. Your career journey, amplified by AI.',
-    images: ['/twitter-image.png'], // Replace with a real Twitter image path in /public
+    images: ['https://picsum.photos/seed/twitter-image/1200/600'], 
     creator: '@YourTwitterHandle', // Add your twitter handle
   },
   robots: {
