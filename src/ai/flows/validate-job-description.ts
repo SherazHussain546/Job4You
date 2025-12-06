@@ -12,12 +12,12 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const ValidateJobDescriptionInputSchema = z.object({
+const ValidateJobDescriptionInputSchema = z.object({
   jobDescription: z.string().describe('The job description text to validate.'),
 });
 export type ValidateJobDescriptionInput = z.infer<typeof ValidateJobDescriptionInputSchema>;
 
-export const ValidateJobDescriptionOutputSchema = z.object({
+const ValidateJobDescriptionOutputSchema = z.object({
   isValid: z.boolean().describe('Whether the job description is valid.'),
   reason: z.string().describe('The reason why the job description is not valid. Empty if valid.'),
 });
