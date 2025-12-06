@@ -149,23 +149,21 @@ service cloud.firestore {
      * @path /jobPosts/{jobId}
      * @principle Any signed-in user can read job posts. This is safe because client-side
      * logic filters for 'approved' posts only. Creating posts is restricted to signed-in
-     * users, and posts must start in a 'pending' state.
+     * users, and posts must start in a 'pending' or 'spam' state.
      */
     match /jobPosts/{jobId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn() 
                       && request.resource.data.posterId == request.auth.uid
-                      && request.resource.data.status == 'pending'
+                      && (request.resource.data.status == 'pending' || request.resource.data.status == 'spam')
                       && request.resource.data.createdAt == request.time;
       allow update: if (isOwner(resource.data.posterId) 
-                      && resource.data.status == 'pending'
+                      && (resource.data.status == 'pending' || resource.data.status == 'spam')
                       && request.resource.data.posterId == resource.data.posterId
                       && request.resource.data.createdAt == resource.data.createdAt
                       && request.resource.data.status == resource.data.status)
                     || (isAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']));
-      allow delete: if (isOwner(resource.data.posterId) && resource.data.status == 'pending') || isAdmin();
+      allow delete: if (isOwner(resource.data.posterId) && (resource.data.status == 'pending' || resource.data.status == 'spam')) || isAdmin();
     }
   }
 }
-
-    

@@ -79,28 +79,31 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
     }
 
     form.control.register('jobDescription');
-    const { jobDescription } = form.getValues();
+    const { jobDescription, applyLink, applyEmail } = form.getValues();
+    let finalStatus: 'pending' | 'spam' = 'pending';
 
     try {
-        const validationResult = await validateJobDescription({ jobDescription });
-        if (!validationResult.isValid) {
+        const validationResult = await validateJobDescription({ jobDescription, applyLink, applyEmail });
+        if (validationResult.decision === 'invalid') {
             toast({
-                title: 'Invalid Job Description',
+                title: 'Invalid Job Post',
                 description: validationResult.reason || 'The content was flagged as inappropriate or not a valid job post.',
                 variant: 'destructive',
             });
             form.formState.isSubmitting = false;
             return;
         }
+        if (validationResult.decision === 'spam') {
+            finalStatus = 'spam';
+        }
     } catch (error) {
         console.error('AI validation failed:', error);
+        // Do not block submission, but maybe flag for admin
+        finalStatus = 'spam'; // If AI fails, better to manually review
         toast({
-            title: 'Validation Error',
-            description: 'Could not validate the job description. Please try again.',
-            variant: 'destructive',
+            title: 'Validation Issue',
+            description: 'Could not fully validate the job description. It has been flagged for admin review.',
         });
-        form.formState.isSubmitting = false;
-        return;
     }
 
     const newJobPost = {
@@ -109,7 +112,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
       posterId: user.uid,
       posterEmail: user.email || '',
       createdAt: serverTimestamp(),
-      status: 'pending' as const,
+      status: finalStatus,
     };
     
     const collectionRef = collection(firestore, 'jobPosts');
@@ -118,7 +121,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
         .then(() => {
             toast({
                 title: 'Job Post Submitted!',
-                description: 'Your job post has been submitted for verification. It will be live once approved.',
+                description: `Your job post has been submitted for verification. It will be live once approved.`,
             });
             form.reset();
             onFinished();

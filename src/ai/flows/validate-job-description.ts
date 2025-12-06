@@ -14,12 +14,14 @@ import {z} from 'genkit';
 
 const ValidateJobDescriptionInputSchema = z.object({
   jobDescription: z.string().describe('The job description text to validate.'),
+  applyLink: z.string().optional().describe('The URL to the application page.'),
+  applyEmail: z.string().optional().describe('The email address for applications.'),
 });
 export type ValidateJobDescriptionInput = z.infer<typeof ValidateJobDescriptionInputSchema>;
 
 const ValidateJobDescriptionOutputSchema = z.object({
-  isValid: z.boolean().describe('Whether the job description is valid.'),
-  reason: z.string().describe('The reason why the job description is not valid. Empty if valid.'),
+  decision: z.enum(['valid', 'spam', 'invalid']).describe('The moderation decision.'),
+  reason: z.string().describe('The reason for the decision. Empty if valid.'),
 });
 export type ValidateJobDescriptionOutput = z.infer<typeof ValidateJobDescriptionOutputSchema>;
 
@@ -45,19 +47,30 @@ const prompt = ai.definePrompt({
     name: 'validateJobDescriptionPrompt',
     input: { schema: ValidateJobDescriptionInputSchema },
     output: { schema: ValidateJobDescriptionOutputSchema },
-    prompt: `You are a strict content moderator for a job board. Your task is to analyze the provided text and determine if it is a legitimate job description.
+    prompt: `You are an extremely strict content moderator for a job board. Your task is to analyze the provided text, URL, and email to determine if it is a legitimate job description.
 
-You must be very strict. If you have any doubt, mark it as invalid.
+You must be very strict. If you have any doubt, mark it as 'spam'.
 
-Analyze the following job description:
-"{{{jobDescription}}}"
+Analyze the following job posting content:
+- Description: "{{{jobDescription}}}"
+- Apply URL: "{{{applyLink}}}"
+- Apply Email: "{{{applyEmail}}}"
 
-Perform these checks:
-1.  **Malicious Code Check**: Look for any code snippets (e.g., SQL injection, JavaScript, shell commands) or text that seems designed to harm a system.
-2.  **Relevance Check**: Determine if the text is actually a job description. It should mention things like job title, responsibilities, qualifications, or company information. Gibberish, spam, advertisements, or random text should be marked as invalid.
-3.  **Profanity Check**: The text must not contain any profane or inappropriate language.
+Perform these checks meticulously:
+1.  **Relevance Check**: The text MUST be a job description. It should detail responsibilities, qualifications, or company information. 
+    - Mark as 'invalid' if it is gibberish (e.g., "dfksdbfyiusdnfbsy"), random conversation (e.g., "i am feeling bored," "lets hook up"), advertisements, or clearly not a job post.
+2.  **Malicious Content Check**: 
+    - Look for any code snippets (e.g., SQL injection, JavaScript, shell commands) or text designed to harm a system. Mark as 'invalid'.
+    - Analyze the applyLink. If it uses URL shorteners (like bit.ly), suspicious domains, or looks like a phishing attempt, mark as 'spam'.
+    - Analyze the applyEmail. If it looks like a temporary or suspicious email address, mark as 'spam'.
+3.  **Profanity & Inappropriate Content Check**: The text must not contain any profane, hateful, or inappropriate language. Mark as 'invalid'.
+
+Your decision process:
+- If it's clearly malicious, profane, or gibberish -> 'invalid'.
+- If the description is vague, the links/email seem suspicious, or it feels "off" but not clearly malicious -> 'spam'.
+- If it looks like a legitimate, professional job posting -> 'valid'.
 
 Based on your analysis, provide a JSON output with two fields:
-- "isValid": true if it passes all checks, false otherwise.
-- "reason": If invalid, provide a brief, user-friendly reason (e.g., "Contains suspicious code," "Does not appear to be a job description," or "Contains inappropriate language"). If valid, this should be an empty string.`,
+- "decision": Your final verdict ('valid', 'spam', or 'invalid').
+- "reason": A brief, user-friendly reason for a 'spam' or 'invalid' decision. If 'valid', this should be an empty string.`,
 });

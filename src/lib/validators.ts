@@ -69,7 +69,7 @@ export const jobPostSchema = baseJobPostSchema.extend({
     posterId: z.string(),
     posterEmail: z.string().email(),
     createdAt: z.any(), // Firestore serverTimestamp will be used here
-    status: z.enum(['pending', 'approved', 'rejected']),
+    status: z.enum(['pending', 'approved', 'rejected', 'spam']),
 });
 
 // Schema for the job post form, which also checks for at least one application method
