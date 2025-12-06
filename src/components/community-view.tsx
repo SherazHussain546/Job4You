@@ -278,58 +278,74 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
   );
 };
 
-const JobCard = ({ job }: { job: JobPost }) => (
-  <Card className="flex flex-col">
-    <CardHeader>
-      <CardTitle className="text-xl">{job.jobTitle}</CardTitle>
-      <CardDescription className="flex items-center gap-2 pt-1">
-        {job.companyName && (
-          <>
-            <Building className="h-4 w-4" />
-            <span>{job.companyName}</span>
-          </>
-        )}
-      </CardDescription>
-    </CardHeader>
-    <CardContent className="flex-grow">
-      <p className="text-sm text-muted-foreground mb-4">{job.jobDescription}</p>
-      <div className="flex flex-wrap gap-2 mb-4">
-        <Badge variant="secondary">{job.jobType}</Badge>
-        <Badge variant="secondary">{job.category}</Badge>
-      </div>
-       <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <Clock className="h-4 w-4" />
-          <span>
-            Posted{' '}
-            {job.createdAt?.seconds
-              ? formatDistanceToNow(new Date(job.createdAt.seconds * 1000), { addSuffix: true })
-              : 'just now'}
-          </span>
+const JobCard = ({ job }: { job: JobPost }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const description = job.jobDescription;
+  const isLongDescription = description.length > 200;
+
+  return (
+    <Card className="flex flex-col">
+      <CardHeader>
+        <CardTitle className="text-xl">{job.jobTitle}</CardTitle>
+        <CardDescription className="flex items-center gap-2 pt-1">
+          {job.companyName && (
+            <>
+              <Building className="h-4 w-4" />
+              <span>{job.companyName}</span>
+            </>
+          )}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex-grow">
+        <p className="text-sm text-muted-foreground mb-4 whitespace-pre-wrap">
+          {isLongDescription && !isExpanded ? `${description.substring(0, 200)}...` : description}
+          {isLongDescription && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-primary font-semibold ml-2 hover:underline"
+            >
+              {isExpanded ? 'Read Less' : 'Read More'}
+            </button>
+          )}
+        </p>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Badge variant="secondary">{job.jobType}</Badge>
+          <Badge variant="secondary">{job.category}</Badge>
         </div>
-        <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4" />
-          <span>{job.postedBy}</span>
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            <span>
+              Posted{' '}
+              {job.createdAt?.seconds
+                ? formatDistanceToNow(new Date(job.createdAt.seconds * 1000), { addSuffix: true })
+                : 'just now'}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Mail className="h-4 w-4" />
+            <span>{job.postedBy}</span>
+          </div>
         </div>
-      </div>
-    </CardContent>
-    <CardFooter>
+      </CardContent>
+      <CardFooter>
         {job.applyLink ? (
-            <Button asChild className="w-full">
-                <a href={job.applyLink} target="_blank" rel="noopener noreferrer">
-                Apply Now <ExternalLink className="ml-2 h-4 w-4" />
-                </a>
-            </Button>
+          <Button asChild className="w-full">
+            <a href={job.applyLink} target="_blank" rel="noopener noreferrer">
+              Apply Now <ExternalLink className="ml-2 h-4 w-4" />
+            </a>
+          </Button>
         ) : job.applyEmail ? (
-            <Button asChild className="w-full">
-                <a href={`mailto:${job.applyEmail}`}>
-                Apply via Email <Mail className="ml-2 h-4 w-4" />
-                </a>
-            </Button>
+          <Button asChild className="w-full">
+            <a href={`mailto:${job.applyEmail}`}>
+              Apply via Email <Mail className="ml-2 h-4 w-4" />
+            </a>
+          </Button>
         ) : null}
-    </CardFooter>
-  </Card>
-);
+      </CardFooter>
+    </Card>
+  );
+};
 
 export default function CommunityView({ showHeader = true, showListings = true, showPostButton = true }: { showHeader?: boolean; showListings?: boolean; showPostButton?: boolean }) {
   const { user, isUserLoading } = useUser();
