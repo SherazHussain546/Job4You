@@ -75,7 +75,7 @@ export default function CommunityPage() {
                                     All posts are approved by our site administrator,{' '}
                                     <span className="font-medium text-primary">Sheraz Hussain</span>. 
                                     You can reach out with any questions regarding your post at{' '}
-                                    <a href="mailto:sheraz.synctech.ie" className="text-primary underline">sheraz.synctech.ie</a>.
+                                    <a href="mailto:sheraz@synctech.ie" className="text-primary underline">sheraz@synctech.ie</a>.
                                 </p>
                            </div>
                         </CardContent>
