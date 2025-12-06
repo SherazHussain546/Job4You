@@ -4,16 +4,16 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
-  title: 'JobforYou | The Online LaTeX Editor for Technical Writing',
-  description: 'Write like a rocket scientist with JobforYou—the collaborative, online LaTeX editor that anyone can use. Purpose-built for scientific and technical writing.',
-  keywords: ['LaTeX editor', 'online LaTeX', 'collaborative writing', 'scientific writing', 'technical writing', 'research papers', 'JobforYou', 'SYNC TECH Solutions'],
+  title: 'JobforYou | AI-Powered Resumes & Community Job Board',
+  description: 'Generate tailored resumes and cover letters with AI. Explore a community-driven job board for exclusive opportunities, jobs, and referrals. Your next career move starts here.',
+  keywords: ['AI resume builder', 'cover letter generator', 'job board', 'community jobs', 'tech jobs', 'freelance opportunities', 'job referrals', 'career tools', 'JobforYou', 'SYNC TECH Solutions'],
   authors: [{ name: 'SYNC TECH Solutions', url: 'https://synctech.ie' }],
   icons: {
     icon: '/favicon.ico',
   },
   openGraph: {
-    title: 'JobforYou | The Online LaTeX Editor for Technical Writing',
-    description: 'The collaborative, online LaTeX editor that makes it easy to write, edit, and share your scientific and technical documents.',
+    title: 'JobforYou | AI-Powered Resumes & Community Job Board',
+    description: 'Transform your job search with AI-powered resume tailoring and a trusted community job board. Find your next role or top talent with JobforYou.',
     url: 'https://job4you.app', // Replace with your actual domain
     siteName: 'JobforYou',
     images: [
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
         url: 'https://picsum.photos/seed/og-image/1200/630', // Replace with a real OG image
         width: 1200,
         height: 630,
-        alt: 'A preview of the JobforYou collaborative LaTeX editor.',
+        alt: 'A preview of the JobforYou AI resume builder and community job board.',
       },
     ],
     locale: 'en_US',
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'JobforYou | The Online LaTeX Editor for Technical Writing',
-    description: 'The collaborative, online LaTeX editor that anyone can use. Purpose-built for scientific and technical writing.',
+    title: 'JobforYou | AI-Powered Resumes & Community Job Board',
+    description: 'Generate tailored resumes, find exclusive job opportunities, and connect with a professional community. Your career journey, amplified by AI.',
     images: ['https://picsum.photos/seed/twitter-image/1200/600'], // Replace with a real Twitter image
   },
 };
