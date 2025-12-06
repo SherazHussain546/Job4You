@@ -1,8 +1,12 @@
-'use client';
 
+import type { Metadata } from 'next';
 import CommunityView from '@/components/community-view';
 import { PublicHeader } from '@/components/public-header';
 
+export const metadata: Metadata = {
+    title: 'Job Board | Tech, Design, Marketing & More | JobforYou',
+    description: 'Explore the latest job opportunities and referrals from the JobforYou community. Find roles in tech, design, marketing, and more. All posts are AI-validated and admin-approved.',
+};
 
 export default function JobsPage() {
   return (

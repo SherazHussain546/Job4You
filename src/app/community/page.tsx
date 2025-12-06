@@ -1,10 +1,14 @@
 
-'use client';
-
+import type { Metadata } from 'next';
 import CommunityView from '@/components/community-view';
 import { PublicHeader } from '@/components/public-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Handshake, DollarSign, UserCheck, MousePointerClick, FilePenLine, Bot, CheckCircle2 } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: 'Community Guidelines & Job Posting | JobforYou',
+    description: 'Join the JobforYou community. Learn how to post jobs or referrals, our AI-validation process, and our commitment to a professional and trustworthy environment.',
+};
 
 export default function CommunityPage() {
   return (
