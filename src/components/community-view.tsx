@@ -19,6 +19,7 @@ import {
   Mail,
   ExternalLink,
   Clock,
+  BookText,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
@@ -39,6 +40,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
+  DialogFooter
 } from '@/components/ui/dialog';
 import {
   Select,
@@ -62,6 +65,7 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
   const { user } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<JobPostFormData>({
     resolver: zodResolver(jobPostFormSchema),
@@ -77,13 +81,15 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
       });
       return;
     }
-
-    form.control.register('jobDescription');
-    const { jobDescription, applyLink, applyEmail } = form.getValues();
-    let finalStatus: 'pending' | 'spam' = 'pending';
-
+    
+    setIsSubmitting(true);
+    
     try {
+        const { jobDescription, applyLink, applyEmail } = form.getValues();
+        let finalStatus: 'pending' | 'spam' = 'pending';
+
         const validationResult = await validateJobDescription({ jobDescription, applyLink, applyEmail });
+
         if (validationResult.decision === 'invalid') {
             toast({
                 title: 'Invalid Job Post',
@@ -95,51 +101,42 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
         if (validationResult.decision === 'spam') {
             finalStatus = 'spam';
         }
-    } catch (error) {
-        console.error('AI validation failed:', error);
-        // Do not block submission, but maybe flag for admin
-        finalStatus = 'spam'; // If AI fails, better to manually review
-        toast({
-            title: 'Validation Issue',
-            description: 'Could not fully validate the job description. It has been flagged for admin review.',
-        });
-    }
-
-    const newJobPost = {
-      ...data,
-      postedBy: user.displayName || 'Anonymous',
-      posterId: user.uid,
-      posterEmail: user.email || '',
-      createdAt: serverTimestamp(),
-      status: finalStatus,
-    };
     
-    const collectionRef = collection(firestore, 'jobPosts');
+        const newJobPost = {
+            ...data,
+            postedBy: user.displayName || 'Anonymous',
+            posterId: user.uid,
+            posterEmail: user.email || '',
+            createdAt: serverTimestamp(),
+            status: finalStatus,
+        };
+        
+        const collectionRef = collection(firestore, 'jobPosts');
 
-    addDoc(collectionRef, newJobPost)
-        .then(() => {
-            toast({
-                title: 'Job Post Submitted!',
-                description: `Your job post has been submitted for verification. It will be live once approved.`,
-            });
-            form.reset();
-            onFinished();
-        })
-        .catch((error) => {
-            errorEmitter.emit(
-                'permission-error',
-                new FirestorePermissionError({
-                path: collectionRef.path,
-                operation: 'create',
-                requestResourceData: newJobPost,
-                })
-            );
-            toast({
-                title: 'Error',
-                description: 'Could not submit your job post. Please try again.',
-                variant: 'destructive',
-            });
+        await addDoc(collectionRef, newJobPost);
+
+        toast({
+            title: 'Job Post Submitted!',
+            description: `Your job post has been submitted for verification. It will be live once approved.`,
         });
+        form.reset();
+        onFinished();
+
+    } catch (error: any) {
+        if (error instanceof FirestorePermissionError) {
+             errorEmitter.emit('permission-error', error);
+        } else {
+             console.error('An unexpected error occurred:', error);
+        }
+       
+        toast({
+            title: 'Error',
+            description: error.message || 'Could not submit your job post. Please try again.',
+            variant: 'destructive',
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   return (
@@ -268,8 +265,8 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
 
         <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" onClick={onFinished}>Cancel</Button>
-            <Button type="submit" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Submit for Verification
             </Button>
         </div>
@@ -353,6 +350,7 @@ export default function CommunityView({ showHeader = true, showListings = true, 
   const firestore = useFirestore();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [selectedJobType, setSelectedJobType] = useState('All Job Types');
 
   const jobPostsQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
@@ -363,12 +361,18 @@ export default function CommunityView({ showHeader = true, showListings = true, 
 
   const filteredJobPosts = useMemo(() => {
     if (!allApprovedPosts) return [];
-    const sorted = allApprovedPosts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-    if (selectedCategory === 'All Categories') {
-      return sorted;
+    let sorted = allApprovedPosts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    
+    if (selectedCategory !== 'All Categories') {
+      sorted = sorted.filter(post => post.category === selectedCategory);
     }
-    return sorted.filter(post => post.category === selectedCategory);
-  }, [allApprovedPosts, selectedCategory]);
+    
+    if (selectedJobType !== 'All Job Types') {
+      sorted = sorted.filter(post => post.jobType === selectedJobType);
+    }
+    
+    return sorted;
+  }, [allApprovedPosts, selectedCategory, selectedJobType]);
 
   
   const handlePostJobClick = () => {
@@ -380,6 +384,7 @@ export default function CommunityView({ showHeader = true, showListings = true, 
   }
   
   const jobCategories = ["All Categories", ...baseJobPostSchema.shape.category.options];
+  const jobTypes = ["All Job Types", ...baseJobPostSchema.shape.jobType.options];
   const isLoading = isUserLoading || isLoadingJobs;
 
   return (
@@ -454,20 +459,33 @@ export default function CommunityView({ showHeader = true, showListings = true, 
             </div>
             
             {user && (
-                <div className="mb-8 flex justify-center">
-                <div className="w-full max-w-xs">
-                    <Label htmlFor="category-filter">Filter by Category</Label>
-                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger id="category-filter" className="w-full">
-                        <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {jobCategories.map(cat => (
-                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                        ))}
-                    </SelectContent>
-                    </Select>
-                </div>
+                <div className="mb-8 flex justify-center flex-wrap gap-4">
+                  <div className="w-full max-w-xs">
+                      <Label htmlFor="category-filter">Filter by Category</Label>
+                      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                      <SelectTrigger id="category-filter" className="w-full">
+                          <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {jobCategories.map(cat => (
+                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                          ))}
+                      </SelectContent>
+                      </Select>
+                  </div>
+                  <div className="w-full max-w-xs">
+                      <Label htmlFor="jobtype-filter">Filter by Job Type</Label>
+                      <Select value={selectedJobType} onValueChange={setSelectedJobType}>
+                      <SelectTrigger id="jobtype-filter" className="w-full">
+                          <SelectValue placeholder="Select a job type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {jobTypes.map(type => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                          ))}
+                      </SelectContent>
+                      </Select>
+                  </div>
                 </div>
             )}
 
@@ -492,9 +510,9 @@ export default function CommunityView({ showHeader = true, showListings = true, 
                     </CardHeader>
                     <CardContent>
                         <p className="text-muted-foreground">
-                            {selectedCategory === 'All Categories' 
+                            {selectedCategory === 'All Categories'  && selectedJobType === 'All Job Types'
                                 ? 'There are no approved job posts right now. Why not be the first to post one?' 
-                                : `Jobs for the "${selectedCategory}" category will appear here soon. Check back later!`}
+                                : `No jobs match your current filters. Try broadening your search!`}
                         </p>
                     </CardContent>
                     </Card>
