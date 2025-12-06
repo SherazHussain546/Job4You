@@ -61,6 +61,7 @@ const statusBadgeVariant: { [key: string]: "default" | "secondary" | "destructiv
 }
 
 const AdminJobCard = ({ job, onUpdateStatus, onDelete }: { job: JobPost; onUpdateStatus: (id: string, status: 'approved' | 'rejected' | 'pending' | 'spam') => void; onDelete: (id: string) => void; }) => {
+  const isAdminPost = job.posterEmail === 'sherazhussainofficial1@gmail.com';
   return (
     <Card className={`flex flex-col ${statusStyles[job.status]}`}>
       <CardHeader>
@@ -97,7 +98,7 @@ const AdminJobCard = ({ job, onUpdateStatus, onDelete }: { job: JobPost; onUpdat
           </div>
           <div className="flex items-center gap-2" title={job.posterEmail}>
             <Mail className="h-4 w-4" />
-            <span>{job.postedBy}</span>
+            <span>{isAdminPost ? 'Admin' : job.postedBy}</span>
           </div>
         </div>
          <div className="mt-4 flex flex-wrap gap-2 text-xs">

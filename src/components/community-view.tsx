@@ -279,6 +279,7 @@ const JobCard = ({ job }: { job: JobPost }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const description = job.jobDescription;
   const isLongDescription = description.length > 200;
+  const isAdminPost = job.posterEmail === 'sherazhussainofficial1@gmail.com';
 
   return (
     <Card className="flex flex-col">
@@ -321,7 +322,7 @@ const JobCard = ({ job }: { job: JobPost }) => {
           </div>
           <div className="flex items-center gap-2">
             <Mail className="h-4 w-4" />
-            <span>{job.postedBy}</span>
+            <span>{isAdminPost ? 'Admin' : job.postedBy}</span>
           </div>
         </div>
       </CardContent>
