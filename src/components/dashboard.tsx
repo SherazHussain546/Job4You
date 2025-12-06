@@ -89,10 +89,10 @@ export default function Dashboard() {
                 <SidebarMenuButton
                     onClick={() => setActiveTab('community')}
                     isActive={activeTab === 'community'}
-                    tooltip={{ children: 'Community' }}
+                    tooltip={{ children: 'Post Job/Referral' }}
                 >
                   <Users />
-                  <span>Community</span>
+                  <span>Post Job/Referral</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
             {isAdmin && (
