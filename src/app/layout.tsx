@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import GoogleAnalytics from '@/components/google-analytics';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://job4you.app'), // Replace with your actual domain
@@ -119,6 +120,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </FirebaseClientProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );
