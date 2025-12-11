@@ -1,10 +1,8 @@
-
 'use server';
 
 /**
- * @fileOverview Tailors a user's resume to a specific job description using the @google/generative-ai SDK.
+ * @fileOverview Tailors a user's resume to a specific job description using a direct fetch call to the Google AI API.
  */
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { z } from 'zod';
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
@@ -241,7 +239,6 @@ User Profile:
 `;
 
 function fillTemplate(template: string, data: Record<string, any>): string {
-  // A simple template filler. It doesn't handle loops (#each) but works for direct replacements.
   return template.replace(/{{{?(.*?)}}}?/g, (match, key) => {
     const keys = key.trim().split('.');
     let value: any = data;
@@ -249,10 +246,9 @@ function fillTemplate(template: string, data: Record<string, any>): string {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
       } else {
-        return match; // Return original placeholder if key not found
+        return match;
       }
     }
-    // For simplicity, we stringify objects/arrays that aren't handled by #each
     if (typeof value === 'object' && value !== null) {
       return JSON.stringify(value, null, 2);
     }
@@ -260,8 +256,9 @@ function fillTemplate(template: string, data: Record<string, any>): string {
   });
 }
 
-// Initialize the Google Generative AI client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+
+const API_KEY = process.env.GEMINI_API_KEY || '';
+const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
 
 
 export async function tailorResumeToJobDescription(
@@ -297,21 +294,35 @@ export async function tailorResumeToJobDescription(
         contactSection += `\\href{https://${profileData.contactInfo.other}}{Other URL}`;
     }
 
-    // A simplified template filler that doesn't handle Handlebars logic like #each
     const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    const result = await model.generateContent(fullPrompt);
-    const response = await result.response;
-    const text = response.text();
-    
+    const requestBody = {
+        contents: [{ parts: [{ text: fullPrompt }] }],
+    };
+
     try {
-      // The model sometimes returns the JSON wrapped in ```json ... ```, so we need to clean it.
-      const cleanedJson = text.replace(/^```json\s*|```\s*$/g, '');
-      const parsedOutput = JSON.parse(cleanedJson);
-      return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
-    } catch (e) {
-      console.error("Failed to parse AI response for resume:", e, "Raw response:", text);
-      throw new Error("AI returned an invalid format.");
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+        }
+        
+        const responseData = await response.json();
+        const text = responseData.candidates[0].content.parts[0].text;
+        
+        const cleanedJson = text.replace(/^```json\s*|```\s*$/g, '');
+        const parsedOutput = JSON.parse(cleanedJson);
+        return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
+
+    } catch (e: any) {
+        console.error("Failed to generate or parse AI response for resume:", e);
+        throw new Error(`AI generation failed: ${e.message}`);
     }
 }

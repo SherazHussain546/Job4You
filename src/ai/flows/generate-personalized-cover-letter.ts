@@ -1,10 +1,8 @@
-
 'use server';
 
 /**
- * @fileOverview Generates a personalized cover letter in LaTeX format using the @google/generative-ai SDK.
+ * @fileOverview Generates a personalized cover letter in LaTeX format using a direct fetch call to the Google AI API.
  */
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { z } from 'zod';
 
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
@@ -176,15 +174,16 @@ function fillTemplate(template: string, data: Record<string, any>): string {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
       } else {
-        return match; // Return original placeholder if key not found
+        return match;
       }
     }
     return value;
   });
 }
 
-// Initialize the Google Generative AI client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const API_KEY = process.env.GEMINI_API_KEY || '';
+const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
+
 
 export async function generatePersonalizedCoverLetter(
   input: GeneratePersonalizedCoverLetterInput
@@ -204,18 +203,33 @@ export async function generatePersonalizedCoverLetter(
 
   const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-  const result = await model.generateContent(fullPrompt);
-  const response = await result.response;
-  const text = response.text();
+  const requestBody = {
+    contents: [{ parts: [{ text: fullPrompt }] }],
+  };
 
   try {
-    // The model sometimes returns the JSON wrapped in ```json ... ```, so we need to clean it.
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+    }
+
+    const responseData = await response.json();
+    const text = responseData.candidates[0].content.parts[0].text;
+    
     const cleanedJson = text.replace(/^```json\s*|```\s*$/g, '');
     const parsedOutput = JSON.parse(cleanedJson);
     return GeneratePersonalizedCoverLetterOutputSchema.parse(parsedOutput);
-  } catch (e) {
-    console.error('Failed to parse AI response for cover letter:', e, "Raw response:", text);
-    throw new Error('AI returned an invalid format.');
+
+  } catch (e: any) {
+    console.error('Failed to generate or parse AI response for cover letter:', e);
+    throw new Error(`AI generation failed: ${e.message}`);
   }
 }
