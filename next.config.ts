@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -35,6 +36,18 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  webpack: (config, { isServer }) => {
+    // This is a workaround for a bug in Next.js where it tries to bundle
+    // server-side modules on the client.
+    if (!isServer) {
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            'async_hooks': false,
+        };
+    }
+
+    return config;
   },
 };
 
