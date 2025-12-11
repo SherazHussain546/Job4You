@@ -85,22 +85,22 @@ const JobPostForm = ({ onFinished }: { onFinished: () => void }) => {
     setIsSubmitting(true);
     
     try {
-        const { jobDescription, applyLink, applyEmail } = form.getValues();
+        // const { jobDescription, applyLink, applyEmail } = form.getValues();
         let finalStatus: 'pending' | 'spam' = 'pending';
 
-        const validationResult = await validateJobDescription({ jobDescription, applyLink, applyEmail });
+        // const validationResult = await validateJobDescription({ jobDescription, applyLink, applyEmail });
 
-        if (validationResult.decision === 'invalid') {
-            toast({
-                title: 'Invalid Job Post',
-                description: validationResult.reason || 'The content was flagged as inappropriate or not a valid job post.',
-                variant: 'destructive',
-            });
-            return;
-        }
-        if (validationResult.decision === 'spam') {
-            finalStatus = 'spam';
-        }
+        // if (validationResult.decision === 'invalid') {
+        //     toast({
+        //         title: 'Invalid Job Post',
+        //         description: validationResult.reason || 'The content was flagged as inappropriate or not a valid job post.',
+        //         variant: 'destructive',
+        //     });
+        //     return;
+        // }
+        // if (validationResult.decision === 'spam') {
+        //     finalStatus = 'spam';
+        // }
     
         const newJobPost = {
             ...data,
