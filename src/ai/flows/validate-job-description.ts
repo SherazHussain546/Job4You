@@ -39,14 +39,13 @@ const validateJobDescriptionFlow = ai.defineFlow(
     outputSchema: ValidateJobDescriptionOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output!;
+    const llmResponse = await prompt.generate({input});
+    return llmResponse.output()!;
   }
 );
 
 const prompt = ai.definePrompt({
     name: 'validateJobDescriptionPrompt',
-    model: googleAI.model('gemini-pro'),
     input: { schema: ValidateJobDescriptionInputSchema },
     prompt: `You are an extremely strict content moderator for a job board. Your task is to analyze the provided text, URL, and email to determine if it is a legitimate job description.
 

@@ -98,14 +98,13 @@ const generatePersonalizedCoverLetterFlow = ai.defineFlow(
     
     const augmentedInput = { ...input, contactSection };
 
-    const {output} = await prompt(augmentedInput);
-    return output!;
+    const llmResponse = await prompt.generate({input: augmentedInput});
+    return llmResponse.output()!;
   }
 );
 
 const prompt = ai.definePrompt({
   name: 'generatePersonalizedCoverLetterPrompt',
-  model: googleAI.model('gemini-pro'),
   input: {schema: GeneratePersonalizedCoverLetterInputSchema.extend({ contactSection: z.string() })},
   prompt: `You are an expert career coach and professional writer. Your task is to generate a compelling, professional cover letter in LaTeX format.
 Your writing must be flawless, with no grammatical errors, and maintain a highly professional tone.
