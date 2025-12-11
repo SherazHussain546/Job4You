@@ -8,10 +8,12 @@
  * - TailorResumeToJobDescriptionInput - The input type for the tailorResumeToJobDescription function.
  * - TailorResumeToJobDescriptionOutput - The return type for the tailorResumeToJobToDescription function.
  */
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { z } from 'zod';
+import { config } from 'dotenv';
+config();
 
-import {ai} from '@/ai/genkit';
-import {googleAI} from '@genkit-ai/google-genai';
-import {z} from 'genkit';
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
   jobDescription: z
@@ -73,68 +75,7 @@ export type TailorResumeToJobDescriptionOutput = z.infer<
   typeof TailorResumeToJobDescriptionOutputSchema
 >;
 
-
-const tailorResumeToJobDescriptionFlow = ai.defineFlow(
-  {
-    name: 'tailorResumeToJobDescriptionFlow',
-    inputSchema: TailorResumeToJobDescriptionInputSchema,
-    outputSchema: TailorResumeToJobDescriptionOutputSchema,
-  },
-  async input => {
-    const { profileData } = input;
-    let contactSection = '';
-    if (profileData.contactInfo.phone) {
-        contactSection += profileData.contactInfo.phone;
-    }
-    if (profileData.contactInfo.email) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`;
-    }
-    if (profileData.contactInfo.linkedin) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`;
-    }
-    if (profileData.contactInfo.github) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.github}}{GitHub}`;
-    }
-     if (profileData.contactInfo.portfolio) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`;
-    }
-    if (profileData.contactInfo.instagram) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.instagram}}{Instagram}`;
-    }
-    if (profileData.contactInfo.other) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.other}}{Other URL}`;
-    }
-
-    const augmentedInput = { ...input, contactSection };
-
-    const llmResponse = await tailorResumeToJobDescriptionPrompt(augmentedInput);
-    
-    try {
-      return JSON.parse(llmResponse.text());
-    } catch (e) {
-      console.error('Failed to parse AI response for resume', e);
-      throw new Error('AI returned an invalid format.');
-    }
-  }
-);
-
-export async function tailorResumeToJobDescription(
-  input: TailorResumeToJobDescriptionInput
-): Promise<TailorResumeToJobDescriptionOutput> {
-  return tailorResumeToJobDescriptionFlow(input);
-}
-
-const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
-  name: 'tailorResumeToJobDescriptionPrompt',
-  model: googleAI.model('gemini-pro'),
-  input: {schema: TailorResumeToJobDescriptionInputSchema.extend({ contactSection: z.string() })},
-  prompt: `You are an expert resume writer and career coach. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
+const promptTemplate = `You are an expert resume writer and career coach. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
 Your writing must be grammatically perfect and use a highly professional tone.
 You must analyze the user's profile data and the job description to create a resume that is powerfully tailored for the specific role.
 The final output must be only a JSON object with a single key "latexCode" containing the LaTeX code as a string, starting with \\documentclass and ending with \\end{document}.
@@ -149,9 +90,19 @@ Your AI actions are:
 Job Description:
 {{{jobDescription}}}
 
+User Profile:
+- Name: {{{profileData.contactInfo.name}}}
+- Contact: {{{contactSection}}}
+- Education: {{#each profileData.education}}- {{this.qualification}} at {{this.institute}} ({{this.startDate}} - {{this.endDate}}). Achievements: {{this.achievements}} {{/each}}
+- Experience: {{#each profileData.experience}}- {{this.title}} at {{this.company}} ({{this.startDate}} - {{this.endDate}}). Responsibilities: {{this.responsibilities}} {{/each}}
+- Projects: {{#each profileData.projects}}- {{this.name}} ({{this.date}}). Achievements: {{this.achievements}} {{/each}}
+- Skills: {{#each profileData.skills}}{{{this}}}, {{/each}}
+
+
 % ATS-Optimized Resume Template: {{{profileData.contactInfo.name}}}
 % Designed for maximum parsing reliability by using simple document structure,
 % standard sectioning, and minimal custom formatting.
+% Return ONLY a JSON object with a "latexCode" field.
 
 \\documentclass[10pt, a4paper]{article}
 
@@ -230,8 +181,8 @@ Job Description:
 \\section*{TECHNICAL SKILLS}
 % AI: Select and categorize the user's most relevant skills based on the job description.
 \\textbf{Programming Languages:} [List Languages e.g., Python, TypeScript, SQL] \\\\
-\\textbf{Frameworks \& Libraries:} [List Frameworks e.g., React.js, Node.js, FastAPI] \\\\
-\\textbf{Cloud \& DevOps:} [List DevOps Tools e.g., AWS, Kubernetes, Docker, CI/CD] \\\\
+\\textbf{Frameworks & Libraries:} [List Frameworks e.g., React.js, Node.js, FastAPI] \\\\
+\\textbf{Cloud & DevOps:} [List DevOps Tools e.g., AWS, Kubernetes, Docker, CI/CD] \\\\
 \\textbf{Databases:} [List Databases e.g., PostgreSQL, MongoDB, Firebase]
 
 % --------------------
@@ -295,5 +246,77 @@ Job Description:
 {{/if}}
 
 \\end{document}
-`,
-});
+`;
+
+function fillTemplate(template: string, data: Record<string, any>): string {
+  // A simple template filler. It doesn't handle loops (#each) but works for direct replacements.
+  return template.replace(/{{{?(.*?)}}}?/g, (match, key) => {
+    const keys = key.trim().split('.');
+    let value: any = data;
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return match; // Return original placeholder if key not found
+      }
+    }
+    // For simplicity, we stringify objects/arrays that aren't handled by #each
+    if (typeof value === 'object' && value !== null) {
+      return JSON.stringify(value, null, 2);
+    }
+    return value;
+  });
+}
+
+export async function tailorResumeToJobDescription(
+  input: TailorResumeToJobDescriptionInput
+): Promise<TailorResumeToJobDescriptionOutput> {
+    const { profileData } = input;
+    let contactSection = '';
+    if (profileData.contactInfo.phone) {
+        contactSection += profileData.contactInfo.phone;
+    }
+    if (profileData.contactInfo.email) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`;
+    }
+    if (profileData.contactInfo.linkedin) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`;
+    }
+    if (profileData.contactInfo.github) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.github}}{GitHub}`;
+    }
+     if (profileData.contactInfo.portfolio) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`;
+    }
+    if (profileData.contactInfo.instagram) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.instagram}}{Instagram}`;
+    }
+    if (profileData.contactInfo.other) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.other}}{Other URL}`;
+    }
+
+    // A simplified template filler that doesn't handle Handlebars logic like #each
+    const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    try {
+      // The model sometimes returns the JSON wrapped in ```json ... ```, so we need to clean it.
+      const cleanedJson = text.replace(/^```json\s*|```\s*$/g, '');
+      const parsedOutput = JSON.parse(cleanedJson);
+      return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
+    } catch (e) {
+      console.error("Failed to parse AI response for resume:", e, "Raw response:", text);
+      throw new Error("AI returned an invalid format.");
+    }
+}

@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/tailor-resume-to-job-description.ts';
-import '@/ai/flows/generate-personalized-cover-letter.ts';
-// import '@/ai/flows/validate-job-description.ts';
+// Flows are now implemented directly using the Google GenAI SDK
+// and are imported by the components that use them.
+// This file is kept for potential future use with Genkit flows.

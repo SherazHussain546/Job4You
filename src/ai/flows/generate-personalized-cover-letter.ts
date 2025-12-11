@@ -8,10 +8,13 @@
  * - GeneratePersonalizedCoverLetterInput - The input type for the generatePersonalizedCoverLetter function.
  * - GeneratePersonalizedCoverLetterOutput - The return type for the generatePersonalizedCoverLetter function.
  */
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { z } from 'zod';
+import { config } from 'dotenv';
+config();
 
-import {ai} from '@/ai/genkit';
-import {googleAI} from '@genkit-ai/google-genai';
-import {z} from 'genkit';
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
   profileData: z.object({
@@ -69,54 +72,18 @@ export type GeneratePersonalizedCoverLetterOutput = z.infer<
   typeof GeneratePersonalizedCoverLetterOutputSchema
 >;
 
-export async function generatePersonalizedCoverLetter(
-  input: GeneratePersonalizedCoverLetterInput
-): Promise<GeneratePersonalizedCoverLetterOutput> {
-  return generatePersonalizedCoverLetterFlow(input);
-}
-
-const generatePersonalizedCoverLetterFlow = ai.defineFlow(
-  {
-    name: 'generatePersonalizedCoverLetterFlow',
-    inputSchema: GeneratePersonalizedCoverLetterInputSchema,
-    outputSchema: GeneratePersonalizedCoverLetterOutputSchema,
-  },
-  async input => {
-    const { profileData } = input;
-    const contactParts = [];
-    if (profileData.contactInfo.phone) {
-        contactParts.push(`${profileData.contactInfo.phone} \\\\`);
-    }
-    if (profileData.contactInfo.email) {
-        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
-    }
-    if (profileData.contactInfo.linkedin) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
-    }
-
-    const contactSection = contactParts.join('\n');
-    
-    const augmentedInput = { ...input, contactSection };
-
-    const llmResponse = await prompt(augmentedInput);
-    
-    try {
-      return JSON.parse(llmResponse.text());
-    } catch (e) {
-      console.error('Failed to parse AI response for cover letter', e);
-      throw new Error('AI returned an invalid format.');
-    }
-  }
-);
-
-const prompt = ai.definePrompt({
-  name: 'generatePersonalizedCoverLetterPrompt',
-  model: googleAI.model('gemini-pro'),
-  input: {schema: GeneratePersonalizedCoverLetterInputSchema.extend({ contactSection: z.string() })},
-  prompt: `You are an expert career coach and professional writer. Your task is to generate a compelling, professional cover letter in LaTeX format.
+const promptTemplate = `You are an expert career coach and professional writer. Your task is to generate a compelling, professional cover letter in LaTeX format.
 Your writing must be flawless, with no grammatical errors, and maintain a highly professional tone.
 You must use the provided user profile data and tailor it to the given job description.
 The final output must be only a JSON object with a single key "latexCode" containing the LaTeX code as a string, starting with \\documentclass and ending with \\end{document}.
+
+User Profile:
+- Name: {{{profileData.contactInfo.name}}}
+- Contact: {{{contactSection}}}
+- Education: {{#each profileData.education}}- {{this.qualification}} at {{this.institute}} ({{this.startDate}} - {{this.endDate}}). Achievements: {{this.achievements}} {{/each}}
+- Experience: {{#each profileData.experience}}- {{this.title}} at {{this.company}} ({{this.startDate}} - {{this.endDate}}). Responsibilities: {{this.responsibilities}} {{/each}}
+- Projects: {{#each profileData.projects}}- {{this.name}} ({{this.date}}). Achievements: {{this.achievements}} {{/each}}
+- Skills: {{#each profileData.skills}}{{{this}}}, {{/each}}
 
 Job Description:
 {{{jobDescription}}}
@@ -128,7 +95,7 @@ AI Actions:
 4.  Write a closing paragraph that expresses genuine enthusiasm for the company and includes a strong call to action.
 5.  Replace all placeholders like [Job Title] with the extracted or generated information.
 
-Use the following LaTeX template.
+Use the following LaTeX template. Return ONLY a JSON object with a "latexCode" field.
 
 \\documentclass[10pt, a4paper]{article}
 
@@ -208,5 +175,54 @@ Sincerely, \\\\
 {{{profileData.contactInfo.name}}}
 
 \\end{document}
-`,
-});
+`;
+
+function fillTemplate(template: string, data: Record<string, any>): string {
+  return template.replace(/{{{?(.*?)}}}?/g, (match, key) => {
+    const keys = key.trim().split('.');
+    let value: any = data;
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return match; // Return original placeholder if key not found
+      }
+    }
+    return value;
+  });
+}
+
+export async function generatePersonalizedCoverLetter(
+  input: GeneratePersonalizedCoverLetterInput
+): Promise<GeneratePersonalizedCoverLetterOutput> {
+  const { profileData } = input;
+  const contactParts = [];
+  if (profileData.contactInfo.phone) {
+    contactParts.push(`${profileData.contactInfo.phone} \\\\`);
+  }
+  if (profileData.contactInfo.email) {
+    contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
+  }
+  if (profileData.contactInfo.linkedin) {
+    contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
+  }
+  const contactSection = contactParts.join('\n');
+
+  const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
+
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+  const result = await model.generateContent(fullPrompt);
+  const response = await result.response;
+  const text = response.text();
+
+  try {
+    // The model sometimes returns the JSON wrapped in ```json ... ```, so we need to clean it.
+    const cleanedJson = text.replace(/^```json\s*|```\s*$/g, '');
+    const parsedOutput = JSON.parse(cleanedJson);
+    return GeneratePersonalizedCoverLetterOutputSchema.parse(parsedOutput);
+  } catch (e) {
+    console.error('Failed to parse AI response for cover letter:', e, "Raw response:", text);
+    throw new Error('AI returned an invalid format.');
+  }
+}
