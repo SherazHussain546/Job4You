@@ -48,6 +48,7 @@ const prompt = ai.definePrompt({
     name: 'validateJobDescriptionPrompt',
     model: googleAI.model('gemini-pro'),
     input: { schema: ValidateJobDescriptionInputSchema },
+    output: { schema: ValidateJobDescriptionOutputSchema },
     prompt: `You are an extremely strict content moderator for a job board. Your task is to analyze the provided text, URL, and email to determine if it is a legitimate job description.
 
 You must be very strict. If you have any doubt, mark it as 'spam'.
@@ -75,5 +76,3 @@ Based on your analysis, provide ONLY a JSON object with two fields:
 - "decision": Your final verdict ('valid', 'spam', or 'invalid').
 - "reason": A brief, user-friendly reason for a 'spam' or 'invalid' decision. If 'valid', this should be an empty string.`,
 });
-
-  
