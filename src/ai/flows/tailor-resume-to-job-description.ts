@@ -152,7 +152,7 @@ function getPrompt(input: TailorResumeToJobDescriptionInput): string {
 
     No Functional Resumes: Do not group by "Skill" instead of "Time." ATS scanners prioritize the standard chronological work history.
 
-Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
+Your task is to generate a complete, ATS-optimized resume in LaTeX format that can be up to two pages long.
 Your writing must be grammatically perfect and use a highly professional tone.
 You must analyze the user's profile data and the job description to create a resume that is powerfully tailored for the specific role.
 The final output must be only a JSON object with a single key "latexCode" containing the LaTeX code as a string, starting with \\documentclass and ending with \\end{document}.
