@@ -113,7 +113,7 @@ Your AI actions are:
 1.  Generate a professional, one-sentence title for the user that mirrors the job title from the job description (e.g., "Full-Stack Software Engineer & AI/Cloud Developer").
 2.  Create a "PROFESSIONAL SUMMARY" with 3-4 bullet points. Each point must be a concise, impactful statement that highlights the user's most relevant qualifications and skills, directly aligning with the key requirements in the job description.
 3.  In the "TECHNICAL SKILLS" section, be highly selective. Choose only the most relevant skills from the user's profile that are explicitly mentioned or strongly implied in the job description. Categorize them logically.
-4.  For "PROFESSIONAL EXPERIENCE" and "DEVELOPMENT PROJECTS," select only the 1-2 most relevant roles or projects. For each, rewrite the responsibilities and achievements to use powerful action verbs and quantify results. Directly map these accomplishments to the needs stated in the job description. Omit experiences and projects that are not relevant.
+4.  For "PROFESSIONAL EXPERIENCE" and "DEVELOPMENT PROJECTS," select only the most relevant roles and projects. For each, rewrite the responsibilities and achievements to use powerful action verbs and quantify results. Directly map these accomplishments to the needs stated in the job description. Omit experiences and projects that are not relevant.
 5.  Conditionally render sections only if there is relevant data to show (e.g., if no selected projects are relevant, do not include the PROJECTS section).
 
 Job Description:
@@ -220,7 +220,7 @@ User Profile:
 % --------------------
 % AI: This section should only be included if relevant experience exists in the profile.
 \\section*{PROFESSIONAL EXPERIENCE}
-% AI: Iterate over the 1-2 most relevant experiences.
+% AI: Iterate over the most relevant experiences.
 \\resitem{ [Job Title] }{ [Company] }{ [Dates] }
 \\begin{itemize}
     % AI: Rewrite responsibilities to align with keywords from the job description. Use bullet points.
@@ -233,7 +233,7 @@ User Profile:
 % --------------------
 % AI: This section should only be included if relevant projects exist in the profile.
 \\section*{DEVELOPMENT PROJECTS}
-% AI: Iterate over the 1-2 most relevant projects.
+% AI: Iterate over the most relevant projects.
 \\resitem{ [Project Name] }{ [Project Description/Tagline] }{ [Date] }
 \\begin{itemize}
     % AI: Rewrite achievements to highlight relevant technologies and outcomes.
