@@ -1,10 +1,16 @@
 'use server';
 
 /**
- * @fileOverview Tailors a user's resume to a specific job description using Genkit.
+ * @fileOverview Tailors a user's resume to a specific job description using the OpenAI API.
  */
 import { z } from 'zod';
-import { ai } from '@/ai/genkit';
+import OpenAI from 'openai';
+import { config } from 'dotenv';
+config();
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
   jobDescription: z
@@ -66,7 +72,39 @@ export type TailorResumeToJobDescriptionOutput = z.infer<
   typeof TailorResumeToJobDescriptionOutputSchema
 >;
 
-const promptTemplate = `You are an expert resume writer and career coach. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
+function getPrompt(input: TailorResumeToJobDescriptionInput): string {
+    const { profileData, jobDescription } = input;
+    
+    let contactSection = '';
+    if (profileData.contactInfo.phone) {
+        contactSection += profileData.contactInfo.phone;
+    }
+    if (profileData.contactInfo.email) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`;
+    }
+    if (profileData.contactInfo.linkedin) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`;
+    }
+    if (profileData.contactInfo.github) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.github}}{GitHub}`;
+    }
+     if (profileData.contactInfo.portfolio) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`;
+    }
+    if (profileData.contactInfo.instagram) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.instagram}}{Instagram}`;
+    }
+    if (profileData.contactInfo.other) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${profileData.contactInfo.other}}{Other URL}`;
+    }
+    
+    return `You are an expert resume writer and career coach. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
 Your writing must be grammatically perfect and use a highly professional tone.
 You must analyze the user's profile data and the job description to create a resume that is powerfully tailored for the specific role.
 The final output must be only a JSON object with a single key "latexCode" containing the LaTeX code as a string, starting with \\documentclass and ending with \\end{document}.
@@ -79,18 +117,19 @@ Your AI actions are:
 5.  Conditionally render sections only if there is relevant data to show (e.g., if no selected projects are relevant, do not include the PROJECTS section).
 
 Job Description:
-{{{jobDescription}}}
+${jobDescription}
 
 User Profile:
-- Name: {{{profileData.contactInfo.name}}}
-- Contact: {{{contactSection}}}
-- Education: {{#each profileData.education}}- {{this.qualification}} at {{this.institute}} ({{this.startDate}} - {{this.endDate}}). Achievements: {{this.achievements}} {{/each}}
-- Experience: {{#each profileData.experience}}- {{this.title}} at {{this.company}} ({{this.startDate}} - {{this.endDate}}). Responsibilities: {{this.responsibilities}} {{/each}}
-- Projects: {{#each profileData.projects}}- {{this.name}} ({{this.date}}). Achievements: {{this.achievements}} {{/each}}
-- Skills: {{#each profileData.skills}}{{{this}}}, {{/each}}
+- Name: ${profileData.contactInfo.name}
+- Contact Details: ${JSON.stringify(profileData.contactInfo, null, 2)}
+- Education: ${JSON.stringify(profileData.education, null, 2)}
+- Experience: ${JSON.stringify(profileData.experience, null, 2)}
+- Projects: ${JSON.stringify(profileData.projects, null, 2)}
+- Certifications: ${JSON.stringify(profileData.certifications, null, 2)}
+- Skills: ${profileData.skills.join(', ')}
 
 
-% ATS-Optimized Resume Template: {{{profileData.contactInfo.name}}}
+% ATS-Optimized Resume Template: ${profileData.contactInfo.name}
 % Designed for maximum parsing reliability by using simple document structure,
 % standard sectioning, and minimal custom formatting.
 % Return ONLY a JSON object with a "latexCode" field.
@@ -148,11 +187,11 @@ User Profile:
 % 1. HEADER & CONTACT
 % --------------------
 \\begin{center}
-    {\\Huge \\textbf{ {{{profileData.contactInfo.name}}} }} \\\\
+    {\\Huge \\textbf{ ${profileData.contactInfo.name} }} \\\\
     % AI: Generate a professional title based on the Job Description.
     [Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer] \\\\
     \\vspace{2pt}
-    {{{contactSection}}}
+    ${contactSection}
 \\end{center}
 
 % --------------------
@@ -179,132 +218,69 @@ User Profile:
 % --------------------
 % 4. PROFESSIONAL EXPERIENCE
 % --------------------
-{{#if profileData.experience}}
+% AI: This section should only be included if relevant experience exists in the profile.
 \\section*{PROFESSIONAL EXPERIENCE}
-{{#each profileData.experience}}
-{{#if this.title}}
-\\resitem{ {{{this.title}}} }{ {{{this.company}}} }{ {{#if this.startDate}}{{{this.startDate}}} -- {{/if}}{{{this.endDate}}} }
+% AI: Iterate over the 1-2 most relevant experiences.
+\\resitem{ [Job Title] }{ [Company] }{ [Dates] }
 \\begin{itemize}
     % AI: Rewrite responsibilities to align with keywords from the job description. Use bullet points.
-    \\item {{{this.responsibilities}}}
+    \\item [Rewritten, impactful responsibility 1]
+    \\item [Rewritten, impactful responsibility 2]
 \\end{itemize}
-{{/if}}
-{{/each}}
-{{/if}}
 
 % --------------------
 % 5. DEVELOPMENT PROJECTS
 % --------------------
-{{#if profileData.projects}}
+% AI: This section should only be included if relevant projects exist in the profile.
 \\section*{DEVELOPMENT PROJECTS}
-{{#each profileData.projects}}
-{{#if this.name}}
-\\resitem{ {{{this.name}}} }{}{ {{{this.date}}} }
+% AI: Iterate over the 1-2 most relevant projects.
+\\resitem{ [Project Name] }{}{ [Date] }
 \\begin{itemize}
     % AI: Rewrite achievements to highlight relevant technologies and outcomes.
-    \\item {{{this.achievements}}}
+    \\item [Rewritten, impactful achievement 1]
 \\end{itemize}
-{{/if}}
-{{/each}}
-{{/if}}
 
 % --------------------
 % 6. EDUCATION & CERTIFICATES
 % --------------------
-{{#if profileData.education}}
 \\section*{EDUCATION}
-{{#each profileData.education}}
-{{#if this.qualification}}
-\\resitem{ {{{this.qualification}}} }{ {{{this.institute}}} }{ {{#if this.startDate}}{{{this.startDate}}} -- {{/if}}{{{this.endDate}}} }
-{{#if this.achievements}}
+% AI: Iterate over education history.
+\\resitem{ [Degree] }{ [University] }{ [Dates] }
+% AI: Optionally include achievements.
 \\begin{itemize}
-    \\item {{{this.achievements}}}
+    \\item [Achievement, e.g., Graduated with First Class Honours]
 \\end{itemize}
-{{/if}}
-{{/if}}
-{{/each}}
-{{/if}}
 
-{{#if profileData.certifications}}
+% AI: This section should only be included if relevant certifications exist.
 \\section*{CERTIFICATES \& TRAINING}
 \\begin{itemize}
-{{#each profileData.certifications}}
-{{#if this.name}}
-    \\item \\textbf{ {{{this.name}}} }{{#if this.organization}} from \\textbf{ {{{this.organization}}} }{{/if}}{{#if this.achievements}}: {{{this.achievements}}}{{/if}}{{#if this.skillsAchieved}} Skills: {{{this.skillsAchieved}}}{{/if}}
-{{/if}}
-{{/each}}
+% AI: Iterate over relevant certifications.
+    \\item \\textbf{ [Certification Name] } from \\textbf{ [Organization] }: [Optional brief description of relevance]
 \\end{itemize}
-{{/if}}
 
 \\end{document}
 `;
-
-function fillTemplate(template: string, data: Record<string, any>): string {
-  // A simple template filler. It doesn't handle complex logic like #each.
-  // We'll rely on the LLM to process the raw data provided inside the template.
-  return template.replace(/{{{?(.*?)}}}?/g, (match, key) => {
-    const keys = key.trim().split('.');
-    let value: any = data;
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
-      } else {
-        // If the path doesn't exist, return the original placeholder,
-        // but without the {{...}} so it's clear in the prompt.
-        return key;
-      }
-    }
-    // If the value is an object, stringify it to show the data structure.
-    if (typeof value === 'object' && value !== null) {
-      return JSON.stringify(value, null, 2);
-    }
-    return value;
-  });
 }
+
 
 export async function tailorResumeToJobDescription(
   input: TailorResumeToJobDescriptionInput
 ): Promise<TailorResumeToJobDescriptionOutput> {
-    const { profileData } = input;
-    let contactSection = '';
-    if (profileData.contactInfo.phone) {
-        contactSection += profileData.contactInfo.phone;
-    }
-    if (profileData.contactInfo.email) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`;
-    }
-    if (profileData.contactInfo.linkedin) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`;
-    }
-    if (profileData.contactInfo.github) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.github}}{GitHub}`;
-    }
-     if (profileData.contactInfo.portfolio) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`;
-    }
-    if (profileData.contactInfo.instagram) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.instagram}}{Instagram}`;
-    }
-    if (profileData.contactInfo.other) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.other}}{Other URL}`;
-    }
-
-    const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
+    const prompt = getPrompt(input);
 
     try {
-        const { text } = await ai.generate({
-          model: 'gemini-1.5-flash',
-          prompt: fullPrompt
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: [{ role: 'user', content: prompt }],
+            response_format: { type: 'json_object' },
         });
+
+        const content = response.choices[0]?.message?.content;
+        if (!content) {
+            throw new Error('AI returned an empty response.');
+        }
         
-        const cleanedJson = text.replace(/^```json\s*|```\s*$/g, '');
-        const parsedOutput = JSON.parse(cleanedJson);
+        const parsedOutput = JSON.parse(content);
         return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
 
     } catch (e: any) {

@@ -1,10 +1,16 @@
 'use server';
 
 /**
- * @fileOverview Generates a personalized cover letter in LaTeX format using Genkit.
+ * @fileOverview Generates a personalized cover letter in LaTeX format using the OpenAI API.
  */
 import { z } from 'zod';
-import { ai } from '@/ai/genkit';
+import OpenAI from 'openai';
+import { config } from 'dotenv';
+config();
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
   profileData: z.object({
@@ -62,21 +68,37 @@ export type GeneratePersonalizedCoverLetterOutput = z.infer<
   typeof GeneratePersonalizedCoverLetterOutputSchema
 >;
 
-const promptTemplate = `You are an expert career coach and professional writer. Your task is to generate a compelling, professional cover letter in LaTeX format.
+function getPrompt(input: GeneratePersonalizedCoverLetterInput): string {
+    const { profileData, jobDescription } = input;
+    
+    const contactParts = [];
+    if (profileData.contactInfo.phone) {
+        contactParts.push(`${profileData.contactInfo.phone} \\\\`);
+    }
+    if (profileData.contactInfo.email) {
+        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
+    }
+    if (profileData.contactInfo.linkedin) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
+    }
+    const contactSection = contactParts.join('\n');
+
+    return `You are an expert career coach and professional writer. Your task is to generate a compelling, professional cover letter in LaTeX format.
 Your writing must be flawless, with no grammatical errors, and maintain a highly professional tone.
 You must use the provided user profile data and tailor it to the given job description.
 The final output must be only a JSON object with a single key "latexCode" containing the LaTeX code as a string, starting with \\documentclass and ending with \\end{document}.
 
 User Profile:
-- Name: {{{profileData.contactInfo.name}}}
-- Contact: {{{contactSection}}}
-- Education: {{#each profileData.education}}- {{this.qualification}} at {{this.institute}} ({{this.startDate}} - {{this.endDate}}). Achievements: {{this.achievements}} {{/each}}
-- Experience: {{#each profileData.experience}}- {{this.title}} at {{this.company}} ({{this.startDate}} - {{this.endDate}}). Responsibilities: {{this.responsibilities}} {{/each}}
-- Projects: {{#each profileData.projects}}- {{this.name}} ({{this.date}}). Achievements: {{this.achievements}} {{/each}}
-- Skills: {{#each profileData.skills}}{{{this}}}, {{/each}}
+- Name: ${profileData.contactInfo.name}
+- Contact Details: ${JSON.stringify(profileData.contactInfo, null, 2)}
+- Education: ${JSON.stringify(profileData.education, null, 2)}
+- Experience: ${JSON.stringify(profileData.experience, null, 2)}
+- Projects: ${JSON.stringify(profileData.projects, null, 2)}
+- Certifications: ${JSON.stringify(profileData.certifications, null, 2)}
+- Skills: ${profileData.skills.join(', ')}
 
 Job Description:
-{{{jobDescription}}}
+${jobDescription}
 
 AI Actions:
 1.  Extract the Job Title, Company Name, and Hiring Manager's Name from the job description. If Hiring Manager is not found, use "Hiring Team".
@@ -113,8 +135,8 @@ Use the following LaTeX template. Return ONLY a JSON object with a "latexCode" f
 % 1. SENDER CONTACT INFORMATION
 % --------------------
 \\raggedright
-\\textbf{ {{{profileData.contactInfo.name}}} } \\\\
-{{{contactSection}}}
+\\textbf{ ${profileData.contactInfo.name} } \\\\
+${contactSection}
 
 \\vspace{10pt}
 
@@ -162,60 +184,30 @@ Thank you for your time and consideration. I have attached my resume for your re
 \\vspace{10pt}
 
 Sincerely, \\\\
-{{{profileData.contactInfo.name}}}
+${profileData.contactInfo.name}
 
 \\end{document}
 `;
-
-function fillTemplate(template: string, data: Record<string, any>): string {
-  // A simple template filler. It doesn't handle complex logic like #each.
-  // We'll rely on the LLM to process the raw data provided inside the template.
-  return template.replace(/{{{?(.*?)}}}?/g, (match, key) => {
-    const keys = key.trim().split('.');
-    let value: any = data;
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
-      } else {
-        // If the path doesn't exist, return the original placeholder,
-        // but without the {{...}} so it's clear in the prompt.
-        return key;
-      }
-    }
-    // If the value is an object, stringify it to show the data structure.
-    if (typeof value === 'object' && value !== null) {
-      return JSON.stringify(value, null, 2);
-    }
-    return value;
-  });
 }
 
 export async function generatePersonalizedCoverLetter(
   input: GeneratePersonalizedCoverLetterInput
 ): Promise<GeneratePersonalizedCoverLetterOutput> {
-  const { profileData } = input;
-  const contactParts = [];
-  if (profileData.contactInfo.phone) {
-    contactParts.push(`${profileData.contactInfo.phone} \\\\`);
-  }
-  if (profileData.contactInfo.email) {
-    contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
-  }
-  if (profileData.contactInfo.linkedin) {
-    contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
-  }
-  const contactSection = contactParts.join('\n');
-
-  const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
+  const prompt = getPrompt(input);
 
   try {
-    const { text } = await ai.generate({
-      model: 'gemini-1.5-flash',
-      prompt: fullPrompt,
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
     });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error('AI returned an empty response.');
+    }
     
-    const cleanedJson = text.replace(/^```json\s*|```\s*$/g, '');
-    const parsedOutput = JSON.parse(cleanedJson);
+    const parsedOutput = JSON.parse(content);
     return GeneratePersonalizedCoverLetterOutputSchema.parse(parsedOutput);
   } catch (e: any) {
     console.error('Failed to generate or parse AI response for cover letter:', e);

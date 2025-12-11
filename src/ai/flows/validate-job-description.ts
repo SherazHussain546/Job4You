@@ -1,17 +1,21 @@
-
 'use server';
 
 /**
- * @fileOverview Validates a job description to ensure it is a legitimate job posting and not malicious.
+ * @fileOverview Validates a job description to ensure it is a legitimate job posting and not malicious using the OpenAI API.
  *
  * - validateJobDescription - A function that validates the job description text.
  * - ValidateJobDescriptionInput - The input type for the validation function.
  * - ValidateJobDescriptionOutput - The return type for the validation function.
  */
 
-import {ai} from '@/ai/genkit';
-import {googleAI} from '@genkit-ai/google-genai';
-import {z} from 'genkit';
+import OpenAI from 'openai';
+import { z } from 'zod';
+import { config } from 'dotenv';
+config();
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
 const ValidateJobDescriptionInputSchema = z.object({
   jobDescription: z.string().describe('The job description text to validate.'),
@@ -27,44 +31,14 @@ const ValidateJobDescriptionOutputSchema = z.object({
 export type ValidateJobDescriptionOutput = z.infer<typeof ValidateJobDescriptionOutputSchema>;
 
 
-export async function validateJobDescription(input: ValidateJobDescriptionInput): Promise<ValidateJobDescriptionOutput> {
-    return validateJobDescriptionFlow(input);
-}
-
-
-const validateJobDescriptionFlow = ai.defineFlow(
-  {
-    name: 'validateJobDescriptionFlow',
-    inputSchema: ValidateJobDescriptionInputSchema,
-    outputSchema: ValidateJobDescriptionOutputSchema,
-  },
-  async (input) => {
-    const llmResponse = await prompt(input);
-    const output = llmResponse.output;
-    if (!output) {
-        // Fallback to a safe default
-        return {
-            decision: 'spam',
-            reason: 'Could not automatically validate the job post content. It has been flagged for manual review.'
-        };
-    }
-    return output;
-  }
-);
-
-const prompt = ai.definePrompt({
-    name: 'validateJobDescriptionPrompt',
-    model: googleAI.model('gemini-1.5-flash'),
-    input: { schema: ValidateJobDescriptionInputSchema },
-    output: { schema: ValidateJobDescriptionOutputSchema },
-    prompt: `You are an extremely strict content moderator for a job board. Your task is to analyze the provided text, URL, and email to determine if it is a legitimate job description.
+const promptTemplate = `You are an extremely strict content moderator for a job board. Your task is to analyze the provided text, URL, and email to determine if it is a legitimate job description.
 
 You must be very strict. If you have any doubt, mark it as 'spam'.
 
 Analyze the following job posting content:
-- Description: "{{{jobDescription}}}"
-- Apply URL: "{{{applyLink}}}"
-- Apply Email: "{{{applyEmail}}}"
+- Description: "{{jobDescription}}"
+- Apply URL: "{{applyLink}}"
+- Apply Email: "{{applyEmail}}"
 
 Perform these checks meticulously:
 1.  **Relevance Check**: The text MUST be a job description. It should detail responsibilities, qualifications, or company information. 
@@ -82,5 +56,39 @@ Your decision process:
 
 Based on your analysis, provide ONLY a JSON object with two fields:
 - "decision": Your final verdict ('valid', 'spam', or 'invalid').
-- "reason": A brief, user-friendly reason for a 'spam' or 'invalid' decision. If 'valid', this should be an empty string.`,
-});
+- "reason": A brief, user-friendly reason for a 'spam' or 'invalid' decision. If 'valid', this should be an empty string.`;
+
+
+export async function validateJobDescription(input: ValidateJobDescriptionInput): Promise<ValidateJobDescriptionOutput> {
+    const prompt = promptTemplate
+        .replace('{{jobDescription}}', input.jobDescription)
+        .replace('{{applyLink}}', input.applyLink || '')
+        .replace('{{applyEmail}}', input.applyEmail || '');
+    
+    try {
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: [{ role: 'user', content: prompt }],
+            response_format: { type: 'json_object' },
+        });
+
+        const content = response.choices[0]?.message?.content;
+        if (!content) {
+            return {
+                decision: 'spam',
+                reason: 'Could not automatically validate the job post content. It has been flagged for manual review.'
+            };
+        }
+        
+        const parsedOutput = JSON.parse(content);
+        return ValidateJobDescriptionOutputSchema.parse(parsedOutput);
+
+    } catch (e: any) {
+        console.error("Failed to generate or parse AI response for validation:", e);
+        // Fallback to a safe default
+        return {
+            decision: 'spam',
+            reason: 'Could not automatically validate the job post content due to an unexpected error. It has been flagged for manual review.'
+        };
+    }
+}
