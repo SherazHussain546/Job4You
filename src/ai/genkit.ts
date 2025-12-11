@@ -1,6 +1,4 @@
 
-'use server';
-
 /**
  * @fileOverview This file configures a singleton `ai` instance for use throughout the application.
  * It uses the Genkit library and the Google AI plugin.
