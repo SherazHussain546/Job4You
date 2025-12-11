@@ -10,6 +10,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
@@ -104,6 +105,7 @@ const generatePersonalizedCoverLetterFlow = ai.defineFlow(
 
 const prompt = ai.definePrompt({
   name: 'generatePersonalizedCoverLetterPrompt',
+  model: googleAI.model('gemini-1.5-flash'),
   input: {schema: GeneratePersonalizedCoverLetterInputSchema.extend({ contactSection: z.string() })},
   output: {schema: GeneratePersonalizedCoverLetterOutputSchema},
   prompt: `You are an expert career coach and professional writer. Your task is to generate a compelling, professional cover letter in LaTeX format.
@@ -203,4 +205,3 @@ Sincerely, \\\\
 \\end{document}
 `,
 });
-

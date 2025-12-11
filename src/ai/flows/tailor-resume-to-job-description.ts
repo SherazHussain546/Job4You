@@ -10,6 +10,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
@@ -125,6 +126,7 @@ export async function tailorResumeToJobDescription(
 
 const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
+  model: googleAI.model('gemini-1.5-flash'),
   input: {schema: TailorResumeToJobDescriptionInputSchema.extend({ contactSection: z.string() })},
   output: {schema: TailorResumeToJobDescriptionOutputSchema},
   prompt: `You are an expert resume writer and career coach. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
