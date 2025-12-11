@@ -1,9 +1,10 @@
 'use server';
 
 /**
- * @fileOverview Tailors a user's resume to a specific job description using a direct fetch call to the Google AI API.
+ * @fileOverview Tailors a user's resume to a specific job description using Genkit.
  */
 import { z } from 'zod';
+import { ai } from '@/ai/genkit';
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
   jobDescription: z
@@ -239,6 +240,8 @@ User Profile:
 `;
 
 function fillTemplate(template: string, data: Record<string, any>): string {
+  // A simple template filler. It doesn't handle complex logic like #each.
+  // We'll rely on the LLM to process the raw data provided inside the template.
   return template.replace(/{{{?(.*?)}}}?/g, (match, key) => {
     const keys = key.trim().split('.');
     let value: any = data;
@@ -246,20 +249,18 @@ function fillTemplate(template: string, data: Record<string, any>): string {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
       } else {
-        return match;
+        // If the path doesn't exist, return the original placeholder,
+        // but without the {{...}} so it's clear in the prompt.
+        return key;
       }
     }
+    // If the value is an object, stringify it to show the data structure.
     if (typeof value === 'object' && value !== null) {
       return JSON.stringify(value, null, 2);
     }
     return value;
   });
 }
-
-
-const API_KEY = process.env.GEMINI_API_KEY || '';
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
-
 
 export async function tailorResumeToJobDescription(
   input: TailorResumeToJobDescriptionInput
@@ -296,26 +297,11 @@ export async function tailorResumeToJobDescription(
 
     const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
-    const requestBody = {
-        contents: [{ parts: [{ text: fullPrompt }] }],
-    };
-
     try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
+        const { text } = await ai.generate({
+          model: 'gemini-1.5-flash',
+          prompt: fullPrompt
         });
-
-        if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
-        }
-        
-        const responseData = await response.json();
-        const text = responseData.candidates[0].content.parts[0].text;
         
         const cleanedJson = text.replace(/^```json\s*|```\s*$/g, '');
         const parsedOutput = JSON.parse(cleanedJson);
