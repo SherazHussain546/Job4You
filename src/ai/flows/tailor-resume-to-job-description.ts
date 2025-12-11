@@ -161,9 +161,9 @@ Your AI actions are:
 1.  Generate a professional, one-sentence title for the user that mirrors the job title from the job description (e.g., "Full-Stack Software Engineer & AI/Cloud Developer").
 2.  Create a "PROFESSIONAL SUMMARY" with 3-4 bullet points. Each point must be a concise, impactful statement that highlights the user's most relevant qualifications and skills, directly aligning with the key requirements in the job description.
 3.  For the "TECHNICAL SKILLS" section, create a highly relevant and comprehensive skill set. Choose skills from the user's profile that are explicitly mentioned or strongly implied in the job description, and categorize them logically to showcase expertise.
-4.  For "PROFESSIONAL EXPERIENCE," select at least 3 of the most relevant roles. For each, rewrite the responsibilities and achievements to use powerful action verbs and quantify results. Directly map these accomplishments to the needs stated in the job description. Omit experiences that are not relevant.
-5.  For "DEVELOPMENT PROJECTS," select at least 3 of the most relevant projects. Rewrite the achievements to highlight technologies and outcomes that align with the job's requirements.
-6.  For "CERTIFICATES & TRAINING," select at least 4 of the most relevant certifications.
+4.  For "PROFESSIONAL EXPERIENCE," select at least 3 of the most relevant roles from the user's profile. For each role, you must write exactly 3 bullet points. Each bullet point must be an impactful, rewritten achievement that uses powerful action verbs, quantifies results where possible, and directly maps to the needs in the job description.
+5.  For "DEVELOPMENT PROJECTS," select at least 3 of the most relevant projects from the user's profile. For each project, you must write exactly 3 bullet points. These bullet points must highlight the technologies used and outcomes achieved, aligning them with the job's requirements.
+6.  For "CERTIFICATES & TRAINING," select at least 4 of the most relevant certifications from the user's profile.
 7.  Conditionally render sections only if there is relevant data to show (e.g., if no selected projects are relevant, do not include the PROJECTS section).
 
 Job Description:
@@ -270,12 +270,13 @@ User Profile:
 % --------------------
 % AI: This section should only be included if relevant experience exists in the profile.
 \\section*{PROFESSIONAL EXPERIENCE}
-% AI: Iterate over the most relevant experiences.
+% AI: Iterate over the 3 most relevant experiences.
 \\resitem{ [Job Title] }{ [Company] }{ [Dates] }
 \\begin{itemize}
-    % AI: Rewrite responsibilities to align with keywords from the job description. Use bullet points.
+    % AI: Rewrite responsibilities into 3 impactful bullet points aligned with job description keywords.
     \\item [Rewritten, impactful responsibility 1]
     \\item [Rewritten, impactful responsibility 2]
+    \\item [Rewritten, impactful responsibility 3]
 \\end{itemize}
 
 % --------------------
@@ -283,11 +284,13 @@ User Profile:
 % --------------------
 % AI: This section should only be included if relevant projects exist in the profile.
 \\section*{DEVELOPMENT PROJECTS}
-% AI: Iterate over the most relevant projects.
+% AI: Iterate over the 3 most relevant projects.
 \\resitem{ [Project Name] }{ [Project Description/Tagline] }{ [Date] }
 \\begin{itemize}
-    % AI: Rewrite achievements to highlight relevant technologies and outcomes.
+    % AI: Rewrite achievements into 3 impactful bullet points highlighting relevant tech and outcomes.
     \\item [Rewritten, impactful achievement 1]
+    \\item [Rewritten, impactful achievement 2]
+    \\item [Rewritten, impactful achievement 3]
 \\end{itemize}
 
 % --------------------
@@ -304,7 +307,7 @@ User Profile:
 % AI: This section should only be included if relevant certifications exist.
 \\section*{CERTIFICATES \& TRAINING}
 \\begin{itemize}
-% AI: Iterate over relevant certifications.
+% AI: Iterate over at least 4 relevant certifications.
     \\item \\textbf{ [Certification Name] } from \\textbf{ [Organization] } \\textit{[Optional: Skills shown]}
 \\end{itemize}
 
