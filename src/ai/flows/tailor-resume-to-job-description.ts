@@ -110,7 +110,7 @@ function getPrompt(input: TailorResumeToJobDescriptionInput): string {
 
     Exact Keyword Matching: You must extract ‘Hard Skills’ (e.g., Python, Salesforce, GAAP) and ‘Soft Skills’ (e.g., Stakeholder Management, Strategic Planning) directly from the Job Description (JD) and naturally weave them into the resume summary and bullet points.
 
-    Action-Oriented & Quantifiable: Every bullet point should follow the structure: Action Verb + Task + Result (Metric).
+    Action-Oriented & Quantifiable: Every bullet point should follow the structure: Action Verb + Task + Result (Metric). Quantify your wins: Add dollar signs ($) and percentages (%) to your bullet points to simulate the "multi-million dollar portfolio" requirement, even if on a smaller scale.
 
         Bad: "Responsible for sales."
 
