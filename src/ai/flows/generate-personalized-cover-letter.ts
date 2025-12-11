@@ -2,13 +2,9 @@
 'use server';
 
 /**
- * @fileOverview Generates a personalized cover letter in LaTeX format based on user profile and job description.
- *
- * - generatePersonalizedCoverLetter - A function that generates the cover letter.
- * - GeneratePersonalizedCoverLetterInput - The input type for the generatePersonalizedCoverLetter function.
- * - GeneratePersonalizedCoverLetterOutput - The return type for the generatePersonalizedCoverLetter function.
+ * @fileOverview Generates a personalized cover letter in LaTeX format using the @google/generative-ai SDK.
  */
-import { ai } from '@/ai/genkit';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { z } from 'zod';
 
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
@@ -187,6 +183,9 @@ function fillTemplate(template: string, data: Record<string, any>): string {
   });
 }
 
+// Initialize the Google Generative AI client
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+
 export async function generatePersonalizedCoverLetter(
   input: GeneratePersonalizedCoverLetterInput
 ): Promise<GeneratePersonalizedCoverLetterOutput> {
@@ -205,10 +204,10 @@ export async function generatePersonalizedCoverLetter(
 
   const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
-  const { text } = await ai.generate({
-    model: 'gemini-1.5-flash',
-    prompt: fullPrompt,
-  });
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const result = await model.generateContent(fullPrompt);
+  const response = await result.response;
+  const text = response.text();
 
   try {
     // The model sometimes returns the JSON wrapped in ```json ... ```, so we need to clean it.

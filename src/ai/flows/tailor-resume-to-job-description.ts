@@ -2,13 +2,9 @@
 'use server';
 
 /**
- * @fileOverview Tailors a user's resume (provided in profile data) to a specific job description using the Gemini API.
- *
- * - tailorResumeToJobDescription - A function that takes user profile data and a job description, then returns LaTeX code for a tailored resume.
- * - TailorResumeToJobDescriptionInput - The input type for the tailorResumeToJobDescription function.
- * - TailorResumeToJobDescriptionOutput - The return type for the tailorResumeToJobToDescription function.
+ * @fileOverview Tailors a user's resume to a specific job description using the @google/generative-ai SDK.
  */
-import { ai } from '@/ai/genkit';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { z } from 'zod';
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
@@ -264,6 +260,10 @@ function fillTemplate(template: string, data: Record<string, any>): string {
   });
 }
 
+// Initialize the Google Generative AI client
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+
+
 export async function tailorResumeToJobDescription(
   input: TailorResumeToJobDescriptionInput
 ): Promise<TailorResumeToJobDescriptionOutput> {
@@ -300,10 +300,10 @@ export async function tailorResumeToJobDescription(
     // A simplified template filler that doesn't handle Handlebars logic like #each
     const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
-    const { text } = await ai.generate({
-      model: 'gemini-1.5-flash',
-      prompt: fullPrompt
-    });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const text = response.text();
     
     try {
       // The model sometimes returns the JSON wrapped in ```json ... ```, so we need to clean it.

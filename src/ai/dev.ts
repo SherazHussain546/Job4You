@@ -1,9 +1,7 @@
 import { config } from 'dotenv';
 config();
 
-// This file is the entry point for the Genkit developer UI.
-// It is used to start the Genkit development server.
-//
-// The flows are now implemented using a simpler pattern and are
-// imported directly by the components that use them.
-// This file is kept for running the Genkit UI if needed in the future.
+// This file can be used as an entry point for the Genkit developer UI.
+// You can define and start Genkit flows here for development and testing.
+// The primary AI flows for the application are now implemented using the
+// @google/generative-ai SDK and are imported directly by the components that use them.
