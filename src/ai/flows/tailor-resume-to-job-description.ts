@@ -189,7 +189,7 @@ User Profile:
 \\begin{center}
     {\\Huge \\textbf{ ${profileData.contactInfo.name} }} \\\\
     % AI: Generate a professional title based on the Job Description.
-    [Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer] \\\\
+    \\textbf{[Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer]} \\\\
     \\vspace{2pt}
     ${contactSection}
 \\end{center}
@@ -210,10 +210,10 @@ User Profile:
 % --------------------
 \\section*{TECHNICAL SKILLS}
 % AI: Select and categorize the user's most relevant skills based on the job description.
-\\textbf{Programming Languages:} [List Languages e.g., Python, TypeScript, SQL] \\\\
-\\textbf{Frameworks & Libraries:} [List Frameworks e.g., React.js, Node.js, FastAPI] \\\\
-\\textbf{Cloud & DevOps:} [List DevOps Tools e.g., AWS, Kubernetes, Docker, CI/CD] \\\\
-\\textbf{Databases:} [List Databases e.g., PostgreSQL, MongoDB, Firebase]
+\\textbf{AI/ML & Automation:} [List AI Skills] \\\\
+\\textbf{Web Technologies:} [List Web Skills] \\\\
+\\textbf{Cloud & Databases:} [List Cloud & DB Skills] \\\\
+\\textbf{GTM & Analytics:} [List Business Skills]
 
 % --------------------
 % 4. PROFESSIONAL EXPERIENCE
@@ -234,7 +234,7 @@ User Profile:
 % AI: This section should only be included if relevant projects exist in the profile.
 \\section*{DEVELOPMENT PROJECTS}
 % AI: Iterate over the 1-2 most relevant projects.
-\\resitem{ [Project Name] }{}{ [Date] }
+\\resitem{ [Project Name] }{ [Project Description/Tagline] }{ [Date] }
 \\begin{itemize}
     % AI: Rewrite achievements to highlight relevant technologies and outcomes.
     \\item [Rewritten, impactful achievement 1]
@@ -246,16 +246,16 @@ User Profile:
 \\section*{EDUCATION}
 % AI: Iterate over education history.
 \\resitem{ [Degree] }{ [University] }{ [Dates] }
-% AI: Optionally include achievements.
 \\begin{itemize}
-    \\item [Achievement, e.g., Graduated with First Class Honours]
+    % AI: Optionally include achievements, awards, etc.
+    \\item [Achievement, e.g., Awards: Peer-Mentor Leadership Award (with Distinction).]
 \\end{itemize}
 
 % AI: This section should only be included if relevant certifications exist.
 \\section*{CERTIFICATES \& TRAINING}
 \\begin{itemize}
 % AI: Iterate over relevant certifications.
-    \\item \\textbf{ [Certification Name] } from \\textbf{ [Organization] }: [Optional brief description of relevance]
+    \\item \\textbf{ [Certification Name] } from \\textbf{ [Organization] } \\textit{[Optional: Skills shown]}
 \\end{itemize}
 
 \\end{document}
