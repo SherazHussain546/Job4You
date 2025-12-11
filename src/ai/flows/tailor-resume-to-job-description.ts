@@ -224,7 +224,7 @@ User Profile:
 {{#if this.achievements}}
 \\begin{itemize}
     \\item {{{this.achievements}}}
-\\end{itemize}
+\\enditemize}
 {{/if}}
 {{/if}}
 {{/each}}
@@ -301,6 +301,7 @@ export async function tailorResumeToJobDescription(
     const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
     const { text } = await ai.generate({
+      model: 'gemini-1.5-flash-latest',
       prompt: fullPrompt
     });
     

@@ -206,6 +206,7 @@ export async function generatePersonalizedCoverLetter(
   const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
   const { text } = await ai.generate({
+    model: 'gemini-1.5-flash-latest',
     prompt: fullPrompt,
   });
 
