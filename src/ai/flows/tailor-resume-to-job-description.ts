@@ -300,7 +300,7 @@ export async function tailorResumeToJobDescription(
     // A simplified template filler that doesn't handle Handlebars logic like #each
     const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
     const text = response.text();
