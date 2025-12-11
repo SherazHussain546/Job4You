@@ -151,7 +151,7 @@ ${jobDescription}
 AI Actions:
 1.  Extract the Job Title, Company Name, and Hiring Manager's Name from the job description. If Hiring Manager is not found, use "Hiring Team".
 2.  Generate a compelling opening paragraph introducing the user and stating the role they're applying for.
-3.  Write 2-3 body paragraphs. For these paragraphs, you must be highly selective. Analyze the job description and the user's profile, then choose the *single most relevant* project or work experience to highlight. Connect the user's skills and achievements from that example directly to the key requirements of the job. Use quantifiable achievements where possible. Do not list everything; choose the best.
+3.  Write 2-3 body paragraphs. For these paragraphs, you must be highly selective. Analyze the job description and the user's profile, then choose the single most relevant project or work experience to highlight. To ensure a high ATS score, you must subtly weave in details from at least 3 relevant work experiences, 3 relevant projects, and 4 relevant certifications from the user's profile. Connect the user's skills and achievements from these examples directly to the key requirements of the job. Use quantifiable achievements where possible. Do not list everything; choose the best and integrate them naturally into a narrative.
 4.  Write a closing paragraph that expresses genuine enthusiasm for the company and includes a strong call to action.
 5.  Replace all placeholders like [Job Title] with the extracted or generated information.
 
