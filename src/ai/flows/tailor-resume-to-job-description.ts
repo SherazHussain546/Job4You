@@ -8,12 +8,8 @@
  * - TailorResumeToJobDescriptionInput - The input type for the tailorResumeToJobDescription function.
  * - TailorResumeToJobDescriptionOutput - The return type for the tailorResumeToJobToDescription function.
  */
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { config } from 'dotenv';
-config();
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
   jobDescription: z
@@ -304,11 +300,9 @@ export async function tailorResumeToJobDescription(
     // A simplified template filler that doesn't handle Handlebars logic like #each
     const fullPrompt = fillTemplate(promptTemplate, { ...input, contactSection });
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    const result = await model.generateContent(fullPrompt);
-    const response = await result.response;
-    const text = response.text();
+    const { text } = await ai.generate({
+      prompt: fullPrompt
+    });
     
     try {
       // The model sometimes returns the JSON wrapped in ```json ... ```, so we need to clean it.
