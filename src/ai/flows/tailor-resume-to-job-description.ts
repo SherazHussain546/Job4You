@@ -128,7 +128,6 @@ const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
   model: googleAI.model('gemini-pro'),
   input: {schema: TailorResumeToJobDescriptionInputSchema.extend({ contactSection: z.string() })},
-  output: {schema: TailorResumeToJobDescriptionOutputSchema},
   prompt: `You are an expert resume writer and career coach. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
 Your writing must be grammatically perfect and use a highly professional tone.
 You must analyze the user's profile data and the job description to create a resume that is powerfully tailored for the specific role.
@@ -139,7 +138,7 @@ Your AI actions are:
 3.  In the "TECHNICAL SKILLS" section, be highly selective. Choose only the most relevant skills from the user's profile that are explicitly mentioned or strongly implied in the job description. Categorize them logically.
 4.  For "PROFESSIONAL EXPERIENCE" and "DEVELOPMENT PROJECTS," select only the 1-2 most relevant roles or projects. For each, rewrite the responsibilities and achievements to use powerful action verbs and quantify results. Directly map these accomplishments to the needs stated in the job description. Omit experiences and projects that are not relevant.
 5.  Conditionally render sections only if there is relevant data to show (e.g., if no selected projects are relevant, do not include the PROJECTS section).
-The final output must be only the LaTeX code, starting with \\documentclass and ending with \\end{document}.
+The final output must be only a JSON object with a single key "latexCode" containing the LaTeX code as a string, starting with \\documentclass and ending with \\end{document}.
 
 Job Description:
 {{{jobDescription}}}
@@ -292,3 +291,5 @@ Job Description:
 \\end{document}
 `,
 });
+
+  

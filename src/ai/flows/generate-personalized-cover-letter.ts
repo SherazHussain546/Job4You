@@ -107,11 +107,10 @@ const prompt = ai.definePrompt({
   name: 'generatePersonalizedCoverLetterPrompt',
   model: googleAI.model('gemini-pro'),
   input: {schema: GeneratePersonalizedCoverLetterInputSchema.extend({ contactSection: z.string() })},
-  output: {schema: GeneratePersonalizedCoverLetterOutputSchema},
   prompt: `You are an expert career coach and professional writer. Your task is to generate a compelling, professional cover letter in LaTeX format.
 Your writing must be flawless, with no grammatical errors, and maintain a highly professional tone.
 You must use the provided user profile data and tailor it to the given job description.
-The final output must be only the LaTeX code, starting with \\documentclass and ending with \\end{document}.
+The final output must be only a JSON object with a single key "latexCode" containing the LaTeX code as a string, starting with \\documentclass and ending with \\end{document}.
 
 Job Description:
 {{{jobDescription}}}
@@ -205,3 +204,5 @@ Sincerely, \\\\
 \\end{document}
 `,
 });
+
+  
