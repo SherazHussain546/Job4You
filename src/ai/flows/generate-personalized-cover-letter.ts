@@ -98,8 +98,12 @@ const generatePersonalizedCoverLetterFlow = ai.defineFlow(
     
     const augmentedInput = { ...input, contactSection };
 
-    const {output} = await prompt(augmentedInput);
-    return output!;
+    const llmResponse = await prompt(augmentedInput);
+    const output = llmResponse.output();
+    if (!output) {
+      throw new Error('AI failed to generate a response.');
+    }
+    return output;
   }
 );
 

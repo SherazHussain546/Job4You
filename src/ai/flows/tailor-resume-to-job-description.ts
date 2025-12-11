@@ -113,8 +113,12 @@ const tailorResumeToJobDescriptionFlow = ai.defineFlow(
 
     const augmentedInput = { ...input, contactSection };
 
-    const {output} = await tailorResumeToJobDescriptionPrompt(augmentedInput);
-    return output!;
+    const llmResponse = await tailorResumeToJobDescriptionPrompt(augmentedInput);
+    const output = llmResponse.output();
+    if (!output) {
+        throw new Error('AI failed to generate a response.');
+    }
+    return output;
   }
 );
 

@@ -39,8 +39,12 @@ const validateJobDescriptionFlow = ai.defineFlow(
     outputSchema: ValidateJobDescriptionOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output!;
+    const llmResponse = await prompt(input);
+    const output = llmResponse.output();
+    if (!output) {
+      throw new Error('AI failed to generate a response.');
+    }
+    return output;
   }
 );
 
