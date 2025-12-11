@@ -115,12 +115,11 @@ const tailorResumeToJobDescriptionFlow = ai.defineFlow(
 
     const llmResponse = await tailorResumeToJobDescriptionPrompt(augmentedInput);
     
-    try {
-      return JSON.parse(llmResponse.text);
-    } catch (e) {
-      console.error("Failed to parse LLM response for resume", llmResponse.text);
-      throw new Error("AI failed to generate a valid response.");
+    const output = llmResponse.output();
+    if (!output) {
+        throw new Error('AI failed to generate a response.');
     }
+    return output;
   }
 );
 
@@ -132,8 +131,9 @@ export async function tailorResumeToJobDescription(
 
 const tailorResumeToJobDescriptionPrompt = ai.definePrompt({
   name: 'tailorResumeToJobDescriptionPrompt',
-  model: googleAI.model('gemini-pro'),
+  model: googleAI.model('gemini-1.0-pro'),
   input: {schema: TailorResumeToJobDescriptionInputSchema.extend({ contactSection: z.string() })},
+  output: {schema: TailorResumeToJobDescriptionOutputSchema},
   prompt: `You are an expert resume writer and career coach. Your task is to generate a complete, ATS-optimized, one-page resume in LaTeX format using the provided template.
 Your writing must be grammatically perfect and use a highly professional tone.
 You must analyze the user's profile data and the job description to create a resume that is powerfully tailored for the specific role.

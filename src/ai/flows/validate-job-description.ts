@@ -40,23 +40,23 @@ const validateJobDescriptionFlow = ai.defineFlow(
   },
   async (input) => {
     const llmResponse = await prompt(input);
-    try {
-      return JSON.parse(llmResponse.text);
-    } catch (e) {
-      console.error("Failed to parse LLM validation response", llmResponse.text);
-      // Fallback to a safe default
-      return {
-        decision: 'spam',
-        reason: 'Could not automatically validate the job post content. It has been flagged for manual review.'
-      };
+    const output = llmResponse.output();
+    if (!output) {
+        // Fallback to a safe default
+        return {
+            decision: 'spam',
+            reason: 'Could not automatically validate the job post content. It has been flagged for manual review.'
+        };
     }
+    return output;
   }
 );
 
 const prompt = ai.definePrompt({
     name: 'validateJobDescriptionPrompt',
-    model: googleAI.model('gemini-pro'),
+    model: googleAI.model('gemini-1.0-pro'),
     input: { schema: ValidateJobDescriptionInputSchema },
+    output: { schema: ValidateJobDescriptionOutputSchema },
     prompt: `You are an extremely strict content moderator for a job board. Your task is to analyze the provided text, URL, and email to determine if it is a legitimate job description.
 
 You must be very strict. If you have any doubt, mark it as 'spam'.
