@@ -6,7 +6,7 @@
  *
  * - tailorResumeToJobDescription - A function that takes user profile data and a job description, then returns LaTeX code for a tailored resume.
  * - TailorResumeToJobDescriptionInput - The input type for the tailorResumeToJobDescription function.
- * - TailorResumeToJobDescriptionOutput - The return type for the tailorResumeToToJobDescription function.
+ * - TailorResumeToJobDescriptionOutput - The return type for the tailorResumeToJobToDescription function.
  */
 
 import {ai} from '@/ai/genkit';
