@@ -270,7 +270,7 @@ export async function tailorResumeToJobDescription(
 
     try {
         const response = await openai.chat.completions.create({
-            model: 'gpt-4',
+            model: 'gpt-4-turbo-preview',
             messages: [{ role: 'user', content: prompt }],
             response_format: { type: 'json_object' },
         });

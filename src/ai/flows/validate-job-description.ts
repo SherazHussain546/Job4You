@@ -55,7 +55,7 @@ Your decision process:
 - If it looks like a legitimate, professional job posting -> 'valid'.
 
 Based on your analysis, provide ONLY a JSON object with two fields:
-- "decision": Your final verdict ('valid', 'spam', or 'invalid').
+- "decision": Your final verdict ('valid', 'spam', 'invalid').
 - "reason": A brief, user-friendly reason for a 'spam' or 'invalid' decision. If 'valid', this should be an empty string.`;
 
 
@@ -67,7 +67,7 @@ export async function validateJobDescription(input: ValidateJobDescriptionInput)
     
     try {
         const response = await openai.chat.completions.create({
-            model: 'gpt-4',
+            model: 'gpt-4-turbo-preview',
             messages: [{ role: 'user', content: prompt }],
             response_format: { type: 'json_object' },
         });

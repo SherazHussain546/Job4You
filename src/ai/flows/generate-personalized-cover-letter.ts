@@ -177,7 +177,7 @@ My background spans complex, end-to-end development, specializing in modern fram
 Furthermore, my development experience is directly complemented by [Mention a relevant achievement or quality, e.g., quantifiable business achievements]. I believe that combining engineering excellence with a strong understanding of commercial impact is crucial for a development role at **[Company Name]**.
 
 % AI: Write a paragraph showing genuine interest in the specific company.
-I am particularly excited about [Mention a specific company product, project, or value you researched] and see a direct opportunity to leverage my expertise in [Mention 1-2 key skills from your profile, e.g., Generative AI] to contribute to this area. I am ready to bring my energy, commitment to excellence, and collaborative spirit to your team.
+I am particularly excited about [Mention a specific company product, project, or value you researched] and see a direct opportunity to leverage my expertise in [Mention 1-2 key skills from your profile, e.g., Generative AI] to contribute to this area. I am ready to bring my energy, commitment to excellence, and a collaborative spirit to your team.
 
 Thank you for your time and consideration. I have attached my resume for your review and look forward to the opportunity to discuss how my competencies can drive success at [Company Name].
 
@@ -197,7 +197,7 @@ export async function generatePersonalizedCoverLetter(
 
   try {
     const response = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4-turbo-preview',
       messages: [{ role: 'user', content: prompt }],
       response_format: { type: 'json_object' },
     });
