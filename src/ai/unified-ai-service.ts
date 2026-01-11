@@ -34,9 +34,18 @@ const isQuotaError = (error: any): boolean => {
       if (error.status === 429) {
         return true;
       }
-      // Specific error for low credit balance, which Anthropic returns as a 400
-      if (error.status === 400 && error.message.includes("credit balance is too low")) {
-        return true;
+      // Specific error for low credit balance, which Anthropic returns as a 400 with a JSON message
+      if (error.status === 400) {
+        try {
+          // The error message from Anthropic is a JSON string. We need to parse it.
+          const errorDetails = JSON.parse(error.message);
+          if (errorDetails?.error?.message?.includes("credit balance is too low")) {
+            return true;
+          }
+        } catch (e) {
+          // If parsing fails, it's not the error we're looking for.
+          return false;
+        }
       }
     }
   
