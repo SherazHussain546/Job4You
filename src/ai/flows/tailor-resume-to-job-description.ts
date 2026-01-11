@@ -3,6 +3,7 @@
 /**
  * @fileOverview Tailors a user's resume to a specific job description using OpenAI.
  */
+import "dotenv/config";
 import { z } from 'zod';
 import OpenAI from 'openai';
 

@@ -3,6 +3,7 @@
 /**
  * @fileOverview Generates a personalized cover letter in LaTeX format using OpenAI.
  */
+import "dotenv/config";
 import { z } from 'zod';
 import OpenAI from 'openai';
 
