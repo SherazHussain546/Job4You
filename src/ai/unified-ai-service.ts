@@ -138,10 +138,10 @@ const callGenkit = async (prompt: string): Promise<string> => {
 type AIProvider = (prompt: string) => Promise<string>;
 
 const providers: AIProvider[] = [
+  callGenkit,
   callDeepSeek,
   callOpenAI,
   callAnthropic,
-  callGenkit,
 ];
 
 export async function callGenerativeAI(prompt: string): Promise<string> {
