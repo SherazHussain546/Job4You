@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Validates a job description to ensure it is a legitimate job posting and not malicious using Genkit and Google AI.
+ * @fileOverview Validates a job description to ensure it is a legitimate job posting and not malicious using OpenAI.
  *
  * - validateJobDescription - A function that validates the job description text.
  * - ValidateJobDescriptionInput - The input type for the validation function.
@@ -9,8 +9,11 @@
  */
 
 import { z } from 'zod';
-import { ai } from '@/ai/genkit';
-import { geminiPro } from 'genkit/models';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const ValidateJobDescriptionInputSchema = z.object({
   jobDescription: z.string().describe('The job description text to validate.'),
@@ -54,39 +57,27 @@ Based on your analysis, provide ONLY a JSON object with two fields:
 - "reason": A brief, user-friendly reason for a 'spam' or 'invalid' decision. If 'valid', this should be an empty string.`;
 
 
-const validateJobDescriptionFlow = ai.defineFlow(
-    {
-        name: 'validateJobDescriptionFlow',
-        inputSchema: ValidateJobDescriptionInputSchema,
-        outputSchema: ValidateJobDescriptionOutputSchema,
-    },
-    async (input) => {
+export async function validateJobDescription(input: ValidateJobDescriptionInput): Promise<ValidateJobDescriptionOutput> {
+    try {
         const prompt = promptTemplate
             .replace('{{jobDescription}}', input.jobDescription)
             .replace('{{applyLink}}', input.applyLink || '')
             .replace('{{applyEmail}}', input.applyEmail || '');
         
-        const llmResponse = await ai.generate({
-            model: 'gemini-1.0-pro',
-            prompt: prompt,
-            output: {
-                format: 'json',
-                schema: ValidateJobDescriptionOutputSchema
-            }
+        const response = await openai.chat.completions.create({
+            model: 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: prompt }],
+            response_format: { type: 'json_object' },
         });
 
-        const output = llmResponse.output;
-        if (!output) {
-             throw new Error('AI returned an empty response for validation.');
+        const content = response.choices[0].message.content;
+        if (!content) {
+            throw new Error('AI returned an empty response for validation.');
         }
-        return output;
-    }
-);
 
+        const parsedOutput = JSON.parse(content);
+        return ValidateJobDescriptionOutputSchema.parse(parsedOutput);
 
-export async function validateJobDescription(input: ValidateJobDescriptionInput): Promise<ValidateJobDescriptionOutput> {
-    try {
-        return await validateJobDescriptionFlow(input);
     } catch (e: any) {
         console.error("Failed to generate or parse AI response for validation:", e);
         // Fallback to a safe default
