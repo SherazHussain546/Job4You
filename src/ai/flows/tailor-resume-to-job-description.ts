@@ -5,6 +5,8 @@
  */
 import { z } from 'zod';
 import { callGenerativeAI } from '../unified-ai-service';
+import type { UserProfile, Experience, Education, Project, Certification } from '@/lib/types';
+
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
   jobDescription: z
@@ -309,6 +311,124 @@ User Profile:
 `;
 }
 
+// Helper to escape special LaTeX characters
+const escapeTex = (str: string) => {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '\\&')
+    .replace(/%/g, '\\%')
+    .replace(/\$/g, '\\$')
+    .replace(/#/g, '\\#')
+    .replace(/_/g, '\\_')
+    .replace(/{/g, '\\{')
+    .replace(/}/g, '\\}')
+    .replace(/~/g, '\\textasciitilde{}')
+    .replace(/\^/g, '\\textasciicircum{}')
+    .replace(/\\/g, '\\textbackslash{}');
+};
+
+const getFallbackLatex = (profileData: UserProfile): string => {
+    let contactSection = '';
+    if (profileData.contactInfo.phone) {
+        contactSection += escapeTex(profileData.contactInfo.phone);
+    }
+    if (profileData.contactInfo.email) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{mailto:${escapeTex(profileData.contactInfo.email)}}{${escapeTex(profileData.contactInfo.email)}}`;
+    }
+    if (profileData.contactInfo.linkedin) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${escapeTex(profileData.contactInfo.linkedin)}}{LinkedIn}`;
+    }
+    if (profileData.contactInfo.github) {
+        if (contactSection) contactSection += ' $|$ ';
+        contactSection += `\\href{https://${escapeTex(profileData.contactInfo.github)}}{GitHub}`;
+    }
+
+    const experienceSection = profileData.experience?.map((exp: Experience) => `
+\\resitem{${escapeTex(exp.title)}}{${escapeTex(exp.company)}}{${escapeTex(exp.startDate || '')} - ${escapeTex(exp.endDate || '')}}
+\\begin{itemize}
+    \\item ${escapeTex(exp.responsibilities)}
+\\end{itemize}
+    `).join('') || '';
+
+    const educationSection = profileData.education?.map((edu: Education) => `
+\\resitem{${escapeTex(edu.qualification)}}{${escapeTex(edu.institute)}}{${escapeTex(edu.startDate || '')} - ${escapeTex(edu.endDate || '')}}
+${edu.achievements ? `\\begin{itemize}\\item ${escapeTex(edu.achievements)}\\end{itemize}` : ''}
+    `).join('') || '';
+    
+    const projectsSection = profileData.projects?.map((proj: Project) => `
+\\resitem{${escapeTex(proj.name)}}{}{${escapeTex(proj.date || '')}}
+\\begin{itemize}
+    \\item ${escapeTex(proj.achievements)}
+\\end{itemize}
+    `).join('') || '';
+    
+    const skillsSection = profileData.skills?.join(', ');
+
+    const certificationsSection = profileData.certifications?.map((cert: Certification) => `
+    \\item \\textbf{${escapeTex(cert.name)}} from \\textbf{${escapeTex(cert.organization)}} ${cert.date ? `(${escapeTex(cert.date)})` : ''}
+    `).join('') || '';
+
+    return `
+\\documentclass[10pt, a4paper]{article}
+\\usepackage[T1]{fontenc}
+\\usepackage{mathptmx}
+\\usepackage[a4paper, top=0.5in, bottom=0.5in, left=0.6in, right=0.6in]{geometry}
+\\usepackage{titlesec}
+\\usepackage{enumitem}
+\\usepackage{hyperref}
+\\pagestyle{empty}
+\\setlength{\\parindent}{0pt}
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=black,
+}
+\\titleformat{\\section}{\\vspace{-5pt}\\raggedright\\Large\\bfseries\\scshape}{}{0em}{}[\\titlerule]
+\\titlespacing*{\\section}{0pt}{8pt}{3pt}
+\\setlist[itemize]{
+    noitemsep,
+    leftmargin=*,
+    align=left,
+    topsep=3pt,
+    parsep=0pt,
+}
+\\newcommand{\\resitem}[3]{
+    \\vspace{3pt}
+    \\textbf{#1} \\hfill \\textbf{#3} \\\\
+    \\textit{#2} \\hfill
+}
+\\begin{document}
+
+\\begin{center}
+    {\\Huge \\textbf{${escapeTex(profileData.contactInfo.name)}}} \\\\
+    \\vspace{2pt}
+    ${contactSection}
+\\end{center}
+
+${profileData.skills ? `\\section*{TECHNICAL SKILLS}
+${escapeTex(skillsSection)}` : ''}
+
+${profileData.experience ? `\\section*{PROFESSIONAL EXPERIENCE}
+${experienceSection}` : ''}
+
+${profileData.projects ? `\\section*{DEVELOPMENT PROJECTS}
+${projectsSection}` : ''}
+
+${profileData.education ? `\\section*{EDUCATION}
+${educationSection}` : ''}
+
+${profileData.certifications ? `\\section*{CERTIFICATES & TRAINING}
+\\begin{itemize}
+    ${certificationsSection}
+\\end{itemize}` : ''}
+
+\\end{document}
+`;
+};
+
 
 export async function tailorResumeToJobDescription(
   input: TailorResumeToJobDescriptionInput
@@ -319,7 +439,8 @@ export async function tailorResumeToJobDescription(
         const parsedOutput = JSON.parse(content);
         return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
     } catch (e: any) {
-        console.error("Failed to generate or parse AI response for resume:", e);
-        throw new Error(`AI generation failed: ${e.message}`);
+        console.warn("AI generation for resume failed, falling back to template:", e.message);
+        const fallbackLatex = getFallbackLatex(input.profileData);
+        return { latexCode: fallbackLatex };
     }
 }

@@ -19,7 +19,7 @@ const GeneratePersonalizedCoverLetterInputSchema = z.object({
         title: z.string(),
         company: z.string(),
         startDate: z.string().optional(),
-        endDate: z.string().optional(),
+        endDate: z-string().optional(),
         responsibilities: z.string(),
     })).describe('List of work experiences.'),
     projects: z.array(z.object({
@@ -232,6 +232,74 @@ ${profileData.contactInfo.name}
 `;
 };
 
+const getFallbackLatex = (input: GeneratePersonalizedCoverLetterInput): string => {
+    const { profileData } = input;
+    const contactParts = [];
+    if (profileData.contactInfo.phone) {
+        contactParts.push(`${profileData.contactInfo.phone} \\\\`);
+    }
+    if (profileData.contactInfo.email) {
+        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
+    }
+    if (profileData.contactInfo.linkedin) {
+        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
+    }
+    const contactSection = contactParts.join('\n');
+
+    return `
+\\documentclass[10pt, a4paper]{article}
+\\usepackage[T1]{fontenc}
+\\usepackage{mathptmx}
+\\usepackage[a4paper, top=1.0in, bottom=1.0in, left=1.0in, right=1.0in]{geometry}
+\\usepackage{hyperref}
+\\pagestyle{empty}
+\\setlength{\\parindent}{0pt}
+\\setlength{\\parskip}{1em}
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=black,
+}
+\\begin{document}
+
+\\raggedright
+\\textbf{${profileData.contactInfo.name}} \\\\
+${contactSection}
+
+\\vspace{10pt}
+
+\\today \\\\
+
+\\vspace{10pt}
+
+\\textbf{[Hiring Manager Name/Hiring Team]} \\\\
+\\textbf{[Company Name]} \\\\
+\\textbf{[Company Address]} \\\\
+
+\\vspace{10pt}
+
+\\textbf{Subject: Application for [Job Title]}
+
+\\vspace{10pt}
+
+Dear [Mr./Ms./Mx. Last Name or Hiring Team],
+
+I am writing to express my interest in the [Job Title] position I saw advertised on [Platform where you saw the advertisement]. Given my background in [mention your field, e.g., software development, marketing], I am confident I possess the skills and experience you are looking for.
+
+In my previous roles, I have had the opportunity to [mention 1-2 key responsibilities or achievements from your profile]. I am adept at [mention 1-2 key skills from your profile]. I am eager to bring my abilities to your organization and contribute to your team.
+
+Thank you for your time and consideration. My resume is attached for your review, and I look forward to hearing from you soon.
+
+\\vspace{10pt}
+
+Sincerely, \\\\
+${profileData.contactInfo.name}
+
+\\end{document}
+    `;
+};
+
 
 export async function generatePersonalizedCoverLetter(
   input: GeneratePersonalizedCoverLetterInput
@@ -242,7 +310,8 @@ export async function generatePersonalizedCoverLetter(
         const parsedOutput = JSON.parse(content);
         return GeneratePersonalizedCoverLetterOutputSchema.parse(parsedOutput);
     } catch (e: any) {
-        console.error("Failed to generate or parse AI response for cover letter:", e);
-        throw new Error(`AI generation failed: ${e.message}`);
+        console.warn("AI generation for cover letter failed, falling back to template:", e.message);
+        const fallbackLatex = getFallbackLatex(input);
+        return { latexCode: fallbackLatex };
     }
 }
