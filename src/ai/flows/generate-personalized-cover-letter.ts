@@ -244,7 +244,7 @@ export async function generatePersonalizedCoverLetter(
         const prompt = getPrompt(input);
 
         const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0125",
             messages: [{ role: 'user', content: prompt }],
             response_format: { type: 'json_object' },
         });
