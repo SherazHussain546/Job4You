@@ -3,7 +3,6 @@
 /**
  * @fileOverview Generates a personalized cover letter in LaTeX format using a unified AI service.
  */
-import "dotenv/config";
 import { z } from 'zod';
 import { callGenerativeAI } from '../unified-ai-service';
 

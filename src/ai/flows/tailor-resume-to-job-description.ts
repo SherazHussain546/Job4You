@@ -3,7 +3,6 @@
 /**
  * @fileOverview Tailors a user's resume to a specific job description using a unified AI service.
  */
-import "dotenv/config";
 import { z } from 'zod';
 import { callGenerativeAI } from '../unified-ai-service';
 

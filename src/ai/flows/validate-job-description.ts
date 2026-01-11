@@ -7,7 +7,6 @@
  * - ValidateJobDescriptionInput - The input type for the validation function.
  * - ValidateJobDescriptionOutput - The return type for the validation function.
  */
-import "dotenv/config";
 import { z } from 'zod';
 import { callGenerativeAI } from '../unified-ai-service';
 
