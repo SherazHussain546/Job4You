@@ -3,6 +3,7 @@
 
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
+import { ai } from './genkit';
 
 // 1. Initialize API Clients
 const openai = new OpenAI({
@@ -22,21 +23,30 @@ const deepseek = new OpenAI({
 
 // Helper type to check for quota errors
 const isQuotaError = (error: any): boolean => {
-  // OpenAI & DeepSeek (OpenAI-compatible) use 429 or 402
-  if (error instanceof OpenAI.APIError && (error.status === 429 || error.status === 402)) {
-    return true;
-  }
-  // Anthropic uses 429 for rate limits and a specific 400 error for billing.
-  if (error instanceof Anthropic.APIError) {
-    if (error.status === 429) {
+    // Check for OpenAI and DeepSeek (OpenAI-compatible) quota errors
+    if (error instanceof OpenAI.APIError && (error.status === 429 || error.status === 402)) {
       return true;
     }
-    if (error.status === 400 && error.message.includes("credit balance is too low")) {
-      return true;
+  
+    // Check for Anthropic quota errors
+    if (error instanceof Anthropic.APIError) {
+      // Standard rate limit
+      if (error.status === 429) {
+        return true;
+      }
+      // Specific error for low credit balance, which Anthropic returns as a 400
+      if (error.status === 400 && error.message.includes("credit balance is too low")) {
+        return true;
+      }
     }
-  }
-  return false;
-};
+  
+    // Check for Genkit/Google AI quota errors (typically 429)
+    if (error.status === 429 || (error.message && error.message.includes('quota'))) {
+        return true;
+    }
+  
+    return false;
+  };
 
 // 2. Define the provider functions
 const callDeepSeek = async (prompt: string): Promise<string> => {
@@ -96,6 +106,24 @@ const callAnthropic = async (prompt: string): Promise<string> => {
   return jsonString;
 };
 
+const callGenkit = async (prompt: string): Promise<string> => {
+    console.log('Attempting to call Gemini via Genkit...');
+    const response = await ai.generate({
+      model: 'googleai/gemini-1.0-pro',
+      prompt: `${prompt}\n\nReturn ONLY the JSON object.`,
+      config: {
+        responseMIMEType: 'application/json',
+      },
+    });
+  
+    const content = response.text;
+    if (!content) {
+      throw new Error('Gemini (Genkit) returned an empty response.');
+    }
+    console.log('Gemini (Genkit) call successful.');
+    return content;
+};
+
 
 // 3. Create the main failover function
 type AIProvider = (prompt: string) => Promise<string>;
@@ -104,6 +132,7 @@ const providers: AIProvider[] = [
   callDeepSeek,
   callOpenAI,
   callAnthropic,
+  callGenkit,
 ];
 
 export async function callGenerativeAI(prompt: string): Promise<string> {
@@ -123,6 +152,10 @@ export async function callGenerativeAI(prompt: string): Promise<string> {
       if (provider === callDeepSeek && !process.env.DEEPSEEK_API_KEY) {
           console.log('Skipping DeepSeek: API key not set.');
           continue;
+      }
+      if (provider === callGenkit && !process.env.GEMINI_API_KEY) {
+        console.log('Skipping Gemini (Genkit): API key not set.');
+        continue;
       }
         
       const result = await provider(prompt);
