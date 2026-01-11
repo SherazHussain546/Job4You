@@ -1,21 +1,16 @@
 'use server';
 
 /**
- * @fileOverview Validates a job description to ensure it is a legitimate job posting and not malicious using the OpenAI API.
+ * @fileOverview Validates a job description to ensure it is a legitimate job posting and not malicious using Genkit and Google AI.
  *
  * - validateJobDescription - A function that validates the job description text.
  * - ValidateJobDescriptionInput - The input type for the validation function.
  * - ValidateJobDescriptionOutput - The return type for the validation function.
  */
 
-import OpenAI from 'openai';
 import { z } from 'zod';
-import { config } from 'dotenv';
-config();
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+import { ai } from '@/ai/genkit';
+import { geminiPro } from 'genkit/models';
 
 const ValidateJobDescriptionInputSchema = z.object({
   jobDescription: z.string().describe('The job description text to validate.'),
@@ -59,30 +54,39 @@ Based on your analysis, provide ONLY a JSON object with two fields:
 - "reason": A brief, user-friendly reason for a 'spam' or 'invalid' decision. If 'valid', this should be an empty string.`;
 
 
-export async function validateJobDescription(input: ValidateJobDescriptionInput): Promise<ValidateJobDescriptionOutput> {
-    const prompt = promptTemplate
-        .replace('{{jobDescription}}', input.jobDescription)
-        .replace('{{applyLink}}', input.applyLink || '')
-        .replace('{{applyEmail}}', input.applyEmail || '');
-    
-    try {
-        const response = await openai.chat.completions.create({
-            model: 'gpt-4-turbo-preview',
-            messages: [{ role: 'user', content: prompt }],
-            response_format: { type: 'json_object' },
+const validateJobDescriptionFlow = ai.defineFlow(
+    {
+        name: 'validateJobDescriptionFlow',
+        inputSchema: ValidateJobDescriptionInputSchema,
+        outputSchema: ValidateJobDescriptionOutputSchema,
+    },
+    async (input) => {
+        const prompt = promptTemplate
+            .replace('{{jobDescription}}', input.jobDescription)
+            .replace('{{applyLink}}', input.applyLink || '')
+            .replace('{{applyEmail}}', input.applyEmail || '');
+        
+        const llmResponse = await ai.generate({
+            model: 'gemini-1.0-pro',
+            prompt: prompt,
+            output: {
+                format: 'json',
+                schema: ValidateJobDescriptionOutputSchema
+            }
         });
 
-        const content = response.choices[0]?.message?.content;
-        if (!content) {
-            return {
-                decision: 'spam',
-                reason: 'Could not automatically validate the job post content. It has been flagged for manual review.'
-            };
+        const output = llmResponse.output;
+        if (!output) {
+             throw new Error('AI returned an empty response for validation.');
         }
-        
-        const parsedOutput = JSON.parse(content);
-        return ValidateJobDescriptionOutputSchema.parse(parsedOutput);
+        return output;
+    }
+);
 
+
+export async function validateJobDescription(input: ValidateJobDescriptionInput): Promise<ValidateJobDescriptionOutput> {
+    try {
+        return await validateJobDescriptionFlow(input);
     } catch (e: any) {
         console.error("Failed to generate or parse AI response for validation:", e);
         // Fallback to a safe default

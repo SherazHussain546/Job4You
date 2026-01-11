@@ -1,16 +1,11 @@
 'use server';
 
 /**
- * @fileOverview Tailors a user's resume to a specific job description using the OpenAI API.
+ * @fileOverview Tailors a user's resume to a specific job description using Genkit and Google AI.
  */
 import { z } from 'zod';
-import OpenAI from 'openai';
-import { config } from 'dotenv';
-config();
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { ai } from '@/ai/genkit';
+import { geminiPro } from 'genkit/models';
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
   jobDescription: z
@@ -315,27 +310,37 @@ User Profile:
 `;
 }
 
+const tailorResumeToJobDescriptionFlow = ai.defineFlow(
+    {
+        name: 'tailorResumeToJobDescriptionFlow',
+        inputSchema: TailorResumeToJobDescriptionInputSchema,
+        outputSchema: TailorResumeToJobDescriptionOutputSchema,
+    },
+    async (input) => {
+        const prompt = getPrompt(input);
+
+        const llmResponse = await ai.generate({
+            model: 'gemini-1.0-pro',
+            prompt: prompt,
+            output: {
+                format: 'json',
+                schema: TailorResumeToJobDescriptionOutputSchema,
+            },
+        });
+
+        const output = llmResponse.output;
+        if (!output) {
+            throw new Error('AI returned an empty response.');
+        }
+        return output;
+    }
+);
 
 export async function tailorResumeToJobDescription(
   input: TailorResumeToJobDescriptionInput
 ): Promise<TailorResumeToJobDescriptionOutput> {
-    const prompt = getPrompt(input);
-
     try {
-        const response = await openai.chat.completions.create({
-            model: 'gpt-4-turbo-preview',
-            messages: [{ role: 'user', content: prompt }],
-            response_format: { type: 'json_object' },
-        });
-
-        const content = response.choices[0]?.message?.content;
-        if (!content) {
-            throw new Error('AI returned an empty response.');
-        }
-        
-        const parsedOutput = JSON.parse(content);
-        return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
-
+        return await tailorResumeToJobDescriptionFlow(input);
     } catch (e: any) {
         console.error("Failed to generate or parse AI response for resume:", e);
         throw new Error(`AI generation failed: ${e.message}`);

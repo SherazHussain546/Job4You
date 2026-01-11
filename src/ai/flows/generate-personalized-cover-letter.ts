@@ -1,16 +1,11 @@
 'use server';
 
 /**
- * @fileOverview Generates a personalized cover letter in LaTeX format using the OpenAI API.
+ * @fileOverview Generates a personalized cover letter in LaTeX format using Genkit and Google AI.
  */
 import { z } from 'zod';
-import OpenAI from 'openai';
-import { config } from 'dotenv';
-config();
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { ai } from '@/ai/genkit';
+import { geminiPro } from 'genkit/models';
 
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
   profileData: z.object({
@@ -68,7 +63,7 @@ export type GeneratePersonalizedCoverLetterOutput = z.infer<
   typeof GeneratePersonalizedCoverLetterOutputSchema
 >;
 
-function getPrompt(input: GeneratePersonalizedCoverLetterInput): string {
+const getPrompt = (input: GeneratePersonalizedCoverLetterInput): string => {
     const { profileData, jobDescription } = input;
     
     const contactParts = [];
@@ -236,27 +231,40 @@ ${profileData.contactInfo.name}
 
 \\end{document}
 `;
-}
+};
+
+const generatePersonalizedCoverLetterFlow = ai.defineFlow(
+  {
+    name: 'generatePersonalizedCoverLetterFlow',
+    inputSchema: GeneratePersonalizedCoverLetterInputSchema,
+    outputSchema: GeneratePersonalizedCoverLetterOutputSchema,
+  },
+  async (input) => {
+    const prompt = getPrompt(input);
+
+    const llmResponse = await ai.generate({
+      model: 'gemini-1.0-pro',
+      prompt: prompt,
+      output: {
+        format: 'json',
+        schema: GeneratePersonalizedCoverLetterOutputSchema,
+      },
+    });
+
+    const output = llmResponse.output;
+    if (!output) {
+      throw new Error('AI returned an empty response.');
+    }
+    return output;
+  }
+);
+
 
 export async function generatePersonalizedCoverLetter(
   input: GeneratePersonalizedCoverLetterInput
 ): Promise<GeneratePersonalizedCoverLetterOutput> {
-  const prompt = getPrompt(input);
-
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
-      messages: [{ role: 'user', content: prompt }],
-      response_format: { type: 'json_object' },
-    });
-
-    const content = response.choices[0]?.message?.content;
-    if (!content) {
-      throw new Error('AI returned an empty response.');
-    }
-    
-    const parsedOutput = JSON.parse(content);
-    return GeneratePersonalizedCoverLetterOutputSchema.parse(parsedOutput);
+    return await generatePersonalizedCoverLetterFlow(input);
   } catch (e: any) {
     console.error('Failed to generate or parse AI response for cover letter:', e);
     throw new Error(`AI generation failed: ${e.message}`);

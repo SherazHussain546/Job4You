@@ -125,6 +125,11 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Dancing+Script:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `process.env.GOOGLE_API_KEY = "${process.env.GOOGLE_API_KEY}"`,
+          }}
+        ></script>
       </head>
       <body className="font-body antialiased">
         <noscript>
