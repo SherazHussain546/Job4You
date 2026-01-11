@@ -265,7 +265,7 @@ User Profile:
 % --------------------
 % AI: This section should only be included if relevant experience exists in the profile.
 \\section*{PROFESSIONAL EXPERIENCE}
-% AI: Iterate over the 3 most relevant experiences.
+% AI: Iterate over at least 3 of the most relevant experiences. For each, write exactly 3 bullet points.
 \\resitem{ [Job Title] }{ [Company] }{ [Dates] }
 \\begin{itemize}
     % AI: Rewrite responsibilities into 3 impactful bullet points aligned with job description keywords.
@@ -279,7 +279,7 @@ User Profile:
 % --------------------
 % AI: This section should only be included if relevant projects exist in the profile.
 \\section*{DEVELOPMENT PROJECTS}
-% AI: Iterate over the 3 most relevant projects.
+% AI: Iterate over at least 3 of the most relevant projects. For each, write exactly 3 bullet points.
 \\resitem{ [Project Name] }{ [Project Description/Tagline] }{ [Date] }
 \\begin{itemize}
     % AI: Rewrite achievements into 3 impactful bullet points highlighting relevant tech and outcomes.
