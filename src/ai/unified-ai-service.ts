@@ -100,9 +100,9 @@ const callDeepSeek = async (prompt: string): Promise<string> => {
 type AIProvider = (prompt: string) => Promise<string>;
 
 const providers: AIProvider[] = [
+  callDeepSeek,
   callOpenAI,
   callAnthropic,
-  callDeepSeek,
 ];
 
 export async function callGenerativeAI(prompt: string): Promise<string> {
