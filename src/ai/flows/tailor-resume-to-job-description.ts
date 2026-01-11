@@ -1,15 +1,11 @@
 'use server';
 
 /**
- * @fileOverview Tailors a user's resume to a specific job description using OpenAI.
+ * @fileOverview Tailors a user's resume to a specific job description using a unified AI service.
  */
 import "dotenv/config";
 import { z } from 'zod';
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { callGenerativeAI } from '../unified-ai-service';
 
 const TailorResumeToJobDescriptionInputSchema = z.object({
   jobDescription: z
@@ -320,18 +316,7 @@ export async function tailorResumeToJobDescription(
 ): Promise<TailorResumeToJobDescriptionOutput> {
     try {
         const prompt = getPrompt(input);
-
-        const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo-0125",
-            messages: [{ role: 'user', content: prompt }],
-            response_format: { type: 'json_object' },
-        });
-
-        const content = response.choices[0].message.content;
-        if (!content) {
-            throw new Error('AI returned an empty response.');
-        }
-
+        const content = await callGenerativeAI(prompt);
         const parsedOutput = JSON.parse(content);
         return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
     } catch (e: any) {

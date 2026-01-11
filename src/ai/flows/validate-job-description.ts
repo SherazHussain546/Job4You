@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Validates a job description to ensure it is a legitimate job posting and not malicious using OpenAI.
+ * @fileOverview Validates a job description to ensure it is a legitimate job posting and not malicious using a unified AI service.
  *
  * - validateJobDescription - A function that validates the job description text.
  * - ValidateJobDescriptionInput - The input type for the validation function.
@@ -9,11 +9,7 @@
  */
 import "dotenv/config";
 import { z } from 'zod';
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { callGenerativeAI } from '../unified-ai-service';
 
 const ValidateJobDescriptionInputSchema = z.object({
   jobDescription: z.string().describe('The job description text to validate.'),
@@ -64,17 +60,7 @@ export async function validateJobDescription(input: ValidateJobDescriptionInput)
             .replace('{{applyLink}}', input.applyLink || '')
             .replace('{{applyEmail}}', input.applyEmail || '');
         
-        const response = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo-0125',
-            messages: [{ role: 'user', content: prompt }],
-            response_format: { type: 'json_object' },
-        });
-
-        const content = response.choices[0].message.content;
-        if (!content) {
-            throw new Error('AI returned an empty response for validation.');
-        }
-
+        const content = await callGenerativeAI(prompt);
         const parsedOutput = JSON.parse(content);
         return ValidateJobDescriptionOutputSchema.parse(parsedOutput);
 
