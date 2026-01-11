@@ -22,8 +22,8 @@ const deepseek = new OpenAI({
 
 // Helper type to check for quota errors
 const isQuotaError = (error: any): boolean => {
-  // OpenAI & DeepSeek (OpenAI-compatible) use 429
-  if (error instanceof OpenAI.APIError && error.status === 429) {
+  // OpenAI & DeepSeek (OpenAI-compatible) use 429 or 402
+  if (error instanceof OpenAI.APIError && (error.status === 429 || error.status === 402)) {
     return true;
   }
   // Anthropic uses 429 for rate limits
@@ -38,6 +38,21 @@ const isQuotaError = (error: any): boolean => {
 };
 
 // 2. Define the provider functions
+const callDeepSeek = async (prompt: string): Promise<string> => {
+    console.log('Attempting to call DeepSeek...');
+    const response = await deepseek.chat.completions.create({
+        model: "deepseek-chat",
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+    });
+    const content = response.choices[0].message.content;
+    if (!content) {
+        throw new Error('DeepSeek returned an empty response.');
+    }
+    console.log('DeepSeek call successful.');
+    return content;
+};
+
 const callOpenAI = async (prompt: string): Promise<string> => {
   console.log('Attempting to call OpenAI...');
   const response = await openai.chat.completions.create({
@@ -78,21 +93,6 @@ const callAnthropic = async (prompt: string): Promise<string> => {
   }
   console.log('Anthropic call successful.');
   return jsonString;
-};
-
-const callDeepSeek = async (prompt: string): Promise<string> => {
-    console.log('Attempting to call DeepSeek...');
-    const response = await deepseek.chat.completions.create({
-        model: "deepseek-chat",
-        messages: [{ role: 'user', content: prompt }],
-        response_format: { type: 'json_object' },
-    });
-    const content = response.choices[0].message.content;
-    if (!content) {
-        throw new Error('DeepSeek returned an empty response.');
-    }
-    console.log('DeepSeek call successful.');
-    return content;
 };
 
 
