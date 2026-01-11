@@ -2,7 +2,6 @@
 
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
-import { ai as genkitAI } from './genkit';
 
 // 1. Initialize API Clients
 const openai = new OpenAI({
@@ -13,16 +12,19 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// DeepSeek is compatible with the OpenAI SDK
+const deepseek = new OpenAI({
+  apiKey: process.env.DEEPSEEK_API_KEY,
+  baseURL: "https://api.deepseek.com/v1",
+});
+
+
 // Helper type to check for quota errors
 const isQuotaError = (error: any): boolean => {
   if (error instanceof OpenAI.APIError && error.status === 429) {
     return true;
   }
   if (error instanceof Anthropic.APIError && error.status === 429) {
-    return true;
-  }
-  // Gemini (Genkit) errors might have a specific status or message
-  if (error.name === 'GenkitError' && error.message.includes('RESOURCE_EXHAUSTED')) {
     return true;
   }
   return false;
@@ -71,23 +73,21 @@ const callAnthropic = async (prompt: string): Promise<string> => {
   return jsonString;
 };
 
-const callGemini = async (prompt: string): Promise<string> => {
-  console.log('Attempting to call Gemini...');
-  const llmResponse = await genkitAI.generate({
-    model: 'gemini-1.0-pro',
-    prompt: `${prompt}\n\nReturn ONLY the JSON object.`,
-    config: {
-      responseMIMEType: 'application/json'
+const callDeepSeek = async (prompt: string): Promise<string> => {
+    console.log('Attempting to call DeepSeek...');
+    const response = await deepseek.chat.completions.create({
+        model: "deepseek-chat",
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+    });
+    const content = response.choices[0].message.content;
+    if (!content) {
+        throw new Error('DeepSeek returned an empty response.');
     }
-  });
-
-  const content = llmResponse.text;
-  if (!content) {
-    throw new Error('Gemini returned an empty response.');
-  }
-  console.log('Gemini call successful.');
-  return content;
+    console.log('DeepSeek call successful.');
+    return content;
 };
+
 
 // 3. Create the main failover function
 type AIProvider = (prompt: string) => Promise<string>;
@@ -95,7 +95,7 @@ type AIProvider = (prompt: string) => Promise<string>;
 const providers: AIProvider[] = [
   callOpenAI,
   callAnthropic,
-  callGemini,
+  callDeepSeek,
 ];
 
 export async function callGenerativeAI(prompt: string): Promise<string> {
@@ -112,8 +112,8 @@ export async function callGenerativeAI(prompt: string): Promise<string> {
           console.log('Skipping Anthropic: API key not set.');
           continue;
       }
-      if (provider === callGemini && !process.env.GEMINI_API_KEY) {
-          console.log('Skipping Gemini: API key not set.');
+      if (provider === callDeepSeek && !process.env.DEEPSEEK_API_KEY) {
+          console.log('Skipping DeepSeek: API key not set.');
           continue;
       }
         
