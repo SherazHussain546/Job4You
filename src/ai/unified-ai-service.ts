@@ -26,13 +26,14 @@ const isQuotaError = (error: any): boolean => {
   if (error instanceof OpenAI.APIError && (error.status === 429 || error.status === 402)) {
     return true;
   }
-  // Anthropic uses 429 for rate limits
-  if (error instanceof Anthropic.APIError && error.status === 429) {
-    return true;
-  }
-  // Anthropic also uses a 400 error with a specific message for billing issues
-  if (error instanceof Anthropic.APIError && error.status === 400 && error.message.includes("credit balance is too low")) {
-    return true;
+  // Anthropic uses 429 for rate limits and a specific 400 error for billing.
+  if (error instanceof Anthropic.APIError) {
+    if (error.status === 429) {
+      return true;
+    }
+    if (error.status === 400 && error.message.includes("credit balance is too low")) {
+      return true;
+    }
   }
   return false;
 };
