@@ -23,41 +23,62 @@ const deepseek = new OpenAI({
 
 // Helper type to check for quota errors
 const isQuotaError = (error: any): boolean => {
-    // Check for OpenAI and DeepSeek (OpenAI-compatible) quota errors
-    if (error instanceof OpenAI.APIError && (error.status === 429 || error.status === 402)) {
+  // Check for OpenAI and DeepSeek (OpenAI-compatible) quota errors
+  if (error instanceof OpenAI.APIError && (error.status === 429 || error.status === 402)) {
+    return true;
+  }
+
+  // Check for Anthropic quota errors
+  if (error instanceof Anthropic.APIError) {
+    // Standard rate limit
+    if (error.status === 429) {
       return true;
     }
-  
-    // Check for Anthropic quota errors
-    if (error instanceof Anthropic.APIError) {
-      // Standard rate limit
-      if (error.status === 429) {
-        return true;
-      }
-      // Specific error for low credit balance, which Anthropic returns as a 400 with a JSON message
-      if (error.status === 400) {
-        try {
-          // The error message from Anthropic is a JSON string. We need to parse it.
-          const errorDetails = JSON.parse(error.message);
-          if (errorDetails?.error?.message?.includes("credit balance is too low")) {
-            return true;
-          }
-        } catch (e) {
-          // If parsing fails, it's not the error we're looking for.
-          return false;
+    // Specific check for the "credit balance is too low" message which returns a 400 status
+    if (error.status === 400 && typeof error.message === 'string') {
+      try {
+        // Anthropic's error message is often a JSON string within the message property
+        const errorDetails = JSON.parse(error.message);
+        if (errorDetails?.error?.message?.includes("credit balance is too low")) {
+          return true;
         }
+      } catch (e) {
+        // If parsing fails, it's not the specific JSON error we're looking for, but we can check the raw string
+        if (error.message.includes("credit balance is too low")) {
+          return true;
+        }
+        return false;
       }
     }
-  
-    // Check for Genkit/Google AI quota errors (typically 429)
-    if (error.status === 429 || (error.message && error.message.includes('quota'))) {
-        return true;
-    }
-  
-    return false;
-  };
+  }
+
+  // Check for Genkit/Google AI quota errors (typically 429)
+  if (error.status === 429 || (error.message && (error.message.includes('quota') || error.message.includes('rate limit')))) {
+      return true;
+  }
+
+  return false;
+};
 
 // 2. Define the provider functions
+const callGenkit = async (prompt: string): Promise<string> => {
+    console.log('Attempting to call Gemini via Genkit...');
+    const response = await ai.generate({
+      model: 'googleai/gemini-1.0-pro',
+      prompt: `${prompt}\n\nReturn ONLY the JSON object.`,
+      config: {
+        responseMIMEType: 'application/json',
+      },
+    });
+  
+    const content = response.text;
+    if (!content) {
+      throw new Error('Gemini (Genkit) returned an empty response.');
+    }
+    console.log('Gemini (Genkit) call successful.');
+    return content;
+};
+
 const callDeepSeek = async (prompt: string): Promise<string> => {
     console.log('Attempting to call DeepSeek...');
     const response = await deepseek.chat.completions.create({
@@ -114,25 +135,6 @@ const callAnthropic = async (prompt: string): Promise<string> => {
   console.log('Anthropic call successful.');
   return jsonString;
 };
-
-const callGenkit = async (prompt: string): Promise<string> => {
-    console.log('Attempting to call Gemini via Genkit...');
-    const response = await ai.generate({
-      model: 'googleai/gemini-1.0-pro',
-      prompt: `${prompt}\n\nReturn ONLY the JSON object.`,
-      config: {
-        responseMIMEType: 'application/json',
-      },
-    });
-  
-    const content = response.text;
-    if (!content) {
-      throw new Error('Gemini (Genkit) returned an empty response.');
-    }
-    console.log('Gemini (Genkit) call successful.');
-    return content;
-};
-
 
 // 3. Create the main failover function
 type AIProvider = (prompt: string) => Promise<string>;
