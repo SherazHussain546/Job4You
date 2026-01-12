@@ -65,7 +65,7 @@ const callGenkit = async (prompt: string): Promise<string> => {
     console.log('Attempting to call Gemini via Genkit...');
     const response = await ai.generate({
       model: 'googleai/gemini-1.0-pro',
-      prompt: `${prompt}\n\nReturn ONLY the JSON object.`,
+      prompt: prompt,
       config: {
         responseMIMEType: 'application/json',
       },
