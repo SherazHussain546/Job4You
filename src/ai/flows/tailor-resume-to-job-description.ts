@@ -458,21 +458,23 @@ export async function tailorResumeToJobDescription(
             throw new Error('AI returned an empty response.');
         }
 
-        let parsedOutput;
-        const jsonStartIndex = content.indexOf('{');
-        const jsonEndIndex = content.lastIndexOf('}');
-
-        if (jsonStartIndex !== -1 && jsonEndIndex !== -1 && jsonEndIndex > jsonStartIndex) {
-            const jsonString = content.substring(jsonStartIndex, jsonEndIndex + 1);
-             try {
-                parsedOutput = JSON.parse(jsonString);
-            } catch (e) {
-                throw new Error("Failed to parse JSON from AI response.");
+        // Robust JSON parsing
+        try {
+            const parsedOutput = JSON.parse(content);
+            return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
+        } catch (e) {
+            // If direct parsing fails, try to extract from a code block
+            const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/);
+            if (jsonMatch && jsonMatch[1]) {
+                try {
+                    const parsedJson = JSON.parse(jsonMatch[1]);
+                    return TailorResumeToJobDescriptionOutputSchema.parse(parsedJson);
+                } catch (jsonError) {
+                     throw new Error("Failed to parse JSON from AI response, even after extraction.");
+                }
             }
-        } else {
             throw new Error("AI response did not contain a valid JSON object.");
         }
-        return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
     } catch (e: any) {
         console.warn("AI generation for resume failed, falling back to template:", e.message);
         const fallbackLatex = await getFallbackResume(input.profileData);
