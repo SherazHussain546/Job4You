@@ -5,8 +5,13 @@
  * @fileOverview Generates a personalized cover letter in LaTeX format using a unified AI service.
  */
 import { z } from 'zod';
-import { callGenerativeAI } from '../unified-ai-service';
 import type { UserProfile } from '@/lib/types';
+import OpenAI from 'openai';
+
+const deepseek = new OpenAI({
+  apiKey: process.env.DEEPSEEK_API_KEY,
+  baseURL: "https://api.deepseek.com/v1",
+});
 
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
   profileData: z.object({
@@ -312,8 +317,19 @@ export async function generatePersonalizedCoverLetter(
   input: GeneratePersonalizedCoverLetterInput
 ): Promise<GeneratePersonalizedCoverLetterOutput> {
     try {
+        if (!process.env.DEEPSEEK_API_KEY) {
+            throw new Error('AI service is not configured. Missing API key.');
+        }
         const prompt = getPrompt(input);
-        const content = await callGenerativeAI(prompt);
+        const response = await deepseek.chat.completions.create({
+            model: "deepseek-chat",
+            messages: [{ role: 'user', content: prompt }],
+        });
+        const content = response.choices[0].message.content;
+        if (!content) {
+            throw new Error('AI returned an empty response.');
+        }
+
         let parsedOutput;
         if (content.includes('{') && content.includes('}')) {
             const jsonString = content.substring(content.indexOf('{'), content.lastIndexOf('}') + 1);
