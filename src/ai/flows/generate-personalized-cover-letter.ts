@@ -237,7 +237,7 @@ ${userName}
 `;
 };
 
-export function getFallbackCoverLetter(profileData: UserProfile): string {
+export async function getFallbackCoverLetter(profileData: UserProfile): Promise<string> {
     const userName = profileData.contactInfo?.name || '';
     const contactParts: string[] = [];
     if (profileData.contactInfo) {
@@ -324,7 +324,7 @@ export async function generatePersonalizedCoverLetter(
         return GeneratePersonalizedCoverLetterOutputSchema.parse(parsedOutput);
     } catch (e: any) {
         console.warn("AI generation for cover letter failed, falling back to template:", e.message);
-        const fallbackLatex = getFallbackCoverLetter(input.profileData);
+        const fallbackLatex = await getFallbackCoverLetter(input.profileData);
         return { latexCode: fallbackLatex };
     }
 }

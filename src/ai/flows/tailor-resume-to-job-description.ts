@@ -331,7 +331,7 @@ const escapeTex = (str: string | undefined | null) => {
     .replace(/\\/g, '\\textbackslash{}');
 };
 
-export function getFallbackResume(profileData: UserProfile): string {
+export async function getFallbackResume(profileData: UserProfile): Promise<string> {
     let contactSection = '';
     const userName = profileData.contactInfo?.name || '';
     if (profileData.contactInfo) {
@@ -453,7 +453,7 @@ export async function tailorResumeToJobDescription(
         return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
     } catch (e: any) {
         console.warn("AI generation for resume failed, falling back to template:", e.message);
-        const fallbackLatex = getFallbackResume(input.profileData);
+        const fallbackLatex = await getFallbackResume(input.profileData);
         return { latexCode: fallbackLatex };
     }
 }
