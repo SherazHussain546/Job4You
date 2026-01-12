@@ -38,7 +38,7 @@ const TailorResumeToJobDescriptionInputSchema = z.object({
       organization: z.string(),
       date: z.string().optional(),
       link: z.string().optional(),
-      achievements: zstring().optional(),
+      achievements: z.string().optional(),
       skillsAchieved: z.string().optional(),
     })).describe('Array of certification details.'),
     skills: z.array(z.string()).describe('Array of skills.'),
@@ -458,3 +458,5 @@ export async function tailorResumeToJobDescription(
         return { latexCode: fallbackLatex };
     }
 }
+
+    
