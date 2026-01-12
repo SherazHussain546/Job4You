@@ -84,7 +84,6 @@ const callDeepSeek = async (prompt: string): Promise<string> => {
     const response = await deepseek.chat.completions.create({
         model: "deepseek-chat",
         messages: [{ role: 'user', content: prompt }],
-        response_format: { type: 'json_object' },
     });
     const content = response.choices[0].message.content;
     if (!content) {
