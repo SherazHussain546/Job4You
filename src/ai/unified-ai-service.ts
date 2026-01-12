@@ -36,19 +36,19 @@ const isQuotaError = (error: any): boolean => {
     }
     // Specific check for the "credit balance is too low" message which returns a 400 status
     if (error.status === 400 && typeof error.message === 'string') {
-      try {
-        // Anthropic's error message is often a JSON string within the message property
-        const errorDetails = JSON.parse(error.message);
-        if (errorDetails?.error?.message?.includes("credit balance is too low")) {
-          return true;
-        }
-      } catch (e) {
-        // If parsing fails, it's not the specific JSON error we're looking for, but we can check the raw string
+        // First, check the raw string for the message. This is the most reliable.
         if (error.message.includes("credit balance is too low")) {
           return true;
         }
-        return false;
-      }
+        // Then, attempt to parse if it's a JSON string, as a secondary check.
+        try {
+            const errorDetails = JSON.parse(error.message);
+            if (errorDetails?.error?.message?.includes("credit balance is too low")) {
+                return true;
+            }
+        } catch (e) {
+            // Parsing failed, which is fine. The raw string check already ran.
+        }
     }
   }
 
