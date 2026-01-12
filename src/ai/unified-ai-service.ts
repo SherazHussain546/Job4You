@@ -23,37 +23,22 @@ const deepseek = new OpenAI({
 
 // Helper type to check for quota errors
 const isQuotaError = (error: any): boolean => {
+  const errorMessage = typeof error.message === 'string' ? error.message.toLowerCase() : '';
+
   // Check for OpenAI and DeepSeek (OpenAI-compatible) quota errors
-  if (error instanceof OpenAI.APIError && (error.status === 429 || error.status === 402)) {
+  if (error instanceof OpenAI.APIError && (error.status === 429 || errorMessage.includes('insufficient_quota'))) {
     return true;
   }
 
   // Check for Anthropic quota errors
   if (error instanceof Anthropic.APIError) {
-    // Standard rate limit
-    if (error.status === 429) {
-      return true;
-    }
-    // Specific check for the "credit balance is too low" message which returns a 400 status
-    if (error.status === 400 && typeof error.message === 'string') {
-        // First, check the raw string for the message. This is the most reliable.
-        if (error.message.includes("credit balance is too low")) {
-          return true;
-        }
-        // Then, attempt to parse if it's a JSON string, as a secondary check.
-        try {
-            const errorDetails = JSON.parse(error.message);
-            if (errorDetails?.error?.message?.includes("credit balance is too low")) {
-                return true;
-            }
-        } catch (e) {
-            // Parsing failed, which is fine. The raw string check already ran.
-        }
+    if (error.status === 429 || errorMessage.includes('credit balance is too low')) {
+        return true;
     }
   }
 
   // Check for Genkit/Google AI quota errors (typically 429)
-  if (error.status === 429 || (error.message && (error.message.includes('quota') || error.message.includes('rate limit')))) {
+  if (error.status === 429 || (errorMessage.includes('quota') || errorMessage.includes('rate limit'))) {
       return true;
   }
 
