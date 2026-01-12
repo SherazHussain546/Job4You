@@ -38,7 +38,7 @@ const TailorResumeToJobDescriptionInputSchema = z.object({
       organization: z.string(),
       date: z.string().optional(),
       link: z.string().optional(),
-      achievements: z.string().optional(),
+      achievements: zstring().optional(),
       skillsAchieved: z.string().optional(),
     })).describe('Array of certification details.'),
     skills: z.array(z.string()).describe('Array of skills.'),
@@ -71,6 +71,7 @@ export type TailorResumeToJobDescriptionOutput = z.infer<
 
 function getPrompt(input: TailorResumeToJobDescriptionInput): string {
     const { profileData, jobDescription } = input;
+    const userName = profileData.contactInfo?.name || '';
     
     let contactSection = '';
     if (profileData.contactInfo) {
@@ -169,7 +170,7 @@ Job Description:
 ${jobDescription}
 
 User Profile:
-- Name: ${profileData.contactInfo.name}
+- Name: ${userName}
 - Contact Details: ${JSON.stringify(profileData.contactInfo, null, 2)}
 - Education: ${JSON.stringify(profileData.education, null, 2)}
 - Experience: ${JSON.stringify(profileData.experience, null, 2)}
@@ -178,7 +179,7 @@ User Profile:
 - Skills: ${profileData.skills.join(', ')}
 
 
-% ATS-Optimized Resume Template: ${profileData.contactInfo.name}
+% ATS-Optimized Resume Template: ${userName}
 % Designed for maximum parsing reliability by using simple document structure,
 % standard sectioning, and minimal custom formatting.
 % Return ONLY a JSON object with a "latexCode" field.
@@ -236,7 +237,7 @@ User Profile:
 % 1. HEADER & CONTACT
 % --------------------
 \\begin{center}
-    {\\Huge \\textbf{ ${profileData.contactInfo.name} }} \\\\
+    {\\Huge \\textbf{ ${userName} }} \\\\
     % AI: Generate a professional title based on the Job Description.
     \\textbf{[Generated Professional Title e.g., Full-Stack Software Engineer & AI/Cloud Developer]} \\\\
     \\vspace{2pt}
@@ -332,6 +333,7 @@ const escapeTex = (str: string) => {
 
 const getFallbackLatex = (profileData: UserProfile): string => {
     let contactSection = '';
+    const userName = profileData.contactInfo?.name || '';
     if (profileData.contactInfo) {
         if (profileData.contactInfo.phone) {
             contactSection += escapeTex(profileData.contactInfo.phone);
@@ -408,7 +410,7 @@ ${edu.achievements ? `\\begin{itemize}\\item ${escapeTex(edu.achievements)}\\end
 \\begin{document}
 
 \\begin{center}
-    {\\Huge \\textbf{${escapeTex(profileData.contactInfo.name)}}} \\\\
+    {\\Huge \\textbf{${escapeTex(userName)}}} \\\\
     \\vspace{2pt}
     ${contactSection}
 \\end{center}
@@ -456,5 +458,3 @@ export async function tailorResumeToJobDescription(
         return { latexCode: fallbackLatex };
     }
 }
-
-    

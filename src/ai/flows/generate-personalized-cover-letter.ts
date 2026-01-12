@@ -65,6 +65,7 @@ export type GeneratePersonalizedCoverLetterOutput = z.infer<
 
 const getPrompt = (input: GeneratePersonalizedCoverLetterInput): string => {
     const { profileData, jobDescription } = input;
+    const userName = profileData.contactInfo?.name || '';
     
     const contactParts: string[] = [];
     if (profileData.contactInfo) {
@@ -134,7 +135,7 @@ You must use the provided user profile data and tailor it to the given job descr
 The final output must be only a JSON object with a single key "latexCode" containing the LaTeX code as a string, starting with \\documentclass and ending with \\end{document}.
 
 User Profile:
-- Name: ${profileData.contactInfo.name}
+- Name: ${userName}
 - Contact Details: ${JSON.stringify(profileData.contactInfo, null, 2)}
 - Education: ${JSON.stringify(profileData.education, null, 2)}
 - Experience: ${JSON.stringify(profileData.experience, null, 2)}
@@ -180,7 +181,7 @@ Use the following LaTeX template. Return ONLY a JSON object with a "latexCode" f
 % 1. SENDER CONTACT INFORMATION
 % --------------------
 \\raggedright
-\\textbf{ ${profileData.contactInfo.name} } \\\\
+\\textbf{ ${userName} } \\\\
 ${contactSection}
 
 \\vspace{10pt}
@@ -229,7 +230,7 @@ Thank you for your time and consideration. I have attached my resume for your re
 \\vspace{10pt}
 
 Sincerely, \\\\
-${profileData.contactInfo.name}
+${userName}
 
 \\end{document}
 `;
@@ -237,6 +238,7 @@ ${profileData.contactInfo.name}
 
 const getFallbackLatex = (input: GeneratePersonalizedCoverLetterInput): string => {
     const { profileData } = input;
+    const userName = profileData.contactInfo?.name || '';
     const contactParts: string[] = [];
     if (profileData.contactInfo) {
         if (profileData.contactInfo.phone) {
@@ -269,7 +271,7 @@ const getFallbackLatex = (input: GeneratePersonalizedCoverLetterInput): string =
 \\begin{document}
 
 \\raggedright
-\\textbf{${profileData.contactInfo.name}} \\\\
+\\textbf{${userName}} \\\\
 ${contactSection}
 
 \\vspace{10pt}
@@ -299,7 +301,7 @@ Thank you for your time and consideration. My resume is attached for your review
 \\vspace{10pt}
 
 Sincerely, \\\\
-${profileData.contactInfo.name}
+${userName}
 
 \\end{document}
     `;
@@ -327,5 +329,3 @@ export async function generatePersonalizedCoverLetter(
         return { latexCode: fallbackLatex };
     }
 }
-
-    
