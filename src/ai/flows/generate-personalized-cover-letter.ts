@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -19,7 +20,7 @@ const GeneratePersonalizedCoverLetterInputSchema = z.object({
         title: z.string(),
         company: z.string(),
         startDate: z.string().optional(),
-        endDate: z-string().optional(),
+        endDate: z.string().optional(),
         responsibilities: z.string(),
     })).describe('List of work experiences.'),
     projects: z.array(z.object({
