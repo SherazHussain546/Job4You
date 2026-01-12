@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -460,9 +459,16 @@ export async function tailorResumeToJobDescription(
         }
 
         let parsedOutput;
-        if (content.includes('{') && content.includes('}')) {
-            const jsonString = content.substring(content.indexOf('{'), content.lastIndexOf('}') + 1);
-            parsedOutput = JSON.parse(jsonString);
+        const jsonStartIndex = content.indexOf('{');
+        const jsonEndIndex = content.lastIndexOf('}');
+
+        if (jsonStartIndex !== -1 && jsonEndIndex !== -1 && jsonEndIndex > jsonStartIndex) {
+            const jsonString = content.substring(jsonStartIndex, jsonEndIndex + 1);
+             try {
+                parsedOutput = JSON.parse(jsonString);
+            } catch (e) {
+                throw new Error("Failed to parse JSON from AI response.");
+            }
         } else {
             throw new Error("AI response did not contain a valid JSON object.");
         }
