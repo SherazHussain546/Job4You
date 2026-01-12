@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { generatePersonalizedCoverLetter } from '@/ai/flows/generate-personalized-cover-letter';
-import { tailorResumeToJobDescription } from '@/ai/flows/tailor-resume-to-job-description';
+import { generatePersonalizedCoverLetter, getFallbackCoverLetter } from '@/ai/flows/generate-personalized-cover-letter';
+import { tailorResumeToJobDescription, getFallbackResume } from '@/ai/flows/tailor-resume-to-job-description';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +14,7 @@ import { defaultProfile } from '@/lib/types';
 import { Bot, Loader2, FileWarning, ExternalLink } from 'lucide-react';
 import OutputDisplay from './output-display';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Switch } from './ui/switch';
 
 interface GenerationOutput {
   resumeLatex: string;
@@ -24,6 +25,7 @@ export default function ResumeTailor() {
   const [jobDescription, setJobDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [output, setOutput] = useState<GenerationOutput | null>(null);
+  const [useAI, setUseAI] = useState(false);
   const { toast } = useToast();
   const { user } = useUser();
   const firestore = useFirestore();
@@ -33,8 +35,8 @@ export default function ResumeTailor() {
       toast({ title: 'Error', description: 'You must be logged in.', variant: 'destructive' });
       return;
     }
-    if (!jobDescription.trim()) {
-      toast({ title: 'Error', description: 'Job description cannot be empty.', variant: 'destructive' });
+    if (useAI && !jobDescription.trim()) {
+      toast({ title: 'Error', description: 'Job description cannot be empty when AI Tailoring is enabled.', variant: 'destructive' });
       return;
     }
 
@@ -56,7 +58,6 @@ export default function ResumeTailor() {
       }
       
       const savedData = profileSnap.data();
-      // Deep merge to ensure all nested properties have default values
       const profileData: UserProfile = {
         ...defaultProfile,
         ...savedData,
@@ -83,22 +84,30 @@ export default function ResumeTailor() {
         skills: savedData.skills || [],
       };
 
+      let resumeLatex, coverLetterLatex;
 
-      const [resumeResult, coverLetterResult] = await Promise.all([
-        tailorResumeToJobDescription({ jobDescription, profileData }),
-        generatePersonalizedCoverLetter({ jobDescription, profileData }),
-      ]);
+      if (useAI) {
+        const [resumeResult, coverLetterResult] = await Promise.all([
+          tailorResumeToJobDescription({ jobDescription, profileData }),
+          generatePersonalizedCoverLetter({ jobDescription, profileData }),
+        ]);
+        resumeLatex = resumeResult.latexCode;
+        coverLetterLatex = coverLetterResult.latexCode;
+      } else {
+        resumeLatex = getFallbackResume(profileData);
+        coverLetterLatex = getFallbackCoverLetter(profileData);
+      }
       
       setOutput({
-          resumeLatex: resumeResult.latexCode,
-          coverLetterLatex: coverLetterResult.latexCode,
+          resumeLatex,
+          coverLetterLatex,
       });
 
     } catch (error) {
       console.error('Error generating application kit:', error);
       toast({
         title: 'Generation Failed',
-        description: 'An error occurred while communicating with the AI. Please try again.',
+        description: 'An error occurred while generating documents. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -109,19 +118,39 @@ export default function ResumeTailor() {
   return (
     <div className="mx-auto max-w-7xl">
       <h1 className="font-headline text-3xl font-bold tracking-tight">AI Application Tailor</h1>
-      <p className="text-muted-foreground">Paste a job description to generate a custom-tailored resume and cover letter.</p>
+      <p className="text-muted-foreground">Generate a resume and cover letter from your profile. Enable AI to tailor them for a job.</p>
 
-      <div className="mt-6 grid gap-4">
-        <div>
-          <Label htmlFor="job-description" className="text-lg font-medium">Job Description</Label>
-          <Textarea
-            id="job-description"
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            placeholder="Paste the full job description here..."
-            className="mt-2 min-h-[200px] text-base"
-          />
-        </div>
+      <div className="mt-6 grid gap-6">
+        <Card>
+            <CardHeader>
+                <CardTitle>Configuration</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                 <div className="flex items-center space-x-4 rounded-md border p-4">
+                    <Bot className="h-6 w-6" />
+                    <div className="flex-1 space-y-1">
+                        <p className="text-sm font-medium leading-none">Enable AI Tailoring</p>
+                        <p className="text-sm text-muted-foreground">
+                        Let AI customize your resume and cover letter for a specific job description.
+                        </p>
+                    </div>
+                    <Switch checked={useAI} onCheckedChange={setUseAI} />
+                </div>
+                {useAI && (
+                    <div>
+                        <Label htmlFor="job-description" className="text-lg font-medium">Job Description</Label>
+                        <Textarea
+                            id="job-description"
+                            value={jobDescription}
+                            onChange={(e) => setJobDescription(e.target.value)}
+                            placeholder="Paste the full job description here..."
+                            className="mt-2 min-h-[200px] text-base"
+                        />
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+        
         <Button onClick={handleGenerate} disabled={isGenerating} size="lg">
           {isGenerating ? (
             <>
@@ -141,7 +170,7 @@ export default function ResumeTailor() {
         <div className="mt-8 flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
             <h3 className="font-headline text-xl">Crafting your documents...</h3>
-            <p className="text-muted-foreground">The AI is analyzing your profile against the job description.</p>
+            <p className="text-muted-foreground">{useAI ? "The AI is analyzing your profile against the job description." : "Generating documents from your profile."}</p>
         </div>
       )}
 
@@ -208,7 +237,7 @@ export default function ResumeTailor() {
         <div className="mt-8 flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
             <FileWarning className="h-10 w-10 text-muted-foreground" />
             <h3 className="font-headline text-xl">Your generated documents will appear here</h3>
-            <p className="text-muted-foreground">Enter a job description and click generate to start.</p>
+            <p className="text-muted-foreground">Click generate to start.</p>
         </div>
       )}
 

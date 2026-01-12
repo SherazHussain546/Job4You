@@ -6,6 +6,7 @@
  */
 import { z } from 'zod';
 import { callGenerativeAI } from '../unified-ai-service';
+import type { UserProfile } from '@/lib/types';
 
 const GeneratePersonalizedCoverLetterInputSchema = z.object({
   profileData: z.object({
@@ -236,8 +237,7 @@ ${userName}
 `;
 };
 
-const getFallbackLatex = (input: GeneratePersonalizedCoverLetterInput): string => {
-    const { profileData } = input;
+export function getFallbackCoverLetter(profileData: UserProfile): string {
     const userName = profileData.contactInfo?.name || '';
     const contactParts: string[] = [];
     if (profileData.contactInfo) {
@@ -314,7 +314,6 @@ export async function generatePersonalizedCoverLetter(
     try {
         const prompt = getPrompt(input);
         const content = await callGenerativeAI(prompt);
-        // It's possible the AI returns a non-JSON string, so we need to be careful
         let parsedOutput;
         if (content.includes('{') && content.includes('}')) {
             const jsonString = content.substring(content.indexOf('{'), content.lastIndexOf('}') + 1);
@@ -325,7 +324,7 @@ export async function generatePersonalizedCoverLetter(
         return GeneratePersonalizedCoverLetterOutputSchema.parse(parsedOutput);
     } catch (e: any) {
         console.warn("AI generation for cover letter failed, falling back to template:", e.message);
-        const fallbackLatex = getFallbackLatex(input);
+        const fallbackLatex = getFallbackCoverLetter(input.profileData);
         return { latexCode: fallbackLatex };
     }
 }

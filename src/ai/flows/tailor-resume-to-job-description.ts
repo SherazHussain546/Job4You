@@ -316,7 +316,7 @@ User Profile:
 }
 
 // Helper to escape special LaTeX characters
-const escapeTex = (str: string) => {
+const escapeTex = (str: string | undefined | null) => {
   if (!str) return '';
   return str
     .replace(/&/g, '\\&')
@@ -331,7 +331,7 @@ const escapeTex = (str: string) => {
     .replace(/\\/g, '\\textbackslash{}');
 };
 
-const getFallbackLatex = (profileData: UserProfile): string => {
+export function getFallbackResume(profileData: UserProfile): string {
     let contactSection = '';
     const userName = profileData.contactInfo?.name || '';
     if (profileData.contactInfo) {
@@ -415,19 +415,19 @@ ${edu.achievements ? `\\begin{itemize}\\item ${escapeTex(edu.achievements)}\\end
     ${contactSection}
 \\end{center}
 
-${profileData.skills ? `\\section*{TECHNICAL SKILLS}
+${profileData.skills && profileData.skills.length > 0 ? `\\section*{TECHNICAL SKILLS}
 ${escapeTex(skillsSection)}` : ''}
 
-${profileData.experience ? `\\section*{PROFESSIONAL EXPERIENCE}
+${profileData.experience && profileData.experience.length > 0 ? `\\section*{PROFESSIONAL EXPERIENCE}
 ${experienceSection}` : ''}
 
-${profileData.projects ? `\\section*{DEVELOPMENT PROJECTS}
+${profileData.projects && profileData.projects.length > 0 ? `\\section*{DEVELOPMENT PROJECTS}
 ${projectsSection}` : ''}
 
-${profileData.education ? `\\section*{EDUCATION}
+${profileData.education && profileData.education.length > 0 ? `\\section*{EDUCATION}
 ${educationSection}` : ''}
 
-${profileData.certifications ? `\\section*{CERTIFICATES & TRAINING}
+${profileData.certifications && profileData.certifications.length > 0 ? `\\section*{CERTIFICATES & TRAINING}
 \\begin{itemize}
     ${certificationsSection}
 \\end{itemize}` : ''}
@@ -443,7 +443,6 @@ export async function tailorResumeToJobDescription(
     try {
         const prompt = getPrompt(input);
         const content = await callGenerativeAI(prompt);
-        // It's possible the AI returns a non-JSON string, so we need to be careful
         let parsedOutput;
         if (content.includes('{') && content.includes('}')) {
             const jsonString = content.substring(content.indexOf('{'), content.lastIndexOf('}') + 1);
@@ -454,9 +453,7 @@ export async function tailorResumeToJobDescription(
         return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
     } catch (e: any) {
         console.warn("AI generation for resume failed, falling back to template:", e.message);
-        const fallbackLatex = getFallbackLatex(input.profileData);
+        const fallbackLatex = getFallbackResume(input.profileData);
         return { latexCode: fallbackLatex };
     }
 }
-
-    
