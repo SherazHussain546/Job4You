@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -72,32 +73,34 @@ function getPrompt(input: TailorResumeToJobDescriptionInput): string {
     const { profileData, jobDescription } = input;
     
     let contactSection = '';
-    if (profileData.contactInfo.phone) {
-        contactSection += profileData.contactInfo.phone;
-    }
-    if (profileData.contactInfo.email) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`;
-    }
-    if (profileData.contactInfo.linkedin) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`;
-    }
-    if (profileData.contactInfo.github) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.github}}{GitHub}`;
-    }
-     if (profileData.contactInfo.portfolio) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`;
-    }
-    if (profileData.contactInfo.instagram) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.instagram}}{Instagram}`;
-    }
-    if (profileData.contactInfo.other) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${profileData.contactInfo.other}}{Other URL}`;
+    if (profileData.contactInfo) {
+        if (profileData.contactInfo.phone) {
+            contactSection += profileData.contactInfo.phone;
+        }
+        if (profileData.contactInfo.email) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`;
+        }
+        if (profileData.contactInfo.linkedin) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn}`;
+        }
+        if (profileData.contactInfo.github) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{https://${profileData.contactInfo.github}}{GitHub}`;
+        }
+         if (profileData.contactInfo.portfolio) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{https://${profileData.contactInfo.portfolio}}{Portfolio}`;
+        }
+        if (profileData.contactInfo.instagram) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{https://${profileData.contactInfo.instagram}}{Instagram}`;
+        }
+        if (profileData.contactInfo.other) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{https://${profileData.contactInfo.other}}{Other URL}`;
+        }
     }
     
     return `You are an expert Hiring Manager and ATS Optimization Specialist. Your goal is to generate resumes and cover letters that score 90+ on Applicant Tracking Systems (ATS) while remaining compelling to human readers. When analyzing user data against a job description, adhere to the following criteria for what makes the 'Best' application:
@@ -301,7 +304,7 @@ User Profile:
 \\end{itemize}
 
 % AI: This section should only be included if relevant certifications exist.
-\\section*{CERTIFICATES \& TRAINING}
+\\section*{CERTIFICATES & TRAINING}
 \\begin{itemize}
 % AI: Iterate over at least 4 relevant certifications.
     \\item \\textbf{ [Certification Name] } from \\textbf{ [Organization] } \\textit{[Optional: Skills shown]}
@@ -329,20 +332,22 @@ const escapeTex = (str: string) => {
 
 const getFallbackLatex = (profileData: UserProfile): string => {
     let contactSection = '';
-    if (profileData.contactInfo.phone) {
-        contactSection += escapeTex(profileData.contactInfo.phone);
-    }
-    if (profileData.contactInfo.email) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{mailto:${escapeTex(profileData.contactInfo.email)}}{${escapeTex(profileData.contactInfo.email)}}`;
-    }
-    if (profileData.contactInfo.linkedin) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${escapeTex(profileData.contactInfo.linkedin)}}{LinkedIn}`;
-    }
-    if (profileData.contactInfo.github) {
-        if (contactSection) contactSection += ' $|$ ';
-        contactSection += `\\href{https://${escapeTex(profileData.contactInfo.github)}}{GitHub}`;
+    if (profileData.contactInfo) {
+        if (profileData.contactInfo.phone) {
+            contactSection += escapeTex(profileData.contactInfo.phone);
+        }
+        if (profileData.contactInfo.email) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{mailto:${escapeTex(profileData.contactInfo.email)}}{${escapeTex(profileData.contactInfo.email)}}`;
+        }
+        if (profileData.contactInfo.linkedin) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{https://${escapeTex(profileData.contactInfo.linkedin)}}{LinkedIn}`;
+        }
+        if (profileData.contactInfo.github) {
+            if (contactSection) contactSection += ' $|$ ';
+            contactSection += `\\href{https://${escapeTex(profileData.contactInfo.github)}}{GitHub}`;
+        }
     }
 
     const experienceSection = profileData.experience?.map((exp: Experience) => `
@@ -436,7 +441,14 @@ export async function tailorResumeToJobDescription(
     try {
         const prompt = getPrompt(input);
         const content = await callGenerativeAI(prompt);
-        const parsedOutput = JSON.parse(content);
+        // It's possible the AI returns a non-JSON string, so we need to be careful
+        let parsedOutput;
+        if (content.includes('{') && content.includes('}')) {
+            const jsonString = content.substring(content.indexOf('{'), content.lastIndexOf('}') + 1);
+            parsedOutput = JSON.parse(jsonString);
+        } else {
+            throw new Error("AI response did not contain a valid JSON object.");
+        }
         return TailorResumeToJobDescriptionOutputSchema.parse(parsedOutput);
     } catch (e: any) {
         console.warn("AI generation for resume failed, falling back to template:", e.message);
@@ -444,3 +456,5 @@ export async function tailorResumeToJobDescription(
         return { latexCode: fallbackLatex };
     }
 }
+
+    

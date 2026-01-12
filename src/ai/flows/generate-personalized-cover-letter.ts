@@ -66,17 +66,19 @@ export type GeneratePersonalizedCoverLetterOutput = z.infer<
 const getPrompt = (input: GeneratePersonalizedCoverLetterInput): string => {
     const { profileData, jobDescription } = input;
     
-    const contactParts = [];
-    if (profileData.contactInfo.phone) {
-        contactParts.push(`${profileData.contactInfo.phone} \\\\`);
+    const contactParts: string[] = [];
+    if (profileData.contactInfo) {
+      if (profileData.contactInfo.phone) {
+          contactParts.push(`${profileData.contactInfo.phone}`);
+      }
+      if (profileData.contactInfo.email) {
+          contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`);
+      }
+      if (profileData.contactInfo.linkedin) {
+          contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile}`);
+      }
     }
-    if (profileData.contactInfo.email) {
-        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
-    }
-    if (profileData.contactInfo.linkedin) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
-    }
-    const contactSection = contactParts.join('\n');
+    const contactSection = contactParts.join(' \\\\ \n');
 
     return `You are an expert Hiring Manager and ATS Optimization Specialist. Your goal is to generate resumes and cover letters that score 90+ on Applicant Tracking Systems (ATS) while remaining compelling to human readers. When analyzing user data against a job description, adhere to the following criteria for what makes the 'Best' application:
 
@@ -235,17 +237,19 @@ ${profileData.contactInfo.name}
 
 const getFallbackLatex = (input: GeneratePersonalizedCoverLetterInput): string => {
     const { profileData } = input;
-    const contactParts = [];
-    if (profileData.contactInfo.phone) {
-        contactParts.push(`${profileData.contactInfo.phone} \\\\`);
+    const contactParts: string[] = [];
+    if (profileData.contactInfo) {
+        if (profileData.contactInfo.phone) {
+            contactParts.push(`${profileData.contactInfo.phone}`);
+        }
+        if (profileData.contactInfo.email) {
+            contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}}`);
+        }
+        if (profileData.contactInfo.linkedin) {
+            contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile}`);
+        }
     }
-    if (profileData.contactInfo.email) {
-        contactParts.push(`\\href{mailto:${profileData.contactInfo.email}}{${profileData.contactInfo.email}} \\\\`);
-    }
-    if (profileData.contactInfo.linkedin) {
-        contactParts.push(`\\href{https://${profileData.contactInfo.linkedin}}{LinkedIn Profile} \\\\`);
-    }
-    const contactSection = contactParts.join('\n');
+    const contactSection = contactParts.join(' \\\\ \n');
 
     return `
 \\documentclass[10pt, a4paper]{article}
@@ -308,7 +312,14 @@ export async function generatePersonalizedCoverLetter(
     try {
         const prompt = getPrompt(input);
         const content = await callGenerativeAI(prompt);
-        const parsedOutput = JSON.parse(content);
+        // It's possible the AI returns a non-JSON string, so we need to be careful
+        let parsedOutput;
+        if (content.includes('{') && content.includes('}')) {
+            const jsonString = content.substring(content.indexOf('{'), content.lastIndexOf('}') + 1);
+            parsedOutput = JSON.parse(jsonString);
+        } else {
+            throw new Error("AI response did not contain a valid JSON object.");
+        }
         return GeneratePersonalizedCoverLetterOutputSchema.parse(parsedOutput);
     } catch (e: any) {
         console.warn("AI generation for cover letter failed, falling back to template:", e.message);
@@ -316,3 +327,5 @@ export async function generatePersonalizedCoverLetter(
         return { latexCode: fallbackLatex };
     }
 }
+
+    
